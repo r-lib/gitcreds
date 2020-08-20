@@ -162,7 +162,7 @@ parse_credentials <- function(txt) {
 }
 
 set_env <- function(envs) {
-  current <- Sys.getenv(envs, NA_character_)
+  current <- Sys.getenv(names(envs), NA_character_)
   na <- is.na(envs)
   if (any(na)) {
     Sys.unsetenv(names(envs)[na])

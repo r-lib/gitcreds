@@ -9,14 +9,7 @@
 
 gitcreds_get <- function(url = "https://github.com") {
 
-  oldwd <- getwd()
-  on.exit(setwd(oldwd), add = TRUE)
-
-  tmprepo <- gitcreds_setup()
-  if (is.null(tmprepo)) return(NULL)
-  on.exit(unlink(tmprepo, recursive = TRUE), add = TRUE)
-
-  setwd(tmprepo)
+  if (!check_for_git()) stop("You need to install git")
 
   env <- gitcreds_env()
   oenv <- set_env(env)
@@ -25,10 +18,17 @@ gitcreds_get <- function(url = "https://github.com") {
   ## Now we are ready to query the credential
   input <- gitcreds_input(url)
 
+  helper <- paste0(
+    "credential.helper=\"! echo protocol=dummy;",
+    "echo host=dummy;",
+    "echo username=dummy;",
+    "echo password=dummy\""
+  )
+
   ## TODO: should this just fail?
   tryCatch(
     out <- suppressWarnings(system2(
-      "git", c("credential", "fill"),
+      "git", c("-c", helper, "credential", "fill"),
       input = input, stdout = TRUE, stderr = null_file()
     )),
     error = function(e) NULL
@@ -48,11 +48,8 @@ gitcreds_get_async <- function(url = "https://github.com") {
   async <- asNamespace("pkgcache")$async
   run_process <- asNamespace("pkgcache")$run_process
 
-  tmp <- tempfile()
   input <- gitcreds_input(url)
   env <- gitcreds_env()
-  oldwd <- getwd()
-  tmpwd <- oldwd
 
   async(gitcreds_setup)()$
     then(function(wd) {
@@ -73,40 +70,6 @@ gitcreds_get_async <- function(url = "https://github.com") {
     finally(function() {
       unlink(tmpwd, recursive = TRUE)
     })
-}
-
-gitcreds_setup <- function() {
-  ## TODO: find git if not on the path? It would make sense on Windows.
-  if (!check_for_git()) return(NULL)
-
-  # Query the local config file, before we change the working dir
-  local_config <- find_local_git_config()
-
-  ## Create a temporary repoditory, so we can have a custom config
-  dir.create(tmprepo <- tempfile())
-  create_empty_git_repo(tmprepo)
-  oldwd <- getwd()
-  on.exit(setwd(oldwd), add = TRUE)
-  setwd(tmprepo)
-
-  ## Use local config if there was one
-  if (!is.null(local_config)) {
-    file.copy(local_config, ".git/config", overwrite = TRUE)
-  }
-
-  ## Create dummy credential helper
-  create_dummy_helper("helper.sh")
-
-  ## Amend local config
-  cat(
-    sep = "",
-    "[credential]\n",
-    "\thelper = \"! ./helper.sh\"\n",
-    file = ".git/config",
-    append = TRUE
-  )
-
-  invisible(tmprepo)
 }
 
 gitcreds_input <- function(url) {
@@ -142,85 +105,8 @@ check_for_git <- function() {
   }, error = function(e) FALSE)
 }
 
-find_local_git_config <- function(path = ".") {
-  if (path != ".") {
-    oldwd <- setwd(path)
-    on.exit(setwd(oldwd), add = TRUE)
-  }
-
-  tryCatch({
-    conf <- system2(
-      "git", c("config", "-l", "--local", "--show-origin"),
-      stdout = TRUE, stderr = null_file()
-    )
-    con <- textConnection(conf)
-    on.exit(close(con), add = TRUE)
-    lines <- readLines(con, warn = FALSE)
-    if (length(lines) == 0) return(NULL)
-    line1 <- lines[1]
-    file <- strsplit(line1, "\t", fixed = TRUE)[[1]][1]
-    if (!grepl("^file:", file)) return(NULL)
-    normalizePath(sub("^file:", "", file))
-  }, error = function() NULL)
-}
-
 null_file <- function() {
   if (.Platform$OS.type == "windows") "nul:" else "/dev/null"
-}
-
-create_empty_git_repo <- function(path = ".") {
-  if (path != ".") {
-    oldwd <- setwd(path)
-    on.exit(setwd(oldwd), add = TRUE)
-  }
-
-  if (file.exists(".git")) {
-    stop(sprintf("`%s` already has a git repo", path))
-  }
-
-  dir.create(".git")
-  dir.create(".git/objects")
-  dir.create(".git/objects/pack")
-  dir.create(".git/objects/info")
-  dir.create(".git/info")
-  dir.create(".git/hooks")
-  dir.create(".git/refs")
-  dir.create(".git/refs/heads")
-  dir.create(".git/refs/tags")
-
-  cat(sep = "",
-      "[core]\n",
-      "\trepositoryformatversion = 0\n",
-      "\tfilemode = true\n",
-      "\tbare = false\n",
-      "\tlogallrefupdates = true\n",
-      "\tignorecase = true\n",
-      "\tprecomposeunicode = true\n",
-      file = ".git/config")
-  cat("ref: refs/heads/master\n", sep = "", file = ".git/HEAD")
-  cat("", sep = "", file = ".git/info/exclude")
-  cat(sep = "", "Unnamed repository; edit this file 'description' ",
-      "to name the repository.\n", file = ".git/description")
-  cat("", sep = "", file = ".git/FETCH_HEAD")
-
-  invisible(path)
-}
-
-create_dummy_helper <- function(path) {
-  cat(
-    sep = "",
-    "#! /bin/sh\n",
-    "\n",
-    "echo protocol=dummy\n",
-    "echo host=dummy\n",
-    "echo username=dummy\n",
-    "echo password=dummy\n",
-    file = path
-  )
-
-  if (.Platform$OS.type == "unix") Sys.chmod(path, "0777")
-
-  invisible(path)
 }
 
 parse_credentials <- function(txt) {

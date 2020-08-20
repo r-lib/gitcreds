@@ -8,15 +8,66 @@
 #' @export
 
 gitcreds_get <- function(url = "https://github.com") {
-  ## Avoid interactivity with some common credential helpers
-  envs <- c(
-    GCM_INTERACTIVE = "Never",
-    GCM_MODAL_PROMPT = "false",
-    GCM_VALIDATE = "false"
-  )
-  oenv <- set_env(envs)
+
+  tmprepo <- gitcreds_setup()
+  if (is.null(tmprepo)) return(NULL)
+  on.exit(unlink(tmprepo, recursive = TRUE), add = TRUE)
+
+  oldwd <- getwd()
+  on.exit(setwd(oldwd), add = TRUE)
+  setwd(tmprepo)
+
+  env <- gitcreds_env()
+  oenv <- set_env(env)
   on.exit(set_env(oenv), add = TRUE)
 
+  ## Now we are ready to query the credential
+  input <- gitcreds_input(url)
+
+  ## TODO: should this just fail?
+  tryCatch(
+    out <- system2("git", c("credential", "fill"), input = input,
+                   stdout = TRUE, stderr = null_file()),
+    error = function(e) NULL
+  )
+
+  parse_credentials(out)
+}
+
+gitcreds_get_async <- function(url = "https://github.com") {
+  force(url)
+
+  async <- asNamespace("pkgcache")$async
+  run_process <- asNamespace("pkgcache")$run_process
+
+  tmp <- tempfile()
+  input <- gitcreds_input(url)
+  env <- gitcreds_env()
+  oldwd <- getwd()
+  tmpwd <- oldwd
+
+  async(gitcreds_setup)()$
+    then(function(wd) {
+      if (is.null(wd)) return(NULL)
+      tmpwd <<- wd
+      cat(input, file = tmp)
+      run_process("git", c("credential", "fill"), stdin = tmp, env = env,
+                  error_on_status = FALSE, windows_hide_window = TRUE,
+                  wd = wd)
+    })$
+    then(function(out) {
+      if (!is.null(out) && out$status == 0) {
+        parse_credentials(strsplit(out$stdout, "\r?\n")[[1]])
+      } else {
+        NULL
+      }
+    })$
+    finally(function() {
+      unlink(tmpwd, recursive = TRUE)
+    })
+}
+
+gitcreds_setup <- function() {
   ## TODO: find git if not on the path? It would make sense on Windows.
   if (!check_for_git()) return(NULL)
 
@@ -26,9 +77,9 @@ gitcreds_get <- function(url = "https://github.com") {
   ## Create a temporary repoditory, so we can have a custom config
   dir.create(tmprepo <- tempfile())
   create_empty_git_repo(tmprepo)
-  on.exit(unlink(tmprepo, recursive = TRUE), add = TRUE)
-  oldwd <- setwd(tmprepo)
+  oldwd <- getwd()
   on.exit(setwd(oldwd), add = TRUE)
+  setwd(tmprepo)
 
   ## Use local config if there was one
   if (!is.null(local_config)) {
@@ -47,13 +98,20 @@ gitcreds_get <- function(url = "https://github.com") {
     append = TRUE
   )
 
-  ## Now we are ready to query the credential
-  input <- paste0("url=", url, "\n\n")
+  invisible(tmprepo)
+}
 
-  out <- system2("git", c("credential", "fill"), input = input,
-                 stdout = TRUE, stderr = null_file())
+gitcreds_input <- function(url) {
+  paste0("url=", url, "\n\n")
+}
 
-  parse_credentials(out)
+gitcreds_env <- function() {
+  ## Avoid interactivity with some common credential helpers
+  c(
+    GCM_INTERACTIVE = "Never",
+    GCM_MODAL_PROMPT = "false",
+    GCM_VALIDATE = "false"
+  )
 }
 
 #' @export
@@ -155,6 +213,7 @@ create_dummy_helper <- function(path) {
 }
 
 parse_credentials <- function(txt) {
+  if (is.null(txt)) return(NULL)
   if (txt[1] == "protocol=dummy") return(NULL)
   nms <- sub("=.*$", "", txt)
   vls <- sub("^[^=]+=", "", txt)

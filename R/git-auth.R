@@ -9,12 +9,13 @@
 
 gitcreds_get <- function(url = "https://github.com") {
 
+  oldwd <- getwd()
+  on.exit(setwd(oldwd), add = TRUE)
+
   tmprepo <- gitcreds_setup()
   if (is.null(tmprepo)) return(NULL)
   on.exit(unlink(tmprepo, recursive = TRUE), add = TRUE)
 
-  oldwd <- getwd()
-  on.exit(setwd(oldwd), add = TRUE)
   setwd(tmprepo)
 
   env <- gitcreds_env()

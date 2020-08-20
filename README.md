@@ -1,4 +1,6 @@
 
+
+
 # gitcreds
 
 > Query git credentials from R
@@ -13,11 +15,15 @@ Query git credentials from R
 
 ## Installation
 
+Once on CRAN, install the package as usual:
+
+
 ```r
-devtools::install_github("gaborcsardi/gitcreds")
+install.packages("gitcreds")
 ```
 
 ## Usage
+
 
 ```r
 library(gitcreds)
@@ -25,4 +31,4 @@ library(gitcreds)
 
 ## License
 
-MIT + file LICENSE © 
+MIT © [RStudio](https://github.com/rstudio)

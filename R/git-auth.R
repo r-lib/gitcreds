@@ -49,8 +49,9 @@ gitcreds_get <- function(url = "https://github.com") {
 
   ## Now we are ready to query the credential
   input <- paste0("url=", url, "\n\n")
-  
-  out <- system2("git", c("credential", "fill"), input = input, stdout = TRUE)
+
+  out <- system2("git", c("credential", "fill"), input = input,
+                 stdout = TRUE, stderr = null_file())
 
   parse_credentials(out)
 }

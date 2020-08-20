@@ -27,10 +27,15 @@ gitcreds_get <- function(url = "https://github.com") {
 
   ## TODO: should this just fail?
   tryCatch(
-    out <- system2("git", c("credential", "fill"), input = input,
-                   stdout = TRUE, stderr = null_file()),
+    out <- suppressWarnings(system2(
+      "git", c("credential", "fill"),
+      input = input, stdout = TRUE, stderr = null_file()
+    )),
     error = function(e) NULL
   )
+
+  ## TODO should this just fail?
+  if (attr(out, "status") != 0) out <- NULL
 
   parse_credentials(out)
 }

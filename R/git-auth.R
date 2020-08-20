@@ -132,7 +132,10 @@ gitcreds_list_helpers <- function() {
 check_for_git <- function() {
   # This is simpler than Sys.which(), and also less fragile
   tryCatch({
-    system2("git", "--version", stdout = TRUE, stderr = null_file())
+    suppressWarnings(system2(
+      "git", "--version",
+      stdout = TRUE, stderr = null_file()
+    ))
     TRUE
   }, error = function(e) FALSE)
 }

@@ -9,11 +9,15 @@
 
 gitcreds_get <- function(url = "https://github.com") {
   ## Avoid interactivity with some common credential helpers
-  envs <- c(GCM_INTERACTIVE = "Never", GCM_VALIDATE = "false")
-  oenv <- Sys.getenv(envs, NA_character_)
+  envs <- c(
+    GCM_INTERACTIVE = "Never",
+    GCM_MODAL_PROMPT = "false",
+    GCM_VALIDATE = "false"
+  )
+  oenv <- set_env(envs)
   on.exit(set_env(oenv), add = TRUE)
-  
-  ## TODO: find git if not on the path? It would make sense on Windows.  
+
+  ## TODO: find git if not on the path? It would make sense on Windows.
   if (!check_for_git()) return(NULL)
 
   # Query the local config file, before we change the working dir
@@ -157,6 +161,7 @@ parse_credentials <- function(txt) {
 }
 
 set_env <- function(envs) {
+  current <- Sys.getenv(envs, NA_character_)
   na <- is.na(envs)
   if (any(na)) {
     Sys.unsetenv(names(envs)[na])
@@ -164,4 +169,5 @@ set_env <- function(envs) {
   if (any(!na)) {
     do.call("Sys.setenv", as.list(envs[!na]))
   }
+  invisible(current)
 }

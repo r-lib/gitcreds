@@ -35,7 +35,9 @@ gitcreds_get <- function(url = "https://github.com") {
   )
 
   ## TODO should this just fail?
-  if (attr(out, "status") != 0) out <- NULL
+  if (!is.null(attr(out, "status")) && attr(out, "status") != 0) {
+    out <- NULL
+  }
 
   parse_credentials(out)
 }

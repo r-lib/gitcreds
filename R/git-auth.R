@@ -42,8 +42,12 @@ gitcreds_get <- function(url = "https://github.com") {
   parse_credentials(out)
 }
 
-gitcreds_input <- function(url) {
-  paste0("url=", url, "\n\n")
+gitcreds_input <- function(url, ...) {
+  args <- list(url = url, ...)
+  paste0(
+    paste0(names(args), "=", args, collapse = "\n"),
+    "\n\n"
+  )
 }
 
 gitcreds_env <- function() {

@@ -42,36 +42,6 @@ gitcreds_get <- function(url = "https://github.com") {
   parse_credentials(out)
 }
 
-gitcreds_get_async <- function(url = "https://github.com") {
-  force(url)
-
-  async <- asNamespace("pkgcache")$async
-  run_process <- asNamespace("pkgcache")$run_process
-
-  input <- gitcreds_input(url)
-  env <- gitcreds_env()
-
-  async(gitcreds_setup)()$
-    then(function(wd) {
-      if (is.null(wd)) return(NULL)
-      tmpwd <<- wd
-      cat(input, file = tmp)
-      run_process("git", c("credential", "fill"), stdin = tmp, env = env,
-                  error_on_status = FALSE, windows_hide_window = TRUE,
-                  wd = wd)
-    })$
-    then(function(out) {
-      if (!is.null(out) && out$status == 0) {
-        parse_credentials(strsplit(out$stdout, "\r?\n")[[1]])
-      } else {
-        NULL
-      }
-    })$
-    finally(function() {
-      unlink(tmpwd, recursive = TRUE)
-    })
-}
-
 gitcreds_input <- function(url) {
   paste0("url=", url, "\n\n")
 }

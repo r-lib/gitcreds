@@ -102,3 +102,37 @@ set_env <- function(envs) {
   }
   invisible(current)
 }
+
+gitcreds_username <- function(url = NULL) {
+  if (!check_for_git()) stop("You need to install git")
+
+  out <- NULL
+
+  # If there is an url, then first try URL specific matching
+  if (!is.null(url)) {
+    out <- suppressWarnings(system2(
+      "git",
+      c("config", "--get-urlmatch", "credential.username", shQuote(url)),
+      stdout = TRUE, stderr = null_file()
+    ))
+
+    ## TODO should this just fail?
+    if (!is.null(attr(out, "status")) && attr(out, "status") != 0) {
+      out <- NULL
+    }
+  }
+
+  if (is.null(out)) {
+    out <- suppressWarnings(system2(
+      "git",
+      c("config", "credential.username"),
+      stdout = TRUE, stderr = null_file()
+    ))
+    ## TODO should this just fail?
+    if (!is.null(attr(out, "status")) && attr(out, "status") != 0) {
+      out <- NULL
+    }
+  }
+
+  out
+}

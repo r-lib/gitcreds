@@ -235,3 +235,42 @@ null_file <- function() {
 }
 
 `%||%` <- function(l, r) if (is.null(l)) r else l
+
+msg <- function(...) {
+  cnd <- .makeMessage(...)
+  withRestarts(muffleMessage = function() NULL, {
+    signalCondition(simpleMessage(msg))
+    output <- default_output()
+    cat(cnd, file = output, sep = "")
+  })
+}
+
+default_output <- function() {
+  if (is_interactive() && no_active_sink()) stdout() else stderr()
+}
+
+no_active_sink <- function() {
+  sink.number("output") == 0 && sink.number("message") == 2
+}
+
+is_interactive <- function() {
+  opt <- getOption("rlib_interactive")
+  opt2 <- getOption("rlang_interactive")
+  if (isTRUE(opt)) {
+    TRUE
+  } else if (identical(opt, FALSE)) {
+    FALSE
+  } else if (isTRUE(opt2)) {
+    TRUE
+  } else if (identical(opt2, FALSE)) {
+    FALSE
+  } else if (tolower(getOption("knitr.in.progress", "false")) == "true") {
+    FALSE
+  } else if (tolower(getOption("rstudio.notebook.executing", "false")) == "true") {
+    FALSE
+  } else if (identical(Sys.getenv("TESTTHAT"), "true")) {
+    FALSE
+  } else {
+    interactive()
+  }
+}

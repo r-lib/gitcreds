@@ -8,7 +8,7 @@
 gitcreds_get <- function(url = "https://github.com") {
 
   stopifnot(is_string(url), has_no_newline(url))
-  if (!check_for_git()) stop("You need to install git")
+  check_for_git()
 
   helper <- paste0(
     "credential.helper=\"! echo protocol=dummy;",
@@ -19,17 +19,20 @@ gitcreds_get <- function(url = "https://github.com") {
 
   out <- gitcreds_fill(list(url = url), c("-c", helper))
 
-  parse_gitcreds_output(out)
+  parse_gitcreds_output(out, url)
 }
 
 #' @export
 
 gitcreds_set <- function(url = "https://github.com") {
   if (!interactive()) {
-    stop("`gitcreds_set()` only works in interactive sessions")
+    throw(new_error(
+      "gitcreds_not_interactive_error",
+      message = "`gitcreds_set()` only works in interactive sessions"
+    ))
   }
   stopifnot(is_string(url), has_no_newline(url))
-  if (!check_for_git()) stop("You need to install git")
+  check_for_git()
 
   current <- gitcreds_get(url)
 
@@ -42,7 +45,7 @@ gitcreds_set <- function(url = "https://github.com") {
 
 gitcreds_set_replace <- function(url, current) {
   if (!ack_replace(url, current)) {
-    stop("User aborted credential update", call. = FALSE)
+    throw(new_error("gitcreds_abort_replace_error"))
   }
 
   pat <- readline("\n? Enter new password or token: ")
@@ -90,9 +93,8 @@ gitcreds_set_new <- function(url) {
 #' @export
 
 gitcreds_list_helpers <- function() {
-  if (!check_for_git()) stop("You need to install git")
-  out <- system2("git", c("config", "--get-all", "credential.helper"),
-                 stdout = TRUE, stderr = null_file())
+  check_for_git()
+  out <- git_run(c("config", "--get-all", "credential.helper"))
   clear <- rev(which(out == ""))
   if (length(clear)) out <- out[-(1:clear[1])]
   out
@@ -147,17 +149,22 @@ gitcreds_run <- function(command, input, args = character()) {
 # ------------------------------------------------------------------------
 
 git_run <- function(args, input = NULL) {
-  ## TODO: should this just fail?
+  stderr_file <- tempfile("gitcreds-stderr-")
+  on.exit(unlink(stderr_file, recursive = TRUE), add = TRUE)
   out <- tryCatch(
     suppressWarnings(system2(
-      "git", args, input = input, stdout = TRUE, stderr = null_file()
+      "git", args, input = input, stdout = TRUE, stderr = stderr_file
     )),
     error = function(e) NULL
   )
 
-  ## TODO should this just fail?
   if (!is.null(attr(out, "status")) && attr(out, "status") != 0) {
-    out <- NULL
+    throw(new_error(
+      "git_error",
+      args = args,
+      status = attr(out, "status"),
+      stderr = read_file(stderr_file)
+    ))
   }
 
   out
@@ -205,40 +212,80 @@ gitcreds_env <- function() {
 
 check_for_git <- function() {
   # This is simpler than Sys.which(), and also less fragile
-  tryCatch({
+  has_git <- tryCatch({
     suppressWarnings(system2(
       "git", "--version",
       stdout = TRUE, stderr = null_file()
     ))
     TRUE
   }, error = function(e) FALSE)
+
+  if (!has_git) throw(new_error("gitcreds_nogit_error"))
 }
 
-parse_gitcreds_output <- function(txt) {
-  if (is.null(txt)) return(NULL)
-  if (txt[1] == "protocol=dummy") return(NULL)
+parse_gitcreds_output <- function(txt, url) {
+  if (is.null(txt) || txt[1] == "protocol=dummy") {
+    throw(new_error("gitcreds_no_credentials", url = url))
+  }
   nms <- sub("=.*$", "", txt)
   vls <- sub("^[^=]+=", "", txt)
   structure(as.list(vls), names = nms, class = "gitcreds")
 }
 
 gitcreds_username <- function(url = NULL) {
-  if (!check_for_git()) stop("You need to install git")
   gitcreds_username_for_url(url) %||% gitcreds_username_generic()
 }
 
 gitcreds_username_for_url <- function(url) {
-   git_run(c(
-    "config", "--get-urlmatch", "credential.username", shQuote(url)
-  ))
+  if (is.null(url)) return(NULL)
+  tryCatch(
+    git_run(c(
+      "config", "--get-urlmatch", "credential.username", shQuote(url)
+    )),
+    git_error = function(err) {
+      if (err$status == 1) NULL else throw(err)
+    }
+  )
 }
 
 gitcreds_username_generic <- function() {
-  git_run(c("config", "credential.username"))
+  tryCatch(
+    git_run(c("config", "credential.username")),
+    git_error = function(err) {
+      if (err$status == 1) NULL else throw(err)
+    }
+  )
 }
 
 default_username <- function() {
   if (.Platform$OS.type == "windows") "PersonalAccessToken" else "token"
+}
+
+# ------------------------------------------------------------------------
+# Errors
+# ------------------------------------------------------------------------
+
+gitcred_errors <- function() {
+  c(
+    git_error = "System git failed",
+    gitcreds_nogit_error = "Could not find system git",
+    gitcreds_not_interactive_error = "gitcreds needs an interactive session",
+    gitcreds_abort_replace_error = "User aborted updating credentials",
+    gitcreds_no_credentials = "Could not find any credentials"
+  )
+}
+
+new_error <- function(class, ..., message = "", call. = TRUE, domain = NULL) {
+  if (message == "") message <- gitcred_errors()[[class]]
+  message <- .makeMessage(message, domain = domain)
+  cond <- list(message = message, ...)
+  if (call.) cond$call <- sys.call(-1)
+  class(cond) <- c(class, "gitcreds_error", "error", "condition")
+  cond
+}
+
+throw <- function(cond) {
+  stop(cond)
 }
 
 # ------------------------------------------------------------------------
@@ -366,4 +413,8 @@ is_interactive <- function() {
 
 squote <- function(x) {
   sQuote(x, FALSE)
+}
+
+read_file <- function(path, ...) {
+  readChar(path, nchars = file.info(path)$size, ...)
 }

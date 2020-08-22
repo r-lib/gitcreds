@@ -35,17 +35,20 @@ gitcreds_list_helpers <- function() {
 
 #' @export
 
-print.gitcreds <- function(x, ...) {
-  cat(format(x, ...), sep = "\n")
+print.gitcreds <- function(x, header = TRUE, ...) {
+  cat(format(x, header = header, ...), sep = "\n")
 }
 
 #' @export
 
-format.gitcreds <- function(x, ...) {
+format.gitcreds <- function(x, header = TRUE, ...) {
   nms <- names(x)
   vls <- unlist(x, use.names = FALSE)
   vls[nms == "password"] <- "<-- hidden, use $password to print -->"
-  c("<gitcreds>", paste0(format(nms), ": ", vls))
+  c(
+    if (header) "<gitcreds>",
+    paste0("  ", format(nms), ": ", vls)
+  )
 }
 
 # ------------------------------------------------------------------------

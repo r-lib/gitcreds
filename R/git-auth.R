@@ -24,6 +24,71 @@ gitcreds_get <- function(url = "https://github.com") {
 
 #' @export
 
+gitcreds_set <- function(url = "https://github.com") {
+  if (!interactive()) {
+    stop("`gitcreds_set()` only works in interactive sessions")
+  }
+  stopifnot(is_string(url), has_no_newline(url))
+  if (!check_for_git()) stop("You need to install git")
+
+  current <- gitcreds_get(url)
+
+  if (!is.null(current)) {
+    gitcreds_set_replace(url, current)
+  } else {
+    gitcreds_set_new(url)
+  }
+}
+
+gitcreds_set_replace <- function(url, current) {
+  if (!ack_replace(url, current)) {
+    stop("User aborted credential update", call. = FALSE)
+  }
+
+  pat <- readline("\n? Enter new password or token: ")
+
+  # We need to set a username, it is compulsory for git credential.
+  # 1. If there was one in the url, then we use that.
+  # 2. Otherwise if git has a username configured for this URL, we use that.
+  # 3. Otherwise we use the username in the credentials we are replacing.
+
+  username <- get_url_username(url) %||%
+    gitcreds_username(url) %||%
+    current$username
+
+  msg("-> Removing current credentials...")
+  gitcreds_reject(current)
+
+  msg("-> Adding new credentials...")
+  gitcreds_approve(list(url = url, username = username, password = pat))
+
+  msg("-> Done.")
+
+  invisible()
+}
+
+gitcreds_set_new <- function(url) {
+  pat <- readline("\n? Enter new password or token: ")
+
+  # We need to set a username, it is compulsory for git credential.
+  # 1. If there was one in the url, then we use that.
+  # 2. Otherwise if git has a username configured for this URL, we use that.
+  # 3. Otherwise we use a default username.
+
+  username <- get_url_username(url) %||%
+    gitcreds_username(url) %||%
+    default_username()
+
+  msg("-> Adding new credentials...")
+  gitcreds_approve(list(url = url, username = username, password = pat))
+
+  msg("-> Done.")
+
+  invisible()
+}
+
+#' @export
+
 gitcreds_list_helpers <- function() {
   if (!check_for_git()) stop("You need to install git")
   out <- system2("git", c("config", "--get-all", "credential.helper"),
@@ -44,7 +109,7 @@ print.gitcreds <- function(x, header = TRUE, ...) {
 format.gitcreds <- function(x, header = TRUE, ...) {
   nms <- names(x)
   vls <- unlist(x, use.names = FALSE)
-  vls[nms == "password"] <- "<-- hidden, use $password to print -->"
+  vls[nms == "password"] <- "<-- hidden -->"
   c(
     if (header) "<gitcreds>",
     paste0("  ", format(nms), ": ", vls)
@@ -96,6 +161,30 @@ git_run <- function(args, input = NULL) {
   }
 
   out
+}
+
+ack_replace <- function(url, current) {
+  msg("\n-> Your current credentials for ", squote(url), ":\n")
+  msg(paste0(format(current, header = FALSE), collapse = "\n"), "\n")
+
+  choices <- c(
+    "Keep these credentials",
+    "Replace these credentials",
+    if (has_password(current)) "See the password / token"
+  )
+
+  repeat {
+    ch <- utils::menu(title = "-> What would you like to do?", choices)
+
+    if (ch == 1) return(FALSE)
+    if (ch == 2) return(TRUE)
+
+    msg("\nCurrent password: ", current$password, "\n\n")
+  }
+}
+
+has_password <- function(creds) {
+  is_string(creds$password) && creds$password != ""
 }
 
 create_gitcreds_input <- function(args) {
@@ -236,8 +325,8 @@ null_file <- function() {
 
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
-msg <- function(...) {
-  cnd <- .makeMessage(...)
+msg <- function(..., domain = NULL, appendLF = TRUE) {
+  cnd <- .makeMessage(..., domain = domain, appendLF = appendLF)
   withRestarts(muffleMessage = function() NULL, {
     signalCondition(simpleMessage(msg))
     output <- default_output()
@@ -273,4 +362,8 @@ is_interactive <- function() {
   } else {
     interactive()
   }
+}
+
+squote <- function(x) {
+  sQuote(x, FALSE)
 }

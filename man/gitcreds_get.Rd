@@ -2,13 +2,98 @@
 % Please edit documentation in R/git-auth.R
 \name{gitcreds_get}
 \alias{gitcreds_get}
-\title{Query git credentials}
+\alias{gitcreds_set}
+\alias{gitcreds_list_helpers}
+\title{Query and set git credentials}
 \usage{
 gitcreds_get(url = "https://github.com")
+
+gitcreds_set(url = "https://github.com")
+
+gitcreds_list_helpers()
 }
 \arguments{
-\item{url}{URL to get credentials for.}
+\item{url}{URL to get or set credentials for. It may contain a user
+name, which is typically (but not always) used by the credential
+helpers. It may also contain a path, which is typically (but not always)
+ignored by the credential helpers.}
+}
+\value{
+\code{gitcreds_get()} returns a \code{gitcreds} object, a named list
+of strings, the fields returned by the git credential handler.
+Typically the fields are \code{protocol}, \code{host}, \code{username}, \code{password}.
+Some credential helpers support path-dependent credentials and also
+return a \code{path} field.
+
+\code{gitcreds_set()} returns \code{NULL}, invisibly.
+
+\code{gitcreds_list_helpers()} returns a character vector,
+corresponding to the \code{credential.helper} git configuration key.
+Usually it contains a single credential helper, but it is possible to
+configure multiple helpers.
 }
 \description{
-Query git credentials
+These functions use the \verb{git credential} system command to query and set
+git credentials. They need an external git installation. You can
+download git from https://git-scm.com/downloads. A recent version, but
+at least git 2.9 is suggested.
+}
+\details{
+\code{gitcreds_get()} queries git credentials. It is tyically used by package
+code that needs to authenticate to GitHub or another git repository.
+
+\code{gitcreds_set()} sets git credentials. It is typically called by the
+user, and it only works in interactive sessions. To set up password-less
+authentication to GitHub, first create a personal access token (PAT). See
+https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token.
+Then give this token as the password for \code{gitcreds_set()}.
+
+\code{gitcreds_list_helpers()} lists the active credential helpers.
+}
+\section{Advanced topics}{
+\subsection{The current working directory}{
+
+TODO
+}
+
+\subsection{Multiple credential helpers}{
+
+TODO
+}
+
+\subsection{Non-GitHUb accounts}{
+
+TODO
+}
+
+\subsection{Multiple GitHub accounts}{
+
+TODO
+}
+
+\subsection{Notes on various credential helpers}{
+\subsection{The default macOS helper (\code{osxkeychain})}{
+
+TODO
+}
+
+\subsection{Git Credential Manager for Windows (\code{manager})}{
+
+TODO
+}
+
+\subsection{Git Credential Manager Core (\code{manager-core})}{
+
+TODO
+}
+
+}
+}
+
+\examples{
+\dontrun{
+gitcreds_get()
+gitcreds_get("https://github.com")
+gitcreds_get("https://myuser@github.com/myorg/myrepo")
+}
 }

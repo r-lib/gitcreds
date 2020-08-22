@@ -9,6 +9,7 @@ LazyData: true
 URL: https://github.com/gaborcsardi/gitcreds
 BugReports: https://github.com/gaborcsardi/gitcreds/issues
 RoxygenNote: 7.1.1.9000
+Roxygen: list(markdown = TRUE)
 Suggests: 
     testthat,
     knitr,

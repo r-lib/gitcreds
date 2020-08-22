@@ -3,11 +3,75 @@
 # Public API
 # ------------------------------------------------------------------------
 
-#' Query git credentials
+#' Query and set git credentials
 #'
-#' @param url URL to get credentials for.
+#' These functions use the `git credential` system command to query and set
+#' git credentials. They need an external git installation. You can
+#' download git from https://git-scm.com/downloads. A recent version, but
+#' at least git 2.9 is suggested.
+#'
+#' @details
+#' `gitcreds_get()` queries git credentials. It is tyically used by package
+#' code that needs to authenticate to GitHub or another git repository.
+#'
+#' `gitcreds_set()` sets git credentials. It is typically called by the
+#' user, and it only works in interactive sessions. To set up password-less
+#' authentication to GitHub, first create a personal access token (PAT). See
+#' https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token.
+#' Then give this token as the password for `gitcreds_set()`.
+#'
+#' `gitcreds_list_helpers()` lists the active credential helpers.
+#'
+#' # Advanced topics
+#' 
+#' ## The current working directory
+#'
+#' TODO
+#'
+#' ## Multiple credential helpers
+#'
+#' TODO
+#'
+#' ## Non-GitHUb accounts
+#'
+#' TODO
+#'
+#' ## Multiple GitHub accounts
+#'
+#' TODO
+#'
+#' ## Notes on various credential helpers
+#'
+#' ### The default macOS helper (`osxkeychain`)
+#'
+#' TODO
+#' 
+#' ### Git Credential Manager for Windows (`manager`)
+#'
+#' TODO
+#' 
+#' ### Git Credential Manager Core (`manager-core`)
+#'
+#' TODO
+#' 
+#' @param url URL to get or set credentials for. It may contain a user
+#' name, which is typically (but not always) used by the credential
+#' helpers. It may also contain a path, which is typically (but not always)
+#' ignored by the credential helpers.
+#'
+#' @return `gitcreds_get()` returns a `gitcreds` object, a named list
+#' of strings, the fields returned by the git credential handler.
+#' Typically the fields are `protocol`, `host`, `username`, `password`.
+#' Some credential helpers support path-dependent credentials and also
+#' return a `path` field.
 #'
 #' @export
+#' @examples
+#' \dontrun{
+#' gitcreds_get()
+#' gitcreds_get("https://github.com")
+#' gitcreds_get("https://myuser@github.com/myorg/myrepo")
+#' }
 
 gitcreds_get <- function(url = "https://github.com") {
 
@@ -26,10 +90,9 @@ gitcreds_get <- function(url = "https://github.com") {
   parse_gitcreds_output(out, url)
 }
 
-#' Set git credentials
-#'
-#' @param url URL to set credentials for.
 #' @export
+#' @rdname gitcreds_get
+#' @return `gitcreds_set()` returns `NULL`, invisibly.
 
 gitcreds_set <- function(url = "https://github.com") {
   if (!interactive()) {
@@ -97,12 +160,12 @@ gitcreds_set_new <- function(url) {
   invisible()
 }
 
-#' List active git credential helpers
+#' @return `gitcreds_list_helpers()` returns a character vector,
+#' corresponding to the `credential.helper` git configuration key.
+#' Usually it contains a single credential helper, but it is possible to
+#' configure multiple helpers.
 #'
-#' @return Character vector, corresponding to the `credential.helper`
-#' git configuration key. Usually it contains a single credential helper,
-#' but it is possible to configure multiple helpers.
-#'
+#' @rdname gitcreds_get
 #' @export
 
 gitcreds_list_helpers <- function() {

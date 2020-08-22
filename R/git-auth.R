@@ -3,6 +3,10 @@
 # Public API
 # ------------------------------------------------------------------------
 
+#' Query git credentials
+#'
+#' @param url URL to get credentials for.
+#'
 #' @export
 
 gitcreds_get <- function(url = "https://github.com") {
@@ -22,6 +26,9 @@ gitcreds_get <- function(url = "https://github.com") {
   parse_gitcreds_output(out, url)
 }
 
+#' Set git credentials
+#'
+#' @param url URL to set credentials for.
 #' @export
 
 gitcreds_set <- function(url = "https://github.com") {
@@ -90,6 +97,12 @@ gitcreds_set_new <- function(url) {
   invisible()
 }
 
+#' List active git credential helpers
+#'
+#' @return Character vector, corresponding to the `credential.helper`
+#' git configuration key. Usually it contains a single credential helper,
+#' but it is possible to configure multiple helpers.
+#'
 #' @export
 
 gitcreds_list_helpers <- function() {

@@ -33,6 +33,21 @@ gitcreds_list_helpers <- function() {
   out
 }
 
+#' @export
+
+print.gitcreds <- function(x, ...) {
+  cat(format(x, ...), sep = "\n")
+}
+
+#' @export
+
+format.gitcreds <- function(x, ...) {
+  nms <- names(x)
+  vls <- unlist(x, use.names = FALSE)
+  vls[nms == "password"] <- "<-- hidden, use $password to print -->"
+  c("<gitcreds>", paste0(format(nms), ": ", vls))
+}
+
 # ------------------------------------------------------------------------
 # Raw git credential API
 # ------------------------------------------------------------------------
@@ -112,7 +127,7 @@ parse_gitcreds_output <- function(txt) {
   if (txt[1] == "protocol=dummy") return(NULL)
   nms <- sub("=.*$", "", txt)
   vls <- sub("^[^=]+=", "", txt)
-  structure(as.list(vls), names = nms)
+  structure(as.list(vls), names = nms, class = "gitcreds")
 }
 
 gitcreds_username <- function(url = NULL) {

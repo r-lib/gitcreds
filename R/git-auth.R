@@ -714,7 +714,9 @@ is_interactive <- function() {
 #' @noRd
 
 squote <- function(x) {
-  sQuote(x, FALSE)
+  old <- options(useFancyQuotes = FALSE)
+  on.exit(options(old), add = TRUE)
+  sQuote(x)
 }
 
 #' Read all of a file

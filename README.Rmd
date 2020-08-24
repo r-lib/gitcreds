@@ -12,11 +12,11 @@ knitr::opts_chunk$set(
 
 > Query git credentials from R
 
-[![Linux Build Status](https://travis-ci.org/gaborcsardi/gitcreds.svg?branch=master)](https://travis-ci.org/gaborcsardi/gitcreds)
-[![Windows Build status](https://ci.appveyor.com/api/projects/status/github/gaborcsardi/gitcreds?svg=true)](https://ci.appveyor.com/project/gaborcsardi/gitcreds)
+<!-- badges: start -->
+[![R build status](https://github.com/gaborcsardi/gitcreds/workflows/R-CMD-check/badge.svg)](https://github.com/gaborcsardi/gitcreds/actions)
 [![](http://www.r-pkg.org/badges/version/gitcreds)](http://www.r-pkg.org/pkg/gitcreds)
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/gitcreds)](http://www.r-pkg.org/pkg/gitcreds)
-
+<!-- badges: end -->
 
 Query git credentials from R
 

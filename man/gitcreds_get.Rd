@@ -39,7 +39,7 @@ download git from https://git-scm.com/downloads. A recent version, but
 at least git 2.9 is suggested.
 }
 \details{
-\code{gitcreds_get()} queries git credentials. It is tyically used by package
+\code{gitcreds_get()} queries git credentials. It is typically used by package
 code that needs to authenticate to GitHub or another git repository.
 
 \code{gitcreds_set()} sets git credentials. It is typically called by the

@@ -78,16 +78,8 @@ gitcreds_get <- function(url = "https://github.com") {
   stopifnot(is_string(url), has_no_newline(url))
   check_for_git()
 
-  helper <- paste0(
-    "credential.helper=\"! echo protocol=dummy;",
-    "echo host=dummy;",
-    "echo username=dummy;",
-    "echo password=dummy\""
-  )
-
-  out <- gitcreds_fill(list(url = url), c("-c", helper))
-
-  parse_gitcreds_output(out, url)
+  out <- gitcreds_fill(list(url = url), dummy = TRUE)
+  gitcreds_parse_output(out, url)
 }
 
 #' @export
@@ -220,44 +212,84 @@ format.gitcreds <- function(x, header = TRUE, ...) {
 # Raw git credential API
 # ------------------------------------------------------------------------
 
-#' Run `git credential fill`
+#' Access the low level credential API
 #'
-#' @param input Named list to pass to the credential helper.
+#' These function are primarily for package authors, who want more
+#' control over the user interface, so they want to avoid calling
+#' [gitcreds_get()] and [gitcreds_set()] directly.
+#'
+#' `gitcreds_fill()` calls `git credential fill` to query git
+#' credentials.
+#'
+#' @param input Named list to pass to `git credential fill`.
 #' @param args Extra args, used _before_ `fill`, to allow
 #' `git -c ... fill`.
-#' @return Standard output, line by line.
+#' @param dummy Whether to append a dummy credential helper to the
+#' list of credential helpers.
+#' @return The standard output of the `git` command, line by line.
 #'
-#' @seealso [gitcreds_run()] and [git_run()].
-#' @noRd
+#' @seealso [gitcreds_parse_output()] to parse the output of
+#' `gitcreds_fill()`.
+#'
+#' @rdname gitcreds-api
+#' @export
 
-gitcreds_fill <- function(input, args = character()) {
+gitcreds_fill <- function(input, args = character(), dummy = TRUE) {
+  if (dummy) {
+    helper <- paste0(
+      "credential.helper=\"! echo protocol=dummy;",
+      "echo host=dummy;",
+      "echo username=dummy;",
+      "echo password=dummy\""
+    )
+    args <- c(args, "-c", helper)
+  }
+
   gitcreds_run("fill", input, args)
 }
 
-#' Run `git credential approve` to add new credentials
+#' @details `gitcreds_approve()` calls `git credential approve`
+#' to add new credentials.
 #'
-#' @inheritParams gitcreds_fill
-#' @param creds `gitcreds` object (named list).
-#' @return Standard output, line by line.
+#' @param creds `gitcreds` object (named list) to add or remove.
 #'
-#' @seealso [gitcreds_run()] and [git_run()].
-#' @noRd
+#' @rdname gitcreds-api
+#' @export
 
 gitcreds_approve <- function(creds, args = character()) {
   gitcreds_run("approve", creds, args)
 }
 
-#' Run `git credential reject` to remove credentials
+#' `gitcreds_reject()` calls `git credential reject` to remove
+#' credentials.
 #'
-#' @inheritParams gitcreds_fill
-#' @param creds `gitcreds` object (named list).
-#' @return Standard output, line by line.
-#'
-#' @seealso [gitcreds_run()] and [git_run()].
-#' @noRd
+#' @rdname gitcreds-api
+#' @export
 
 gitcreds_reject <- function(creds, args = character()) {
   gitcreds_run("reject", creds, args)
+}
+
+#' Parse standard output from `git credential fill`
+#'
+#' @details
+#' For dummy credentials (i.e. the lack of credentials), it throws an
+#' error of class `gitcreds_no_credentials`.
+#'
+#' @param txt Character vector, standard output lines from
+#' `git credential fill`.
+#' @param url URL we queried, to be able to create a better error message.
+#' @return `gitcreds` object.
+#'
+#' @export
+
+gitcreds_parse_output <- function(txt, url) {
+  if (is.null(txt) || txt[1] == "protocol=dummy") {
+    throw(new_error("gitcreds_no_credentials", url = url))
+  }
+  nms <- sub("=.*$", "", txt)
+  vls <- sub("^[^=]+=", "", txt)
+  structure(as.list(vls), names = nms, class = "gitcreds")
 }
 
 #' Run a `git credential` command
@@ -427,28 +459,6 @@ check_for_git <- function() {
   }, error = function(e) FALSE)
 
   if (!has_git) throw(new_error("gitcreds_nogit_error"))
-}
-
-#' Parse standard output from `git credential fill`
-#'
-#' @details
-#' For dummy credentials (i.e. the lack of credentials), it throws an
-#' error of class `gitcreds_no_credentials`.
-#'
-#' @param txt Character vector, standard output lines from
-#' `git credential fill`.
-#' @param url URL we queried, to be able to create a better error message.
-#' @return `gitcreds` object.
-#'
-#' @noRd
-
-parse_gitcreds_output <- function(txt, url) {
-  if (is.null(txt) || txt[1] == "protocol=dummy") {
-    throw(new_error("gitcreds_no_credentials", url = url))
-  }
-  nms <- sub("=.*$", "", txt)
-  vls <- sub("^[^=]+=", "", txt)
-  structure(as.list(vls), names = nms, class = "gitcreds")
 }
 
 #' Query the `username` to use for `git config credential`

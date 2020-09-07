@@ -691,7 +691,7 @@ We do this with an eye of supporting usernames and multiple users.
 4.  Configure git to use this username by default. E.g. if you chose
     "generic", then run
 
-        git config --global crendetial.username generic 
+        git config --global crendetial.username generic
 
 5.  Add all the other credentials, with appropriate user names. These
     are the user names that you need to put in the URLs for the
@@ -731,13 +731,12 @@ This is how to change the config for this:
 
 You can also change it only for github.com:
 
-    git config --global credential.github.com.authrority Basic
+    git config --global credential.github.com.authority Basic
 
 Then you can configure a default user name, this will be used for URLs
 without a user name:
 
-    git config --global crendetial.username generic 
+    git config --global credential.username generic
 
 Now you can add you credentials, the default one with the "generic" user
 names, and all the others with their specific user and host names.
-

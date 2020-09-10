@@ -423,10 +423,9 @@ gitcreds_list_helpers <- function() {
 
 #' Environment variable to cache the password for a URL
 #'
-#' gitcreds caches credentials in environment variables.
-#'
-#' @details
-#'
+#' `gitcreds_get()` caches credentials in environment variables.
+#' `gitcreds_cache_envvar()` calculates the environment variaable name
+#' that is used as the cache, for a URL.
 #'
 #' @param url Character vector of URLs, they may contain user names
 #'   and paths as well. See details below.
@@ -435,6 +434,11 @@ gitcreds_list_helpers <- function() {
 #' @seealso [gitcreds_get()].
 #'
 #' @export
+#' @examples
+#' gitcreds_cache_envvar("https://github.com")
+#' gitcreds_cache_envvar("https://api.github.com/path/to/endpoint")
+#' gitcreds_cache_envvar("https://jane@github.com")
+#' gitcreds_cache_envvar("https://another.site.github.com")
 
 gitcreds_cache_envvar <- function(url) {
   pcs <- parse_url(url)

@@ -14,10 +14,15 @@ and paths as well. See details below.}
 Character vector of environment variables.
 }
 \description{
-gitcreds caches credentials in environment variables.
+\code{gitcreds_get()} caches credentials in environment variables.
+\code{gitcreds_cache_envvar()} calculates the environment variaable name
+that is used as the cache, for a URL.
 }
-\details{
-
+\examples{
+gitcreds_cache_envvar("https://github.com")
+gitcreds_cache_envvar("https://api.github.com/path/to/endpoint")
+gitcreds_cache_envvar("https://jane@github.com")
+gitcreds_cache_envvar("https://another.site.github.com")
 }
 \seealso{
 \code{\link[=gitcreds_get]{gitcreds_get()}}.

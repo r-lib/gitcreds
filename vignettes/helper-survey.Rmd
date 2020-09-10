@@ -1,8 +1,8 @@
 ---
-title: "gitcreds-advanced"
+title: "git credential helpers"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{gitcreds-advanced}
+  %\VignetteIndexEntry{helper-survey}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 editor_options:
@@ -710,7 +710,7 @@ possibly multiple credentials to other hosts (including GitHub
 Enterprise hosts), then you can use the default `manager` helper, and
 get away with the default auto-detected GCM authority setting.
 
-In this case, you can add you githum.com credential with an arbitrary
+In this case, you can add you github.com credential with an arbitrary
 user name, and for each other host you can add configure a default user
 name, and/or include user names in the URLs to these hosts. This is how
 to set a default user name for a host:
@@ -742,4 +742,4 @@ without a user name:
     git config --global credential.username generic
 
 Now you can add you credentials, the default one with the "generic" user
-names, and all the others with their specific user and host names.
+name, and all the others with their specific user and host names.

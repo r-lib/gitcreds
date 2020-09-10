@@ -2,6 +2,7 @@
 % Please edit documentation in R/git-auth.R
 \name{gitcreds_get}
 \alias{gitcreds_get}
+\alias{gitcreds}
 \alias{gitcreds_set}
 \alias{gitcreds_list_helpers}
 \title{Query and set git credentials}
@@ -40,60 +41,206 @@ Usually it contains a single credential helper, but it is possible to
 configure multiple helpers.
 }
 \description{
+This manual page is for \emph{users} of packages that depend on gitcreds
+for managing tokens or passwords to GitHub or other git repositories.
+If you are a package author and want to import gitcreds for this
+functionality, see \code{vignette("package", package = "gitcreds")}.
+Otherwise please start at 'Basics' below.
+}
+\section{Basics}{
+\code{gitcreds_get()} queries git credentials. It is typically used by package
+code that needs to authenticate to GitHub or another git repository.
+The end user might call it to checks that credentials are properly set
+up.
+
+\code{gitcreds_set()} add or updates git credentials in the credential store.
+It is typically called by the user, and it only works in interactive
+sessions. It always asks for acknowledgement before it overwrites
+existing credentials.
+
+\code{gitcreds_list_helpers()} lists the active credential helpers.
+
 These functions use the \verb{git credential} system command to query and set
 git credentials. They need an external git installation. You can
 download git from https://git-scm.com/downloads. A recent version, but
 at least git 2.9 is suggested.
-}
-\details{
-\code{gitcreds_get()} queries git credentials. It is typically used by package
-code that needs to authenticate to GitHub or another git repository.
 
-\code{gitcreds_set()} sets git credentials. It is typically called by the
-user, and it only works in interactive sessions. To set up password-less
-authentication to GitHub, first create a personal access token (PAT). See
+If you want to avoid installing git, see 'Environment variables' below.
+\subsection{GitHub}{
+\subsection{New setup}{
+
+To set up password-less authentication to GitHub:
+\enumerate{
+\item create a personal access token (PAT). See
 https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token.
-Then give this token as the password for \code{gitcreds_set()}.
-
-\code{gitcreds_list_helpers()} lists the active credential helpers.
+\item Call \code{gitcreds_set()} and give this token as the password.
+\item Run \code{gitcreds_get(use_cache = FALSE)} to check that the new
+PAT is set up. To see the token, you can run
+\code{gitcreds_get(use_cache = FALSE)$password}.
 }
+}
+
+\subsection{Migrating from the \code{GITHUB_PAT} environment variable}{
+
+If you already have a GitHub token, and use the \code{GITHUB_PAT} or
+\code{GITHUB_TOKEN} environment variable in your \code{.Renviron} file or
+elsewhere, no changes are neccessary. gitcreds will automatically use
+this variable.
+
+However, we still suggest that you add your token to the git credential
+store with \code{gitcreds_set()} and remove \code{GITHUB_PAT} from your
+\code{.Renviron} file. The credential store is more secure than storing
+tokens in files.
+}
+
+}
+}
+
 \section{Advanced topics}{
+\subsection{Cached credentials}{
+
+Because querying the git credential store might not be very fast,
+\code{gitcreds_get()} caches credentials in environment variables by default.
+Credentials for different URLs are stored in different environment
+variables. The name of the environment variable is calculated with
+\code{\link[=gitcreds_cache_envvar]{gitcreds_cache_envvar()}}.
+
+To remove the cache, remove this environment variable with
+\code{\link[=Sys.unsetenv]{Sys.unsetenv()}}.
+}
+
+\subsection{Environment variables}{
+
+If you want to avoid installing git, or using the credential store for
+some reason, you can supply credentials in environment variables, e.g.
+via the \code{.Renviron} file. Use \code{\link[=gitcreds_cache_envvar]{gitcreds_cache_envvar()}} to query the
+environment variable you need to set for a URL:
+\enumerate{
+\item You can set this environment variable to the token or password itself.
+\item If you also need a user name, then use the \code{user:password} form, i.e.
+separate them with a colon. (If your user name or passwrd has \code{:}
+characters, then you need to escape them with a preceding backslash.)
+}
+}
+
+\subsection{Credential helpers}{
+
+git credential helpers are an extensible, configurable mechanism to
+store credentials. Different git installations have different credentials
+helpers. On Windows the default helper stores credentials in the system
+credential store. On macOS, it stores them in the macOS Keychain.
+Other helpers cache credentials in a server process or in a file on the
+file system.
+
+gitcreds only works if a credential helper is configured. For the current
+git version (2.28.0), this is the case by default on Windows and macOS
+(for git from HomeBrew), but most Linux distributions do not set up a
+default credential helper.
+
+You can use \code{gitcreds_list_helpers()} to see the \emph{active} credential
+helper(s) for a repository.
+}
+
 \subsection{The current working directory}{
 
-TODO
-}
-
-\subsection{Multiple credential helpers}{
-
-TODO
+git allows repository specific configuration, via the \code{.git/config} file.
+The \code{config} file might specify a different credential helper, a
+different user name, etc. This means that \code{gitcreds_get()} etc. will
+potentially work differently depending on the current working
+directory. This is especially relevant for package code that changes
+the working directory temporarily.
 }
 
 \subsection{Non-GitHUb accounts}{
 
-TODO
+Non-GitHub URLs work mostly the same way as GitHub URLs.
+\code{gitcreds_get()} and \code{gitcreds_set()} default to GitHub, so you'll need
+to explicitly set their \code{url} argument.
+
+Some credential helpers, e.g. Git Credential Manager for Windows
+(\code{manager}) and Git Credential Manager Core (\code{manager-core}) work
+slightly differently for GitHub and non-GitHub URLs, see their
+documentation for details.
 }
 
-\subsection{Multiple GitHub accounts}{
+\subsection{Multiple accounts}{
 
-TODO
+The various credential helpers support multiple accounts in different
+ways. Here are our recommendations.
+\subsection{macOS}{
+\enumerate{
+\item Use the (currently default) \code{osxkeychain} credential helper.
+\item In Keychain Access, remove all your current credentials for the
+host(s) you are targeting. E.g. for GitHub, search for github.com
+Internet Passwords.
+\item Then add the credential that you want to use for "generic access".
+This is the credential that will be used for URLs without user
+names. The user name for this credential does not matter, but you
+can choose something descriptive, e.g. "token", or "generic".
+\item Configure git to use this username by default. E.g. if you chose
+"generic", then run
+
+git config --global crendetial.username generic
+\item Add all the other credentials, with appropriate user names. These
+are the user names that you need to put in the URLs for the
+repositories or operations you want to use them for. (GitHub does
+not actually use the user names if the password is a PAT, but they
+are used to look up the correct token in the credential store.)
+}
 }
 
-\subsection{Notes on various credential helpers}{
-\subsection{The default macOS helper (\code{osxkeychain})}{
+\subsection{Windows}{
+\subsection{A single GitHub account}{
 
-TODO
+If you only need to manage a single github.com credential, together with
+possibly multiple credentials to other hosts (including GitHub
+Enterprise hosts), then you can use the default \code{manager} helper, and
+get away with the default auto-detected GCM authority setting.
+
+In this case, you can add you github.com credential with an arbitrary
+user name, and for each other host you can configure a default user
+name, and/or include user names in the URLs to these hosts. This is how
+to set a default user name for a host:\preformatted{git config --global credential.https://example.com.username myusername
+}
 }
 
-\subsection{Git Credential Manager for Windows (\code{manager})}{
+\subsection{Multiple GitHub credentials}{
 
-TODO
+If you need to manage multiple github.com credentials, then you can
+still use the \code{manager} helper, but you need to change the GCM authority
+by setting an option or an environment variable, see
+\url{https://github.com/microsoft/Git-Credential-Manager-for-Windows/blob/master/Docs/Configuration.md#authority.}
+Once
+\url{https://github.com/microsoft/Git-Credential-Manager-for-Windows/pull/891}
+is merged, you won't need to do this. (At least in recent git versions,
+that contain a GCM build with the fix.)
+
+This is how to change GCM authority in the config:\preformatted{git config --global credential.authority Basic
 }
 
-\subsection{Git Credential Manager Core (\code{manager-core})}{
-
-TODO
+You can also change it only for github.com:\preformatted{git config --global credential.github.com.authority Basic
 }
 
+Then you can configure a default user name, this will be used for URLs
+without a user name:\preformatted{git config --global credential.username generic
+}
+
+Now you can add you credentials, the default one with the "generic" user
+name, and all the others with their specific user and host names.
+}
+
+}
+
+}
+
+\subsection{Multiple credential helpers}{
+
+It is possible to configure multiple credential helpers. If multiple
+helpers are configured for a repository, then \code{gitcreds_get()} will
+go over them until a credential is found. \code{gitcreds_set()} will set the
+new credentials in \emph{every} configured credential helper.
+
+You can use \code{\link[=gitcreds_list_helpers]{gitcreds_list_helpers()}} to list all configured helpers.
 }
 }
 

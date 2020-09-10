@@ -2,7 +2,7 @@
 title: "gitcreds for package authors"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{package}
+  %\VignetteIndexEntry{gitcreds for package authors}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 editor_options:

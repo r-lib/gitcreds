@@ -2,7 +2,7 @@
 title: "git credential helpers"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{helper-survey}
+  %\VignetteIndexEntry{git credential helpers}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 editor_options:

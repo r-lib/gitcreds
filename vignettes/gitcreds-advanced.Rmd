@@ -35,6 +35,9 @@ We do this with an eye of supporting usernames and multiple users.
 
 -   Docs: <https://git-scm.com/docs/git-credential-cache>
 
+-   This helper is not included in the default git installer on Windows
+    . :(
+
 -   This is how we can set up `cache` for a particular repository:
 
         ❯ mkdir foo

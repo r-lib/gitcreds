@@ -4,6 +4,7 @@
 \alias{gitcreds_get}
 \alias{gitcreds}
 \alias{gitcreds_set}
+\alias{gitcreds_delete}
 \alias{gitcreds_list_helpers}
 \title{Query and set git credentials}
 \usage{
@@ -11,11 +12,13 @@ gitcreds_get(url = "https://github.com", use_cache = TRUE, set_cache = TRUE)
 
 gitcreds_set(url = "https://github.com")
 
+gitcreds_delete(url)
+
 gitcreds_list_helpers()
 }
 \arguments{
-\item{url}{URL to get or set credentials for. It may contain a user
-name, which is typically (but not always) used by the credential
+\item{url}{URL to get, set or delete credentials for. It may contain a
+user name, which is typically (but not always) used by the credential
 helpers. It may also contain a path, which is typically (but not always)
 ignored by the credential helpers.}
 
@@ -33,7 +36,17 @@ Typically the fields are \code{protocol}, \code{host}, \code{username}, \code{pa
 Some credential helpers support path-dependent credentials and also
 return a \code{path} field.
 
-\code{gitcreds_set()} returns \code{NULL}, invisibly.
+\code{gitcreds_set()} returns nothing.
+
+\code{gitcreds_delete()} returns \code{FALSE} if it did not find find any
+credentials to delete, and thus it did not call \verb{git credential reject}.
+Otherwise it returns \code{TRUE}.
+
+\code{gitcreds_get()} errors if git is not installed, no credential helpers
+are configured or no credentials are found. \code{gitcreds_set()} errors if
+git is not installed, or setting the new credentials fails.
+gitcreds_delete()\verb{errors if git is not installed or the git calls fail. See}vignette("package", package = "gitcreds")` if you want to handle
+these errors.
 
 \code{gitcreds_list_helpers()} returns a character vector,
 corresponding to the \code{credential.helper} git configuration key.
@@ -57,6 +70,10 @@ up.
 It is typically called by the user, and it only works in interactive
 sessions. It always asks for acknowledgement before it overwrites
 existing credentials.
+
+\code{gitcreds_delete()} deletes git credentials from the credential store.
+It is typically called by the user, and it only works in interactive
+sessions. It always asks for acknowledgement.
 
 \code{gitcreds_list_helpers()} lists the active credential helpers.
 

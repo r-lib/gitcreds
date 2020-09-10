@@ -23,6 +23,10 @@
 #' sessions. It always asks for acknowledgement before it overwrites
 #' existing credentials.
 #'
+#' `gitcreds_delete()` deletes git credentials from the credential store.
+#' It is typically called by the user, and it only works in interactive
+#' sessions. It always asks for acknowledgement.
+#'
 #' `gitcreds_list_helpers()` lists the active credential helpers.
 #'
 #' These functions use the `git credential` system command to query and set
@@ -204,8 +208,8 @@
 #'
 #' You can use [gitcreds_list_helpers()] to list all configured helpers.
 #'
-#' @param url URL to get or set credentials for. It may contain a user
-#' name, which is typically (but not always) used by the credential
+#' @param url URL to get, set or delete credentials for. It may contain a
+#' user name, which is typically (but not always) used by the credential
 #' helpers. It may also contain a path, which is typically (but not always)
 #' ignored by the credential helpers.
 #' @param use_cache Whether to try to use the environment variable cache
@@ -220,11 +224,18 @@
 #' Some credential helpers support path-dependent credentials and also
 #' return a `path` field.
 #'
+#' `gitcreds_set()` returns nothing.
+#'
+#' `gitcreds_delete()` returns `FALSE` if it did not find find any
+#' credentials to delete, and thus it did not call `git credential reject`.
+#' Otherwise it returns `TRUE`.
+#'
 #' `gitcreds_get()` errors if git is not installed, no credential helpers
 #' are configured or no credentials are found. `gitcreds_set()` errors if
-#' git is not installed, or setting the new credentials fails. See
-#' `vignette("package", package = "gitcreds")` if you want to handle these
-#' errors.
+#' git is not installed, or setting the new credentials fails.
+#' gitcreds_delete()` errors if git is not installed or the git calls fail.
+#' See `vignette("package", package = "gitcreds")` if you want to handle
+#' these errors.
 #'
 #' @aliases gitcreds
 #' @export
@@ -263,7 +274,6 @@ gitcreds_get <- function(url = "https://github.com", use_cache = TRUE,
 
 #' @export
 #' @rdname gitcreds_get
-#' @return `gitcreds_set()` returns `NULL`, invisibly.
 
 gitcreds_set <- function(url = "https://github.com") {
   if (!interactive()) {
@@ -275,18 +285,27 @@ gitcreds_set <- function(url = "https://github.com") {
   stopifnot(is_string(url), has_no_newline(url))
   check_for_git()
 
-  current <- gitcreds_get(url)
+  current <- tryCatch(
+    gitcreds_get(url, use_cache = FALSE, set_cache = FALSE),
+    gitcreds_no_credentials = function(e) NULL
+  )
 
   if (!is.null(current)) {
     gitcreds_set_replace(url, current)
   } else {
     gitcreds_set_new(url)
   }
+
+  msg("-> Removing credetials from cache...")
+  gitcreds_delete_cache(gitcreds_cache_envvar(url))
+
+  msg("-> Done.")
+  invisible()
 }
 
 #' Replace credentials with new ones
 #'
-#' It only works interactively, because of `menu()` in `ack_replace()` and
+#' It only works interactively, because of `menu()` in `ack()` and
 #' `readline()`.
 #'
 #' We need to set a username, it is compulsory for git credential.
@@ -302,7 +321,7 @@ gitcreds_set <- function(url = "https://github.com") {
 #' @noRd
 
 gitcreds_set_replace <- function(url, current) {
-  if (!ack_replace(url, current)) {
+  if (!ack(url, current, "Replace")) {
     throw(new_error("gitcreds_abort_replace_error"))
   }
 
@@ -317,8 +336,6 @@ gitcreds_set_replace <- function(url, current) {
 
   msg("-> Adding new credentials...")
   gitcreds_approve(list(url = url, username = username, password = pat))
-
-  msg("-> Done.")
 
   invisible()
 }
@@ -348,9 +365,44 @@ gitcreds_set_new <- function(url) {
   msg("-> Adding new credentials...")
   gitcreds_approve(list(url = url, username = username, password = pat))
 
+  invisible()
+}
+
+#' @export
+#' @rdname gitcreds_get
+
+gitcreds_delete <- function(url) {
+  if (!interactive()) {
+    throw(new_error(
+      "gitcreds_not_interactive_error",
+      message = "`gitcreds_delete()` only works in interactive sessions"
+    ))
+  }
+  stopifnot(is_string(url))
+  check_for_git()
+
+  current <- tryCatch(
+    gitcreds_get(url),
+    gitcreds_no_credentials = function(e) NULL
+  )
+
+  if (is.null(current)) {
+    return(invisible(FALSE))
+  }
+
+  if (!ack(url, current, "Delete")) {
+    throw(new_error("gitcreds_abort_delete_error"))
+  }
+
+  msg("-> Removing current credentials...")
+  gitcreds_reject(current)
+
+  msg("-> Removing credetials from cache...")
+  gitcreds_delete_cache(gitcreds_cache_envvar(url))
+
   msg("-> Done.")
 
-  invisible()
+  invisible(TRUE)
 }
 
 #' @return `gitcreds_list_helpers()` returns a character vector,
@@ -465,6 +517,10 @@ gitcreds_set_cache <- function(ev, creds) {
   value <- paste0(keys, ":", vals, collapse = ":")
   do.call("set_env", list(structure(value, names = ev)))
   invisible(NULL)
+}
+
+gitcreds_delete_cache <- function(ev) {
+  Sys.unsetenv(ev)
 }
 
 #' @export
@@ -645,25 +701,25 @@ git_run <- function(args, input = NULL) {
   out
 }
 
-#' Request confirmation from the user, to replace credentials
+#' Request confirmation from the user, to replace or delete credentials
 #'
 #' This function only works in interactive sessions.
 #'
-#' @param url URL to set new credentials for.
+#' @param url URL to delete or set new credentials for.
 #' @param current The current credentials.
 #' @return `FALSE` is the user changed their mind, to keep the current
-#' credentials. `TRUE` for replacing them.
+#' credentials. `TRUE` for replacing/deleting them.
 #'
 #' @seealso [gitcreds_set()].
 #' @noRd
 
-ack_replace <- function(url, current) {
+ack <- function(url, current, what = "Replace") {
   msg("\n-> Your current credentials for ", squote(url), ":\n")
   msg(paste0(format(current, header = FALSE), collapse = "\n"), "\n")
 
   choices <- c(
     "Keep these credentials",
-    "Replace these credentials",
+    paste(what, "these credentials"),
     if (has_password(current)) "See the password / token"
   )
 
@@ -802,6 +858,7 @@ gitcred_errors <- function() {
     gitcreds_nogit_error = "Could not find system git",
     gitcreds_not_interactive_error = "gitcreds needs an interactive session",
     gitcreds_abort_replace_error = "User aborted updating credentials",
+    gitcreds_abort_delete_error = "User aborted deleting credentials",
     gitcreds_no_credentials = "Could not find any credentials"
   )
 }

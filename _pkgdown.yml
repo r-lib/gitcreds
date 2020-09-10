@@ -1,0 +1,21 @@
+development:
+  mode: auto
+
+reference:
+- title: Easy API
+  contents:
+  - gitcreds_get
+  - gitcreds_set
+  - gitcreds_delete
+  - gitcreds_list_helpers
+
+- title: Caching credentials
+  contents:
+  - gitcreds_cache_envvar
+  
+- title: Low level API
+  contents:
+  - gitcreds_fill
+  - gitcreds_approve
+  - gitcreds_reject
+  - gitcreds_parse_output

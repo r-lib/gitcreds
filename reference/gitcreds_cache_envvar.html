@@ -40,7 +40,9 @@
 
 
 <meta property="og:title" content="Environment variable to cache the password for a URL — gitcreds_cache_envvar" />
-<meta property="og:description" content="gitcreds caches credentials in environment variables." />
+<meta property="og:description" content="gitcreds_get() caches credentials in environment variables.
+gitcreds_cache_envvar() calculates the environment variaable name
+that is used as the cache, for a URL." />
 
 
 
@@ -132,7 +134,9 @@
     </div>
 
     <div class="ref-description">
-    <p>gitcreds caches credentials in environment variables.</p>
+    <p><code><a href='gitcreds_get.html'>gitcreds_get()</a></code> caches credentials in environment variables.
+<code>gitcreds_cache_envvar()</code> calculates the environment variaable name
+that is used as the cache, for a URL.</p>
     </div>
 
     <pre class="usage"><span class='fu'>gitcreds_cache_envvar</span>(<span class='kw'>url</span>)</pre>
@@ -150,15 +154,16 @@ and paths as well. See details below.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Character vector of environment variables.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    
-
-
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='gitcreds_get.html'>gitcreds_get()</a></code>.</p></div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>gitcreds_cache_envvar</span>(<span class='st'>"https://github.com"</span>)
+</div><div class='output co'>#&gt; [1] "GITHUB_PAT_GITHUB_COM"</div><div class='input'><span class='fu'>gitcreds_cache_envvar</span>(<span class='st'>"https://api.github.com/path/to/endpoint"</span>)
+</div><div class='output co'>#&gt; [1] "GITHUB_PAT_GITHUB_COM"</div><div class='input'><span class='fu'>gitcreds_cache_envvar</span>(<span class='st'>"https://jane@github.com"</span>)
+</div><div class='output co'>#&gt; [1] "GITHUB_PAT_JANE_AT_GITHUB_COM"</div><div class='input'><span class='fu'>gitcreds_cache_envvar</span>(<span class='st'>"https://another.site.github.com"</span>)
+</div><div class='output co'>#&gt; [1] "GITHUB_PAT_ANOTHER_SITE_GITHUB_COM"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

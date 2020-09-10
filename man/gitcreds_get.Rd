@@ -6,7 +6,7 @@
 \alias{gitcreds_list_helpers}
 \title{Query and set git credentials}
 \usage{
-gitcreds_get(url = "https://github.com")
+gitcreds_get(url = "https://github.com", use_cache = TRUE, set_cache = TRUE)
 
 gitcreds_set(url = "https://github.com")
 
@@ -17,6 +17,13 @@ gitcreds_list_helpers()
 name, which is typically (but not always) used by the credential
 helpers. It may also contain a path, which is typically (but not always)
 ignored by the credential helpers.}
+
+\item{use_cache}{Whether to try to use the environment variable cache
+before turning to git to look up the credentials for \code{url}.
+See \code{\link[=gitcreds_cache_envvar]{gitcreds_cache_envvar()}}.}
+
+\item{set_cache}{Whether to set the environment variable cache after
+receiving the credentials from git. See \code{\link[=gitcreds_cache_envvar]{gitcreds_cache_envvar()}}.}
 }
 \value{
 \code{gitcreds_get()} returns a \code{gitcreds} object, a named list

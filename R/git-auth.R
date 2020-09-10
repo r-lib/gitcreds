@@ -58,6 +58,11 @@
 #' name, which is typically (but not always) used by the credential
 #' helpers. It may also contain a path, which is typically (but not always)
 #' ignored by the credential helpers.
+#' @param use_cache Whether to try to use the environment variable cache
+#' before turning to git to look up the credentials for `url`.
+#' See [gitcreds_cache_envvar()].
+#' @param set_cache Whether to set the environment variable cache after
+#' receiving the credentials from git. See [gitcreds_cache_envvar()].
 #'
 #' @return `gitcreds_get()` returns a `gitcreds` object, a named list
 #' of strings, the fields returned by the git credential handler.
@@ -73,13 +78,30 @@
 #' gitcreds_get("https://myuser@github.com/myorg/myrepo")
 #' }
 
-gitcreds_get <- function(url = "https://github.com") {
+gitcreds_get <- function(url = "https://github.com", use_cache = TRUE,
+                         set_cache = TRUE) {
 
-  stopifnot(is_string(url), has_no_newline(url))
+  stopifnot(
+    is_string(url), has_no_newline(url),
+    is_flag(use_cache),
+    is_flag(set_cache)
+  )
+
+  cache_ev <- gitcreds_cache_envvar(url)
+  if (use_cache && !is.null(ans <- gitcreds_get_cache(cache_ev))) {
+    return(ans)
+  }
+
   check_for_git()
 
   out <- gitcreds_fill(list(url = url), dummy = TRUE)
-  gitcreds_parse_output(out, url)
+  creds <- gitcreds_parse_output(out, url)
+
+  if (set_cache) {
+    gitcreds_set_cache(cache_ev, creds)
+  }
+
+  creds
 }
 
 #' @export
@@ -188,6 +210,104 @@ gitcreds_list_helpers <- function() {
   clear <- rev(which(out == ""))
   if (length(clear)) out <- out[-(1:clear[1])]
   out
+}
+
+#' Environment variable to cache the password for a URL
+#'
+#' gitcreds caches credentials in environment variables.
+#'
+#' @details
+#'
+#'
+#' @param url Character vector of URLs, they may contain user names
+#'   and paths as well. See details below.
+#' @return Character vector of environment variables.
+#'
+#' @seealso [gitcreds_get()].
+#'
+#' @export
+
+gitcreds_cache_envvar <- function(url) {
+  pcs <- parse_url(url)
+
+  proto <- sub("^https?_$", "", paste0(pcs$protocol, "_"))
+  user <- ifelse(pcs$username != "", paste0(pcs$username, "_AT_"), "")
+  host0 <- sub("^api[.]github[.]com$", "github.com", pcs$host)
+  host1 <- gsub("[.:]+", "_", host0)
+  host <- gsub("[^a-zA-Z0-9_-]", "x", host1)
+
+  slug1 <- paste0(proto, user, host)
+
+  # fix the user name ambiguity, not that it happens often...
+  slug2 <- ifelse(grepl("^AT_", slug1), paste0("AT_", slug1), slug1)
+
+  # env vars cannot start with a number
+  slug3 <- ifelse(grepl("^[0-9]", slug2), paste0("AT_", slug2), slug2)
+
+  paste0("GITHUB_PAT_", toupper(slug3))
+}
+
+gitcreds_get_cache <- function(ev) {
+  val <- Sys.getenv(ev, NA_character_)
+  if (is.na(val) && ev == "GITHUB_PAT_GITHUB_COM") {
+    val <- Sys.getenv("GITHUB_PAT", NA_character_)
+  }
+  if (is.na(val) && ev == "GITHUB_PAT_GITHUB_COM") {
+    val <- Sys.getenv("GITHUB_TOKEN", NA_character_)
+  }
+  if (is.na(val)) {
+    return(NULL)
+  }
+
+  unesc <- function(x) {
+    gsub("\\\\(.)", "\\1", x)
+  }
+
+  # split on `:` that is not preceded by a `\`
+  spval <- strsplit(val, "(?<!\\\\):", perl = TRUE)[[1]]
+  spval0 <- unesc(spval)
+
+  # Single field, then the token
+  if (length(spval) == 1) {
+    return(new_gitcreds(
+      protocol = NA_character_,
+      host = NA_character_,
+      username = NA_character_,
+      password = unesc(val)
+    ))
+  }
+
+  # Two fields? Then it is username:password
+  if (length(spval) == 2) {
+    return(new_gitcreds(
+      protocol = NA_character_,
+      host = NA_character_,
+      username = spval0[1],
+      password = spval0[2]
+    ))
+  }
+
+  # Otherwise a full record
+  if (length(spval) %% 2 == 1) {
+    warning("Invalid gitcreds credentials in env var `", ev, "`. ",
+            "Maybe an unescaped ':' character?")
+    return(NULL)
+  }
+
+  creds <- structure(
+    spval0[seq(2, length(spval0), by = 2)],
+    names = spval[seq(1, length(spval0), by = 2)]
+  )
+  do.call("new_gitcreds", as.list(creds))
+}
+
+gitcreds_set_cache <- function(ev, creds) {
+  esc <- function(x) gsub(":", "\\:", x, fixed = TRUE)
+  keys <- esc(names(creds))
+  vals <- esc(unlist(creds, use.names = FALSE))
+  value <- paste0(keys, ":", vals, collapse = ":")
+  do.call("set_env", list(structure(value, names = ev)))
+  invisible(NULL)
 }
 
 #' @export
@@ -511,6 +631,10 @@ default_username <- function() {
   if (.Platform$OS.type == "windows") "PersonalAccessToken" else "token"
 }
 
+new_gitcreds <- function(...) {
+  structure(list(...), class = "gitcreds")
+}
+
 # ------------------------------------------------------------------------
 # Errors
 # ------------------------------------------------------------------------
@@ -588,7 +712,7 @@ get_url_username <- function(url) {
 
 parse_url <- function(url) {
   re_url <- paste0(
-    "^(?<protocol>https?)://",
+    "^(?<protocol>[a-zA-Z0-9]+)://",
     "(?:(?<username>[^@/:]+)(?::(?<password>[^@/]+))?@)?",
     "(?<host>[^/]+)",
     "(?<path>.*)$"            # don't worry about query params here...
@@ -600,6 +724,10 @@ parse_url <- function(url) {
 
 is_string <- function(x) {
   is.character(x) && length(x) == 1 && !is.na(x)
+}
+
+is_flag <- function(x) {
+  is.logical(x) && length(x) == 1 && !is.na(x)
 }
 
 has_no_newline <- function(url) {

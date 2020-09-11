@@ -93,8 +93,20 @@
 <blockquote>
 <p>Query git credentials from R</p>
 </blockquote>
-<p><a href="https://travis-ci.org/gaborcsardi/gitcreds"><img src="https://travis-ci.org/gaborcsardi/gitcreds.svg?branch=master" alt="Linux Build Status"></a> <a href="https://ci.appveyor.com/project/gaborcsardi/gitcreds"><img src="https://ci.appveyor.com/api/projects/status/github/gaborcsardi/gitcreds?svg=true" alt="Windows Build status"></a> <a href="http://www.r-pkg.org/pkg/gitcreds"><img src="http://www.r-pkg.org/badges/version/gitcreds"></a> <a href="http://www.r-pkg.org/pkg/gitcreds"><img src="http://cranlogs.r-pkg.org/badges/gitcreds" alt="CRAN RStudio mirror downloads"></a></p>
+<!-- badges: start -->
+<p><a href="https://github.com/gaborcsardi/gitcreds/actions"><img src="https://github.com/gaborcsardi/gitcreds/workflows/R-CMD-check/badge.svg" alt="R build status"></a> <a href="http://www.r-pkg.org/pkg/gitcreds"><img src="http://www.r-pkg.org/badges/version/gitcreds"></a> <a href="http://www.r-pkg.org/pkg/gitcreds"><img src="http://cranlogs.r-pkg.org/badges/gitcreds" alt="CRAN RStudio mirror downloads"></a> <!-- badges: end --></p>
 <p>Query git credentials from R</p>
+<div id="features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#features" class="anchor"></a>Features</h2>
+<ul>
+<li><p>(Re)use the same credentials in command line git, R and the RStudio IDE., etc. Users can set their GitHub token once and use it everywhere.</p></li>
+<li><p>Typically more secure than storing passwords and tokens in <code>.Renviron</code> files.</p></li>
+<li><p>gitcreds has a cache that makes credential lookup very fast.</p></li>
+<li><p>gitcreds supports multiple users and multiple hosts, including Enterprise GitHub installations.</p></li>
+<li><p>If git or git credential helpers are not available, e.g. typically on a Linux server, or a CI, then gitcreds can fall back to use environment variables, and it still supports multiple users and hosts.</p></li>
+</ul>
+</div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -106,9 +118,125 @@
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
+<p>gitcreds is typically used upstream, in R packages that need to authenticate to git or GitHub. End users of these packages might still find it useful to call gitcreds directly, to set up their credentials, or check that they have been set up correctly.</p>
+<p>You can also use gitcreds in an R script. In this case you are both the end user and the upstream developer.</p>
+<div id="usage-as-an-end-user" class="section level3">
+<h3 class="hasAnchor">
+<a href="#usage-as-an-end-user" class="anchor"></a>Usage as an end user</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/gaborcsardi/gitcreds">gitcreds</a></span>)
 </pre></div>
+<p>Use <code><a href="reference/gitcreds_get.html">gitcreds_get()</a></code> to check your GitHub or other git credentials. It returns a named list, with a <code>password</code> entry. The password is not printed by default:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="fu"><a href="reference/gitcreds_get.html">gitcreds_get</a></span>()
+</pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="co">#&gt; &lt;gitcreds&gt;</span>
+<span class="co">#&gt;   protocol: https</span>
+<span class="co">#&gt;   host    : github.com</span>
+<span class="co">#&gt;   username: gaborcsardi</span>
+<span class="co">#&gt;   password: &lt;-- hidden --&gt;</span>
+</pre></div>
+<p>Use <code><a href="reference/gitcreds_get.html">gitcreds_set()</a></code> to add new credentials, or replace existing ones. It always asks you before replacing existing credentials:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="fu"><a href="reference/gitcreds_get.html">gitcreds_set</a></span>()
+</pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="co">#&gt; -&gt; Your current credentials for 'https://github.com':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;   protocol: https</span>
+<span class="co">#&gt;   host    : github.com</span>
+<span class="co">#&gt;   username: gaborcsardi</span>
+<span class="co">#&gt;   password: &lt;-- hidden --&gt;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; -&gt; What would you like to do?</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; 1: Keep these credentials</span>
+<span class="co">#&gt; 2: Replace these credentials</span>
+<span class="co">#&gt; 3: See the password / token</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Selection: 2</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ? Enter new password or token: secret</span>
+<span class="co">#&gt; -&gt; Removing current credentials...</span>
+<span class="co">#&gt; -&gt; Adding new credentials...</span>
+<span class="co">#&gt; -&gt; Removing credetials from cache...</span>
+<span class="co">#&gt; -&gt; Done.</span>
+</pre></div>
+<p>Use <code><a href="reference/gitcreds_get.html">gitcreds_delete()</a></code> to delete credentials. It always asks you before actually deleting any credentials:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="fu"><a href="reference/gitcreds_get.html">gitcreds_delete</a></span>()
+</pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="co">#&gt; -&gt; Your current credentials for 'https://github.com':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;   protocol: https</span>
+<span class="co">#&gt;   host    : github.com</span>
+<span class="co">#&gt;   username: token</span>
+<span class="co">#&gt;   password: &lt;-- hidden --&gt;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; -&gt; What would you like to do?</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; 1: Keep these credentials</span>
+<span class="co">#&gt; 2: Delete these credentials</span>
+<span class="co">#&gt; 3: See the password / token</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Selection: 2</span>
+<span class="co">#&gt; -&gt; Removing current credentials...</span>
+<span class="co">#&gt; -&gt; Removing credetials from cache...</span>
+<span class="co">#&gt; -&gt; Done.</span>
+</pre></div>
+</div>
+<div id="usage-as-a-package-author" class="section level3">
+<h3 class="hasAnchor">
+<a href="#usage-as-a-package-author" class="anchor"></a>Usage as a package author</h3>
+<p>If you want to use git’s credentials in your package, call <code><a href="reference/gitcreds_get.html">gitcreds_get()</a></code>. You probably want to handle the various errors it can return. Here is an example for a function that optionally neeeds a GitHub token. It searches the code of a GitHub repository:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="kw">github_search</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">query</span>, <span class="kw">repo</span> = <span class="st">"wch/r-source"</span>) {
+  <span class="kw">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/conditions.html">tryCatch</a></span>(
+    <span class="kw">gitcreds</span>::<span class="fu"><a href="reference/gitcreds_get.html">gitcreds_get</a></span>(),
+    error = <span class="fu">function</span>(<span class="kw">e</span>) <span class="kw">NULL</span>
+  )
+
+  <span class="kw">url</span> <span class="op">&lt;-</span> <span class="st">"https://api.github.com/search/code"</span>
+  <span class="kw">q</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(q = <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw">query</span>, <span class="st">"+repo:"</span>, <span class="kw">repo</span>))
+  <span class="kw">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"token "</span>, <span class="kw">token</span><span class="op">$</span><span class="kw">password</span>)
+
+  <span class="kw">httr</span>::<span class="fu"><a href="https://httr.r-lib.org/reference/GET.html">GET</a></span>(<span class="kw">url</span>, query = <span class="kw">q</span>, <span class="kw">httr</span>::<span class="fu"><a href="https://httr.r-lib.org/reference/add_headers.html">add_headers</a></span>(Authorization = <span class="kw">token</span>))
+}
+</pre></div>
+<p>The next example always needs a GitHub token, so it fails without one. It lists the public repositories of the current user:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="kw">msg</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">wh</span>) {
+  <span class="kw">msgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(
+    no_git = <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(
+      <span class="st">"No git installation found. You need to install git and set up "</span>,
+      <span class="st">"your GitHub Personal Access token using `gitcreds::gitcreds_set()`."</span>),
+    no_creds = <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(
+      <span class="st">"No git credentials found. Please set up your GitHub Personal Access "</span>,
+      <span class="st">"token using `gitcreds::gitcreds_set()`."</span>)
+    )
+  <span class="kw">msgs</span>[<span class="kw">wh</span>]
+}
+
+<span class="kw">my_private_repos</span> <span class="op">&lt;-</span> <span class="fu">function</span>() {
+  <span class="kw">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/conditions.html">tryCatch</a></span>(
+    <span class="kw">gitcreds</span>::<span class="fu"><a href="reference/gitcreds_get.html">gitcreds_get</a></span>(),
+    gitcreds_nogit_error = <span class="fu">function</span>(<span class="kw">e</span>) <span class="fu"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="fu">msg</span>(<span class="st">"no_git"</span>)),
+    gitcreds_no_credentials = <span class="fu">function</span>(<span class="kw">e</span>) <span class="fu"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="fu">msg</span>(<span class="st">"no_creds"</span>))    
+  )
+
+  <span class="kw">url</span> <span class="op">&lt;-</span> <span class="st">"https://api.github.com/user/repos"</span>
+  <span class="kw">q</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(visibility = <span class="st">"public"</span>)
+  <span class="kw">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"token "</span>, <span class="kw">token</span><span class="op">$</span><span class="kw">password</span>)
+
+  <span class="kw">httr</span>::<span class="fu"><a href="https://httr.r-lib.org/reference/GET.html">GET</a></span>(<span class="kw">url</span>, query = <span class="kw">q</span>, <span class="kw">httr</span>::<span class="fu"><a href="https://httr.r-lib.org/reference/add_headers.html">add_headers</a></span>(Authorization = <span class="kw">token</span>))
+}
+</pre></div>
+<p>Point your users to <code><a href="reference/gitcreds_get.html">gitcreds_set()</a></code> for adding/updating their credentials, or write your own wrapper for this.</p>
+<p>If you want more control or a different UI, take a look at the lower level <code><a href="reference/gitcreds_fill.html">gitcreds_fill()</a></code>, <code><a href="reference/gitcreds_fill.html">gitcreds_approve()</a></code> and <code><a href="reference/gitcreds_fill.html">gitcreds_reject()</a></code> functions.</p>
+<p>See also <a href="https://r-lib.github.io/gitcreds/articles/package.html">gitcreds for package authors</a>.</p>
+</div>
 </div>
 <div id="license" class="section level2">
 <h2 class="hasAnchor">

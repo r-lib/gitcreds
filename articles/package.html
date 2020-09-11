@@ -100,12 +100,11 @@
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>If you have a package that queries the GitHub API, or uses git with remote git repositories, then most likely you need to let your users specify their GitHub or git credentials. There are several benefits of using gitcreds to do this:</p>
 <ul>
-<li><p>(Re)use the same credentials as command line git, R and the RStudio IDE., etc. Users can set their GitHub token once and use it everywhere.</p></li>
-<li><p>Users can use the same credentials for multiple R packages.</p></li>
-<li><p>gitcreds has a cache that makes credential lookup very fast.</p></li>
+<li><p>(Re)use the same credentials in command line git, R and the RStudio IDE., etc. Users can set their GitHub token once and use it everywhere.</p></li>
 <li><p>Typically more secure than storing passwords and tokens in <code>.Renviron</code> files.</p></li>
-<li><p>gitcreads supports multiple users and multiple hosts.</p></li>
-<li><p>If git or credential helpers are not available, e.g. on typically on a Linux server, then gitcreds can still use environment variables, and it still supports multiple users and hosts.</p></li>
+<li><p>gitcreds has a cache that makes credential lookup very fast.</p></li>
+<li><p>gitcreds supports multiple users and multiple hosts, including Enterprise GitHub installations.</p></li>
+<li><p>If git or git credential helpers are not available, e.g. typically on a Linux server, or a CI, then gitcreds can fall back to use environment variables, and it still supports multiple users and hosts.</p></li>
 </ul>
 </div>
 <div id="the-simple-api" class="section level2">

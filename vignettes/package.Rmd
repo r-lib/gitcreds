@@ -18,22 +18,21 @@ remote git repositories, then most likely you need to let your users
 specify their GitHub or git credentials. There are several benefits of
 using gitcreds to do this:
 
--   (Re)use the same credentials as command line git, R and the RStudio
+-   (Re)use the same credentials in command line git, R and the RStudio
     IDE., etc. Users can set their GitHub token once and use it
     everywhere.
-
--   Users can use the same credentials for multiple R packages.
-
--   gitcreds has a cache that makes credential lookup very fast.
 
 -   Typically more secure than storing passwords and tokens in
     `.Renviron` files.
 
--   gitcreads supports multiple users and multiple hosts.
+-   gitcreds has a cache that makes credential lookup very fast.
 
--   If git or credential helpers are not available, e.g. on typically on
-    a Linux server, then gitcreds can still use environment variables,
-    and it still supports multiple users and hosts.
+-   gitcreds supports multiple users and multiple hosts, including
+    Enterprise GitHub installations.
+
+-   If git or git credential helpers are not available, e.g. typically on
+    a Linux server, or a CI, then gitcreds can fall back to use environment
+    variables, and it still supports multiple users and hosts.
 
 ## The simple API
 

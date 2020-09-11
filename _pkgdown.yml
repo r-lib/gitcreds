@@ -1,6 +1,16 @@
 development:
   mode: auto
 
+navbar:
+  type: default
+  left:
+  - text: Reference
+    href: reference/index.html
+  - text: For package authors
+    href: articles/package.html
+  - text: News
+    href: news/index.html
+
 reference:
 - title: Easy API
   contents:

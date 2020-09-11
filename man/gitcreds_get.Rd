@@ -12,7 +12,7 @@ gitcreds_get(url = "https://github.com", use_cache = TRUE, set_cache = TRUE)
 
 gitcreds_set(url = "https://github.com")
 
-gitcreds_delete(url)
+gitcreds_delete(url = "https://github.com")
 
 gitcreds_list_helpers()
 }

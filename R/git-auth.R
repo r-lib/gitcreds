@@ -371,7 +371,7 @@ gitcreds_set_new <- function(url) {
 #' @export
 #' @rdname gitcreds_get
 
-gitcreds_delete <- function(url) {
+gitcreds_delete <- function(url = "https://github.com") {
   if (!interactive()) {
     throw(new_error(
       "gitcreds_not_interactive_error",

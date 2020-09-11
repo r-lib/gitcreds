@@ -382,7 +382,7 @@ gitcreds_delete <- function(url = "https://github.com") {
   check_for_git()
 
   current <- tryCatch(
-    gitcreds_get(url),
+    gitcreds_get(url, use_cache = FALSE, set_cache = FALSE),
     gitcreds_no_credentials = function(e) NULL
   )
 

@@ -1059,7 +1059,7 @@ is_interactive <- function() {
   } else if (identical(Sys.getenv("TESTTHAT"), "true")) {
     FALSE
   } else {
-    interactive()
+    base::interactive()
   }
 }
 

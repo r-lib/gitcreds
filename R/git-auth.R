@@ -276,7 +276,7 @@ gitcreds_get <- function(url = "https://github.com", use_cache = TRUE,
 #' @rdname gitcreds_get
 
 gitcreds_set <- function(url = "https://github.com") {
-  if (!interactive()) {
+  if (!is_interactive()) {
     throw(new_error(
       "gitcreds_not_interactive_error",
       message = "`gitcreds_set()` only works in interactive sessions"
@@ -372,7 +372,7 @@ gitcreds_set_new <- function(url) {
 #' @rdname gitcreds_get
 
 gitcreds_delete <- function(url = "https://github.com") {
-  if (!interactive()) {
+  if (!is_interactive()) {
     throw(new_error(
       "gitcreds_not_interactive_error",
       message = "`gitcreds_delete()` only works in interactive sessions"

@@ -842,12 +842,16 @@ gitcreds_username_generic <- function() {
 
 #' User name to use when creating a credential, if there is nothing better
 #'
-#' These user names are typical for some git tools.
+#' These user names are typical for some git tools, e.g.
+#' [Git Credential Manager for Windows](http://microsoft.github.io/Git-Credential-Manager-for-Windows/)
+#' (`manager`) and
+#' [Git Credential Manager Core](https://github.com/Microsoft/Git-Credential-Manager-Core)
+#' (`manager-core`).
 #'
 #' @noRd
 
 default_username <- function() {
-  if (.Platform$OS.type == "windows") "PersonalAccessToken" else "token"
+  "PersonalAccessToken"
 }
 
 new_gitcreds <- function(...) {

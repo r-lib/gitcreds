@@ -170,7 +170,8 @@ Otherwise it returns <code>TRUE</code>.</p>
 <p><code>gitcreds_get()</code> errors if git is not installed, no credential helpers
 are configured or no credentials are found. <code>gitcreds_set()</code> errors if
 git is not installed, or setting the new credentials fails.
-gitcreds_delete()<code>errors if git is not installed or the git calls fail. See</code>vignette("package", package = "gitcreds")` if you want to handle
+<code>gitcreds_delete()</code> errors if git is not installed or the git calls fail.
+See <code><a href='../articles/package.html'>vignette("package", package = "gitcreds")</a></code> if you want to handle
 these errors.</p>
 <p><code>gitcreds_list_helpers()</code> returns a character vector,
 corresponding to the <code>credential.helper</code> git configuration key.
@@ -277,7 +278,7 @@ potentially work differently depending on the current working
 directory. This is especially relevant for package code that changes
 the working directory temporarily.</p>
 
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Non-GitHUb accounts</h3>
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Non-GitHub accounts</h3>
 
 
 <p>Non-GitHub URLs work mostly the same way as GitHub URLs.

@@ -45,7 +45,8 @@ Otherwise it returns \code{TRUE}.
 \code{gitcreds_get()} errors if git is not installed, no credential helpers
 are configured or no credentials are found. \code{gitcreds_set()} errors if
 git is not installed, or setting the new credentials fails.
-gitcreds_delete()\verb{errors if git is not installed or the git calls fail. See}vignette("package", package = "gitcreds")` if you want to handle
+\code{gitcreds_delete()} errors if git is not installed or the git calls fail.
+See \code{vignette("package", package = "gitcreds")} if you want to handle
 these errors.
 
 \code{gitcreds_list_helpers()} returns a character vector,
@@ -168,7 +169,7 @@ directory. This is especially relevant for package code that changes
 the working directory temporarily.
 }
 
-\subsection{Non-GitHUb accounts}{
+\subsection{Non-GitHub accounts}{
 
 Non-GitHub URLs work mostly the same way as GitHub URLs.
 \code{gitcreds_get()} and \code{gitcreds_set()} default to GitHub, so you'll need

@@ -111,7 +111,7 @@
 #' directory. This is especially relevant for package code that changes
 #' the working directory temporarily.
 #'
-#' ## Non-GitHUb accounts
+#' ## Non-GitHub accounts
 #'
 #' Non-GitHub URLs work mostly the same way as GitHub URLs.
 #' `gitcreds_get()` and `gitcreds_set()` default to GitHub, so you'll need
@@ -233,7 +233,7 @@
 #' `gitcreds_get()` errors if git is not installed, no credential helpers
 #' are configured or no credentials are found. `gitcreds_set()` errors if
 #' git is not installed, or setting the new credentials fails.
-#' gitcreds_delete()` errors if git is not installed or the git calls fail.
+#' `gitcreds_delete()` errors if git is not installed or the git calls fail.
 #' See `vignette("package", package = "gitcreds")` if you want to handle
 #' these errors.
 #'

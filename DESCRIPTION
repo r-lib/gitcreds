@@ -9,8 +9,8 @@ Description: Query, set, delete credentials from the 'git' credential
     and/or other 'git' repositories.
 License: MIT + file LICENSE
 LazyData: true
-URL: https://github.com/gaborcsardi/gitcreds
-BugReports: https://github.com/gaborcsardi/gitcreds/issues
+URL: https://github.com/r-lib/gitcreds
+BugReports: https://github.com/r-lib/gitcreds/issues
 RoxygenNote: 7.1.1.9000
 Roxygen: list(markdown = TRUE)
 Suggests: 

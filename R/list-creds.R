@@ -65,8 +65,14 @@ gitcreds_list <- function(url = "https://github.com",
   switch(
     credential_helper,
     "osxkeychain" = gitcreds_list_osxkeychain(url, protocol),
-    throw(new_error("gitcreds_unknown_helper",
-                    credential_helper = credential_helper))
+    throw(new_error(
+      "gitcreds_unknown_helper",
+      credential_helper = credential_helper,
+      message = sprintf(
+        "Unknown credential helper: `%s`, cannot list credentials",
+        credential_helper
+      )
+    ))
   )
 }
 

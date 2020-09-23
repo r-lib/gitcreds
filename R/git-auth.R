@@ -896,6 +896,7 @@ new_warning <- function(class, ..., message = "", call. = TRUE, domain = NULL) {
 }
 
 throw <- function(cond) {
+  cond
   if ("error" %in% class(cond)) {
     stop(cond)
   } else if ("warning" %in% class(cond)) {

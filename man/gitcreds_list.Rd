@@ -58,4 +58,25 @@ the credentials.
 To change or delete the listed credentials, see the oskeyring package
 or the 'Keychain Access' macOS app.
 }
+
+\subsection{\code{manager-core} on macOS}{
+
+This is Git Credential Manager Core, see
+https://github.com/microsoft/Git-Credential-Manager-Core
+
+This helper has some peculiarities w.r.t. user names:
+\itemize{
+\item If the "github" provider is used, then it completely ignores
+user names, even if they are explicitly specified in the query.
+\item For other providers, the user name (if specified) is saved in the
+Keychain item.
+\item For this helper, \code{gitcreds_list()} always lists all records that
+match the \emph{host}, even if the user name does not match, because it
+is impossible to tell if the user name would be used in a proper
+git credential lookup.
+}
+
+To change or delete the listed credentials, see the oskeyring package
+or the 'Keychain Access' macOS app.
+}
 }

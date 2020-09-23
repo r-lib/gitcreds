@@ -28,6 +28,24 @@
 #' To change or delete the listed credentials, see the oskeyring package
 #' or the 'Keychain Access' macOS app.
 #'
+#' ## `manager-core` on macOS
+#'
+#' This is Git Credential Manager Core, see
+#' https://github.com/microsoft/Git-Credential-Manager-Core
+#'
+#' This helper has some peculiarities w.r.t. user names:
+#' * If the "github" provider is used, then it completely ignores
+#'   user names, even if they are explicitly specified in the query.
+#' * For other providers, the user name (if specified) is saved in the
+#'   Keychain item.
+#' * For this helper, `gitcreds_list()` always lists all records that
+#'   match the _host_, even if the user name does not match, because it
+#'   is impossible to tell if the user name would be used in a proper
+#'   git credential lookup.
+#'
+#' To change or delete the listed credentials, see the oskeyring package
+#' or the 'Keychain Access' macOS app.
+#'
 #' @param credential_helper Credential helper to use. If this is `NULL`,
 #'   then the configured credential helper is used. If multiple credential
 #'   helpers are configured, then the first one is used, with a warning.
@@ -65,6 +83,7 @@ gitcreds_list <- function(url = "https://github.com",
   switch(
     credential_helper,
     "osxkeychain" = gitcreds_list_osxkeychain(url, protocol),
+    "manager-core" = gitcreds_list_manager_core(url, protocol),
     throw(new_error(
       "gitcreds_unknown_helper",
       credential_helper = credential_helper,
@@ -105,16 +124,50 @@ gitcreds_list_osxkeychain <- function(url = NULL, protocol = NULL) {
   )
 
   if (is.null(url)) {
-    its <- Filter(
-      function(it) {
-        !is.null(it$attributes$label) &&
-          !is.null(it$attributes$server) &&
-          it$attributes$server == it$attributes$label &&
-          is.null(it$attributes$security_domain)
-      },
-      its
-    )
+    its <- Filter(is_osxkeychain_item, its)
   }
 
   its
+}
+
+is_osxkeychain_item <- function(it) {
+  !is.null(it$attributes$label) &&
+    !is.null(it$attributes$server) &&
+    it$attributes$server == it$attributes$label &&
+    is.null(it$attributes$security_domain)
+}
+
+# TODO: this is now macos only
+
+gitcreds_list_manager_core <- function(url = NULL, protocol = NULL) {
+  if (!requireNamespace("oskeyring", quietly=TRUE)) {
+    stop("Listing `manager-core` credentials needs the `oskeyring` package")
+  }
+
+  # We can't filter, need to list all of them, because the 'service'
+  # might include the user name, if credential.provider is "github"
+  # (or "auto" and the host is github.com).
+  its <- oskeyring::macos_item_search("generic_password")
+
+  host <- NULL
+  if (!is.null(url)) {
+    purl <- parse_url(url)
+    if (!is.na(purl$host)) host <- purl$host
+    if (!is.na(purl$protocol)) protocol <- purl$protocol
+    protocol <- protocol %||% "https"
+  }
+
+  its <- Filter(function(it) is_manager_core_item(it, protocol, host), its)
+
+  its
+}
+
+is_manager_core_item <- function(it, protocol, host) {
+  if (is.null(it$attributes$service)) return(FALSE)
+  if (!grepl("^git:", it$attributes$service)) return(FALSE)
+  if (is.null(host)) return(TRUE)
+  iturl <- sub("^git:", "", it$attributes$service)
+  piturl <- parse_url(iturl)
+  !is.na(piturl$host) && piturl$host == host &&
+    !is.na(piturl$protocol) && piturl$protocol == protocol
 }

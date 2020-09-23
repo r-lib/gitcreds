@@ -22,6 +22,10 @@ reference:
 - title: Caching credentials
   contents:
   - gitcreds_cache_envvar
+
+- title: List credentials
+  contents:
+  - gitcreds_list
   
 - title: Low level API
   contents:

@@ -869,7 +869,11 @@ gitcred_errors <- function() {
     gitcreds_not_interactive_error = "gitcreds needs an interactive session",
     gitcreds_abort_replace_error = "User aborted updating credentials",
     gitcreds_abort_delete_error = "User aborted deleting credentials",
-    gitcreds_no_credentials = "Could not find any credentials"
+    gitcreds_no_credentials = "Could not find any credentials",
+    gitcreds_no_helper = "No credential helper is set",
+    gitcreds_multiple_helpers =
+      "Multiple credential helpers, only using the first",
+    gitcreds_unknown_helper = "Unknown credential helper, cannot list credentials"
   )
 }
 
@@ -882,8 +886,25 @@ new_error <- function(class, ..., message = "", call. = TRUE, domain = NULL) {
   cond
 }
 
+new_warning <- function(class, ..., message = "", call. = TRUE, domain = NULL) {
+  if (message == "") message <- gitcred_errors()[[class]]
+  message <- .makeMessage(message, domain = domain)
+  cond <- list(message = message, ...)
+  if (call.) cond$call <- sys.call(-1)
+  class(cond) <- c(class, "gitcreds_warning", "warning", "condition")
+  cond
+}
+
 throw <- function(cond) {
-  stop(cond)
+  if ("error" %in% class(cond)) {
+    stop(cond)
+  } else if ("warning" %in% class(cond)) {
+    warning(cond)
+  } else if ("message" %in% class(cond)) {
+    message(cond)
+  } else {
+    signalCondition(cond)
+  }
 }
 
 # ------------------------------------------------------------------------

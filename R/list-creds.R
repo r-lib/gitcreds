@@ -84,6 +84,10 @@ gitcreds_list <- function(url = "https://github.com",
 #' @noRd
 
 gitcreds_list_osxkeychain <- function(url = NULL, protocol = NULL) {
+  if (!requireNamespace("oskeyring", quietly=TRUE)) {
+    stop("Listing `osxkeychain` credentials needs the `oskeyring` package")
+  }
+
   attr <- list()
   if (!is.null(url)) {
     purl <- parse_url(url)

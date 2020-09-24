@@ -483,7 +483,7 @@ gitcreds_get_cache <- function(ev) {
   spval0 <- unesc(spval)
 
   # Single field, then the token
-  if (length(spval) == 1) {
+  if (length(spval) <= 1) {
     return(new_gitcreds(
       protocol = NA_character_,
       host = NA_character_,

@@ -887,7 +887,7 @@ throw <- function(cond) {
 }
 
 # ------------------------------------------------------------------------
-# Genetic helpers
+# Generic helpers
 # ------------------------------------------------------------------------
 
 #' Set/remove env var and return the old values

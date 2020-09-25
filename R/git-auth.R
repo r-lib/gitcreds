@@ -470,7 +470,7 @@ gitcreds_get_cache <- function(ev) {
   if (is.na(val) && ev == "GITHUB_PAT_GITHUB_COM") {
     val <- Sys.getenv("GITHUB_TOKEN", NA_character_)
   }
-  if (is.na(val)) {
+  if (is.na(val) || val == "") {
     return(NULL)
   }
 

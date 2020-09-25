@@ -1,8 +1,9 @@
+test_that("set_env() round trip works with just 1 env var", {
+  expect_equal(Sys.getenv("FOO", "unset"), "unset")
 
-context("gitcreds")
+  oenv <- set_env(c(FOO = "abc"))
+  expect_equal(Sys.getenv("FOO"), "abc")
 
-test_that("gitcreds works", {
-
-  expect_true(TRUE)
-
+  set_env(oenv)
+  expect_equal(Sys.getenv("FOO", "unset"), "unset")
 })

@@ -900,7 +900,7 @@ throw <- function(cond) {
 #' @noRd
 
 set_env <- function(envs) {
-  current <- Sys.getenv(names(envs), NA_character_)
+  current <- Sys.getenv(names(envs), NA_character_, names = TRUE)
   na <- is.na(envs)
   if (any(na)) {
     Sys.unsetenv(names(envs)[na])

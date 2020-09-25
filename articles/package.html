@@ -126,10 +126,9 @@
 <p>In a typical setup, if git does not find credentials for the requested host after querying all defined credential helpers, it’ll ask for a password in a dialog box, or a terminal prompt. It is often best to avoid these, and deal with the situation within R.</p>
 <p>gitcreds has a dummy credential helper, that always supplies dummy credentials. By default <code><a href="../reference/gitcreds_fill.html">gitcreds_fill()</a></code> adds this dummy helper to the list of configured credential helpers, and code calling <code><a href="../reference/gitcreds_fill.html">gitcreds_fill()</a></code> can check if git returned the dummy credentials, meaning that no real credentials were found. This is how the dummy credentials look:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="../reference/gitcreds_fill.html">gitcreds_fill</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(url=<span class="st">"https://impossible.com"</span>))
+<span class="fu"><a href="../reference/gitcreds_fill.html">gitcreds_fill</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>url<span class="op">=</span><span class="st">"https://impossible.com"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "protocol=dummy"     "host=dummy"</span>
-<span class="co">#&gt; [3] "username=dummy"     "password=dummy get"</span>
-</pre></div>
+<span class="co">#&gt; [3] "username=dummy"     "password=dummy get"</span></pre></div>
 <p>It is best to look for <code>protocol=dummy</code> as the first line of the git output.</p>
 </div>
 <div id="errors-from-the-low-level-api" class="section level3">

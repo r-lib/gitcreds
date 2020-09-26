@@ -358,7 +358,7 @@ gitcreds_set_replace <- function(url, current) {
 
 gitcreds_set_new <- function(url) {
   cat("\n")
-  pat <- readline("? Enter new password or token: ")
+  pat <- readline("? Enter password or token: ")
 
   username <- get_url_username(url) %||%
     gitcreds_username(url) %||%

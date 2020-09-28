@@ -52,7 +52,7 @@
 #' This is a newer version of Git Credential Manager Core, that supports
 #' multiple users better:
 #' * if a user name is provided, then it saves it in the credential store,
-#'   and it uses this username for looking up credentials, even for the
+#'   and it uses this user name for looking up credentials, even for the
 #'   `github` provider.
 #' * `gitcreds_list()` always lists all records that match the host, even
 #'   if the user name does not match.
@@ -94,10 +94,19 @@ gitcreds_list <- function(url = "https://github.com",
     credential_helpers <- credential_helper[[1]]
   }
 
+  host <- NULL
+  if (!is.null(url)) {
+    purl <- parse_url(url)
+    if (!is.na(purl$host)) host <- purl$host
+    if (!is.na(purl$protocol)) protocol <- purl$protocol
+    protocol <- protocol %||% "https"
+  }
+
   switch(
     credential_helper,
-    "osxkeychain" = gitcreds_list_osxkeychain(url, protocol),
-    "manager-core" = gitcreds_list_manager_core(url, protocol),
+    "osxkeychain" = gitcreds_list_osxkeychain(url, host, protocol),
+    "manager" = gitcreds_list_manager(url, host, protocol),
+    "manager-core" = gitcreds_list_manager_core(url, host, protocol),
     throw(new_error(
       "gitcreds_unknown_helper",
       credential_helper = credential_helper,
@@ -116,20 +125,17 @@ gitcreds_list <- function(url = "https://github.com",
 #' * security_domain is never present, similarly ignored for specific hosts. similar reasons
 #' @noRd
 
-gitcreds_list_osxkeychain <- function(url = NULL, protocol = NULL) {
+gitcreds_list_osxkeychain <- function(url, host, protocol) {
   if (!requireNamespace("oskeyring", quietly=TRUE)) {
     stop("Listing `osxkeychain` credentials needs the `oskeyring` package")
   }
 
   attr <- list()
-  if (!is.null(url)) {
-    purl <- parse_url(url)
-    attr$server <- purl$host
-    attr$label <- purl$host
-    if (!is.na(purl$protocol)) protocol <- purl$protocol
+  if (!is.null(host)) {
+    attr$server <- host
+    attr$label <- host
   }
 
-  protocol <- protocol %||% "https"
   attr$protocol <- protocol
 
   its <- oskeyring::macos_item_search(
@@ -137,7 +143,7 @@ gitcreds_list_osxkeychain <- function(url = NULL, protocol = NULL) {
     attributes = attr
   )
 
-  if (is.null(url)) {
+  if (is.null(host)) {
     its <- Filter(is_osxkeychain_item, its)
   }
 
@@ -151,18 +157,18 @@ is_osxkeychain_item <- function(it) {
     is.null(it$attributes$security_domain)
 }
 
-gitcreds_list_manager_core <- function(url = NULL, protocol = NULL) {
+gitcreds_list_manager_core <- function(url, host, protocol) {
   os <- get_os()
   if (os == "mac") {
-    gitcreds_list_manager_core_macos(url, protocol)
+    gitcreds_list_manager_core_macos(url, host, protocol)
   } else if (os == "win") {
-    gitcreds_list_manager_core_win(url, protocol)
+    gitcreds_list_manager_core_win(url, host, protocol)
   } else {
     stop("Unsupported OS for `manager-core`")
   }
 }
 
-gitcreds_list_manager_core_macos <- function(url, protocol) {
+gitcreds_list_manager_core_macos <- function(url, host, protocol) {
   if (!requireNamespace("oskeyring", quietly=TRUE)) {
     stop("Listing `manager-core` credentials needs the `oskeyring` package")
   }
@@ -171,14 +177,6 @@ gitcreds_list_manager_core_macos <- function(url, protocol) {
   # might include the user name, if credential.provider is "github"
   # (or "auto" and the host is github.com).
   its <- oskeyring::macos_item_search("generic_password")
-
-  host <- NULL
-  if (!is.null(url)) {
-    purl <- parse_url(url)
-    if (!is.na(purl$host)) host <- purl$host
-    if (!is.na(purl$protocol)) protocol <- purl$protocol
-    protocol <- protocol %||% "https"
-  }
 
   its <- Filter(
     function(it) is_manager_core_macos_item(it, protocol, host),
@@ -198,7 +196,7 @@ is_manager_core_macos_item <- function(it, protocol, host) {
     !is.na(piturl$protocol) && piturl$protocol == protocol
 }
 
-gitcreds_list_manager_code_win <- function(url, protocol) {
+gitcreds_list_manager_core_win <- function(url, host, protocol) {
   if (!requireNamespace("oskeyring", quietly=TRUE)) {
     stop("Listing `manager-core` credentials needs the `oskeyring` package")
   }
@@ -216,11 +214,30 @@ gitcreds_list_manager_code_win <- function(url, protocol) {
 is_manager_core_win_item <- function(it, protocol, host) {
   if (it$type != "generic") return(FALSE)
   if (!grepl("^git:", it$target_name)) return(FALSE)
-  iturl <- sub("^git:", "", it$attributes$service)
+  iturl <- sub("^git:", "", it$target_name)
   piturl <- parse_url(iturl)
   !is.na(piturl$host) && piturl$host == host &&
     !is.na(piturl$protocol) && piturl$protocol == protocol
 }
+
+gitcreds_list_manager <- function(url, host, protocol) {
+  if (!requireNamespace("oskeyring", quietly=TRUE)) {
+    stop("Listing `manager` credentials needs the `oskeyring` package")
+  }
+
+  its <- oskeyring::windows_item_enumerate(filter = "git:*")
+
+  its <- Filter(
+    function(it) is_manager_item(it, protocol, host),
+    its
+  )
+
+  its
+}
+
+# this is the same, apparently
+
+is_manager_item <- is_manager_core_win_item
 
 get_os <- function() {
   if (.Platform$OS.type == "windows") {

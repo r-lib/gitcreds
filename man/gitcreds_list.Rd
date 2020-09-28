@@ -59,15 +59,16 @@ To change or delete the listed credentials, see the oskeyring package
 or the 'Keychain Access' macOS app.
 }
 
-\subsection{\code{manager-core} on macOS}{
+\subsection{\code{manager-core}, \emph{before} version 2.0.246-beta, on macOS}{
 
 This is Git Credential Manager Core, see
 https://github.com/microsoft/Git-Credential-Manager-Core
 
 This helper has some peculiarities w.r.t. user names:
 \itemize{
-\item If the "github" provider is used, then it completely ignores
-user names, even if they are explicitly specified in the query.
+\item If the "github" provider is used (which is the default for
+\code{github.com} URLs), then it completely ignores user names, even if
+they are explicitly specified in the query.
 \item For other providers, the user name (if specified) is saved in the
 Keychain item.
 \item For this helper, \code{gitcreds_list()} always lists all records that
@@ -78,5 +79,21 @@ git credential lookup.
 
 To change or delete the listed credentials, see the oskeyring package
 or the 'Keychain Access' macOS app.
+}
+
+\subsection{\code{manager-core}, version 2.0.246-beta or newer, on macOS}{
+
+This is a newer version of Git Credential Manager Core, that supports
+multiple users better:
+\itemize{
+\item if a user name is provided, then it saves it in the credential store,
+and it uses this username for looking up credentials, even for the
+\code{github} provider.
+\item \code{gitcreds_list()} always lists all records that match the host, even
+if the user name does not match.
+\item Credentials that were created by an older version of \code{manager-core},
+with the \code{generic} provider, do not work with the newer version of
+\code{manager-core}, because the format of the Keychain item is different.
+}
 }
 }

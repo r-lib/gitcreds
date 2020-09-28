@@ -28,14 +28,15 @@
 #' To change or delete the listed credentials, see the oskeyring package
 #' or the 'Keychain Access' macOS app.
 #'
-#' ## `manager-core` on macOS
+#' ## `manager-core`, _before_ version 2.0.246-beta, on macOS
 #'
 #' This is Git Credential Manager Core, see
 #' https://github.com/microsoft/Git-Credential-Manager-Core
 #'
 #' This helper has some peculiarities w.r.t. user names:
-#' * If the "github" provider is used, then it completely ignores
-#'   user names, even if they are explicitly specified in the query.
+#' * If the "github" provider is used (which is the default for
+#'   `github.com` URLs), then it completely ignores user names, even if
+#'   they are explicitly specified in the query.
 #' * For other providers, the user name (if specified) is saved in the
 #'   Keychain item.
 #' * For this helper, `gitcreds_list()` always lists all records that
@@ -45,6 +46,19 @@
 #'
 #' To change or delete the listed credentials, see the oskeyring package
 #' or the 'Keychain Access' macOS app.
+#'
+#' ## `manager-core`, version 2.0.246-beta or newer, on macOS
+#'
+#' This is a newer version of Git Credential Manager Core, that supports
+#' multiple users better:
+#' * if a user name is provided, then it saves it in the credential store,
+#'   and it uses this username for looking up credentials, even for the
+#'   `github` provider.
+#' * `gitcreds_list()` always lists all records that match the host, even
+#'   if the user name does not match.
+#' * Credentials that were created by an older version of `manager-core`,
+#'   with the `generic` provider, do not work with the newer version of
+#'   `manager-core`, because the format of the Keychain item is different.
 #'
 #' @param credential_helper Credential helper to use. If this is `NULL`,
 #'   then the configured credential helper is used. If multiple credential
@@ -137,9 +151,18 @@ is_osxkeychain_item <- function(it) {
     is.null(it$attributes$security_domain)
 }
 
-# TODO: this is now macos only
-
 gitcreds_list_manager_core <- function(url = NULL, protocol = NULL) {
+  os <- get_os()
+  if (os == "mac") {
+    gitcreds_list_manager_core_macos(url, protocol)
+  } else if (os == "win") {
+    gitcreds_list_manager_core_win(url, protocol)
+  } else {
+    stop("Unsupported OS for `manager-core`")
+  }
+}
+
+gitcreds_list_manager_core_macos <- function(url, protocol) {
   if (!requireNamespace("oskeyring", quietly=TRUE)) {
     stop("Listing `manager-core` credentials needs the `oskeyring` package")
   }
@@ -157,12 +180,15 @@ gitcreds_list_manager_core <- function(url = NULL, protocol = NULL) {
     protocol <- protocol %||% "https"
   }
 
-  its <- Filter(function(it) is_manager_core_item(it, protocol, host), its)
+  its <- Filter(
+    function(it) is_manager_core_macos_item(it, protocol, host),
+    its
+  )
 
   its
 }
 
-is_manager_core_item <- function(it, protocol, host) {
+is_manager_core_macos_item <- function(it, protocol, host) {
   if (is.null(it$attributes$service)) return(FALSE)
   if (!grepl("^git:", it$attributes$service)) return(FALSE)
   if (is.null(host)) return(TRUE)
@@ -170,4 +196,40 @@ is_manager_core_item <- function(it, protocol, host) {
   piturl <- parse_url(iturl)
   !is.na(piturl$host) && piturl$host == host &&
     !is.na(piturl$protocol) && piturl$protocol == protocol
+}
+
+gitcreds_list_manager_code_win <- function(url, protocol) {
+  if (!requireNamespace("oskeyring", quietly=TRUE)) {
+    stop("Listing `manager-core` credentials needs the `oskeyring` package")
+  }
+
+  its <- oskeyring::windows_item_enumerate(filter = "git:*")
+
+  its <- Filter(
+    function(it) is_manager_core_win_item(it, protocol, host),
+    its
+  )
+
+  its
+}
+
+is_manager_core_win_item <- function(it, protocol, host) {
+  if (it$type != "generic") return(FALSE)
+  if (!grepl("^git:", it$target_name)) return(FALSE)
+  iturl <- sub("^git:", "", it$attributes$service)
+  piturl <- parse_url(iturl)
+  !is.na(piturl$host) && piturl$host == host &&
+    !is.na(piturl$protocol) && piturl$protocol == protocol
+}
+
+get_os <- function() {
+  if (.Platform$OS.type == "windows") {
+    "win"
+  } else if (Sys.info()[["sysname"]] == "Darwin") {
+    "mac"
+  } else if (Sys.info()[["sysname"]] == "Linux") {
+    "linux"
+  } else {
+    "unknown"
+  }
 }

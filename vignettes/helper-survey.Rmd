@@ -342,7 +342,7 @@ We do this with an eye of supporting usernames and multiple users.
     So it seems that `osxkeychain` will just find an arbitrary one, or
     the one that was added first.
 
-## `manager-core` (on macOS)
+## `manager-core` (on macOS), before version 2.0.246-beta
 
 -   Not installed by default (git 2.28.0).
 
@@ -486,6 +486,16 @@ We do this with an eye of supporting usernames and multiple users.
         host=github.com
         username=token2
         password=secret2
+
+## `manager-core` (macOS), 2.0.246-beta or later
+
+-   This version adds better support for multiple credentials for the
+    same host.
+-   It does not save the `username` as part of the service any more, for
+    the generic provider.
+-   It does save the `username` as `account` and it uses it when
+    searching for credentials, both for the `generic` and the `github`
+    provider.
 
 ## `manager` (GitHub authority)
 
@@ -659,7 +669,7 @@ We do this with an eye of supporting usernames and multiple users.
         username=token
         password=secret
 
-## manager-core (on Windows)
+## `manager-core` (on Windows), before version 2.0.246-beta
 
 -   Not installed by default (git 2.28.0), but this is supposed to be
     the future canonical implementation. See above for the macOS
@@ -675,6 +685,11 @@ We do this with an eye of supporting usernames and multiple users.
 -   Unfortunately setting `GCM_AUTHORITY` will make `manager-core`
     break, so it is not possible to use both `manager` and
     `manager-core` if you need to set this environment variable.
+
+## `manager-core` (on Windows, from 2.0.246-beta
+
+-   This is supposed to support multiple users better, but it does not:
+    <https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700058010>
 
 # Recommendations for multiple accounts
 

@@ -59,6 +59,47 @@ To change or delete the listed credentials, see the oskeyring package
 or the 'Keychain Access' macOS app.
 }
 
+\subsection{\code{manager}, on Windows}{
+
+This is Git Credential Manager for Windows, see
+https://github.com/microsoft/Git-Credential-Manager-for-Windows
+
+It is currently the default helper on Windows, included in the git
+installer.
+
+It has some oddities, especially with multiple GitHub users:
+\itemize{
+\item The \code{github} authority (which is used by default for \code{github.com}
+URLs) cannot handle multiple users. It always sets the \code{target_name}
+of the Windows credential to \verb{git:<URL>} where \verb{<URL>} does not
+contain the user name. Since \code{target_name} is a primary key, it is
+not possible to add multiple GitHub users with the default
+configuration.
+\item To support multiple users, switch to the \code{Basic} authority, e.g. by
+setting the \code{GCM_AUTHORITY} env var to \code{Basic}. Then the user name
+will be included in \code{target_name}, and everything works fine.
+\item For this helper \code{gitcreds_list()} lists all records with a matching
+host name.
+}
+}
+
+\subsection{\code{manager-core} on Windows}{
+
+This is Git Credential Manager Core, see
+https://github.com/microsoft/Git-Credential-Manager-Core
+
+On Windows it behaves almost the same way as \code{manager}, with some
+differences:
+\itemize{
+\item Instead of \emph{authorities}, it has providers. \code{github.com} URLs use the
+\code{github} provider by default. For better support for multiple GitHub
+accounts, switch to the \code{generic} provider by setting the
+\code{GCM_PROVIDER} env var to \code{generic}.
+\item \code{gitcreds_list()} will list all credentials with a matching host,
+irrespectively of the user name in the input URL.
+}
+}
+
 \subsection{\code{manager-core}, \emph{before} version 2.0.246-beta, on macOS}{
 
 This is Git Credential Manager Core, see
@@ -87,7 +128,7 @@ This is a newer version of Git Credential Manager Core, that supports
 multiple users better:
 \itemize{
 \item if a user name is provided, then it saves it in the credential store,
-and it uses this username for looking up credentials, even for the
+and it uses this user name for looking up credentials, even for the
 \code{github} provider.
 \item \code{gitcreds_list()} always lists all records that match the host, even
 if the user name does not match.

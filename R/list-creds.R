@@ -28,6 +28,41 @@
 #' To change or delete the listed credentials, see the oskeyring package
 #' or the 'Keychain Access' macOS app.
 #'
+#' ## `manager`, on Windows
+#'
+#' This is Git Credential Manager for Windows, see
+#' https://github.com/microsoft/Git-Credential-Manager-for-Windows
+#'
+#' It is currently the default helper on Windows, included in the git
+#' installer.
+#'
+#' It has some oddities, especially with multiple GitHub users:
+#' * The `github` authority (which is used by default for `github.com`
+#'   URLs) cannot handle multiple users. It always sets the `target_name`
+#'   of the Windows credential to `git:<URL>` where `<URL>` does not
+#'   contain the user name. Since `target_name` is a primary key, it is
+#'   not possible to add multiple GitHub users with the default
+#'   configuration.
+#' * To support multiple users, switch to the `Basic` authority, e.g. by
+#'   setting the `GCM_AUTHORITY` env var to `Basic`. Then the user name
+#'   will be included in `target_name`, and everything works fine.
+#' * For this helper `gitcreds_list()` lists all records with a matching
+#'   host name.
+#'
+#' ## `manager-core` on Windows
+#'
+#' This is Git Credential Manager Core, see
+#' https://github.com/microsoft/Git-Credential-Manager-Core
+#'
+#' On Windows it behaves almost the same way as `manager`, with some
+#' differences:
+#' * Instead of _authorities_, it has providers. `github.com` URLs use the
+#'   `github` provider by default. For better support for multiple GitHub
+#'   accounts, switch to the `generic` provider by setting the
+#'   `GCM_PROVIDER` env var to `generic`.
+#' * `gitcreds_list()` will list all credentials with a matching host,
+#'   irrespectively of the user name in the input URL.
+#'
 #' ## `manager-core`, _before_ version 2.0.246-beta, on macOS
 #'
 #' This is Git Credential Manager Core, see

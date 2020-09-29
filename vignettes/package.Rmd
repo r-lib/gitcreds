@@ -115,3 +115,77 @@ output.
     -   `stderr` standard error,
 
     -   `status` the exit status of the git process.
+
+## Testing
+
+If your package uses gitcreds, either directly, or through another
+package, then you might want to test your package for the the various
+possible states of the user's git installation and credential store.
+gitcreds has some facilities to help you with this.
+
+If you want to test your package for a specific output from gitcreds,
+you can temporarily set the environment variable that gitcreds uses as a
+cache to the desired value. Use the `gitcreds_cache_envvar()` function
+to see which environment variable you need to set for a url:
+
+```{r}
+gitcreds::gitcreds_cache_envvar("https://github.com")
+```
+
+It is easiest to use the withr package to temporarily change this
+environment variable in a test case:
+
+```{r}
+library(testthat)
+test_that("bad credentials from git", {
+  withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = "bad"))
+  # Test code that calls gitcreds_get(), potentially downstream.
+  # gitcreds_get() will return `bad` as the password.
+  # Illustration:
+  expect_equal(
+    gitcreds::gitcreds_get("https://github.com")$password,
+    "bad"
+  )
+})
+```
+
+If you want gitcreds to fail for a specific host, set the corresponding
+environment variable to `"FAIL"`:
+
+```{r}
+library(testthat)
+test_that("no credentials from git", {
+  withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = "FAIL"))
+  # The test code that calls gitcreds_get() comes here.
+  # It will fail with error "gitcreds_no_credentials"
+  expect_error(
+    gitcreds::gitcreds_get("https://github.com"),
+    class = "gitcreds_no_credentials"
+  )
+})
+```
+
+If you want gitcreds to fail with a specific error, then include the
+error class after a `"FAIL:"` prefix, in the environment variable. See
+the list of possible error classes above. For example:
+
+```{r}
+library(testthat)
+test_that("no git installation", {
+  withr::local_envvar(c(
+    GITHUB_PAT_GITHUB_COM = "FAIL:gitcreds_nogit_error"
+  ))
+  # Test code that calls gitcreds_get() comes here.
+  # Illustration:
+  expect_error(
+    gitcreds::gitcreds_get("https://github.com"),
+    class = "gitcreds_nogit_error"
+  )
+})
+```
+
+It is not currently possible to simulate the additional data in the
+error object, e.g. the standard output of a failed git command. If you
+need this for a test case, then your test case can call `gitcreds_get()`
+directly and you can use the mockery package to make gitcreds fail with
+the desired error object.

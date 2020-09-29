@@ -473,6 +473,11 @@ gitcreds_get_cache <- function(ev) {
   if (is.na(val) || val == "") {
     return(NULL)
   }
+  if (grepl("^FAIL", val)) {
+    class <- strsplit(val, ":", fixed = TRUE)[[1]][2]
+    if (is.na(class)) class <- "gitcreds_no_credentials"
+    throw(new_error(class))
+  }
 
   unesc <- function(x) {
     gsub("\\\\(.)", "\\1", x)

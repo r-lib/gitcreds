@@ -149,6 +149,25 @@ test_that("bad credentials from git", {
 })
 ```
 
+If you want gitcreds to return a specific credential record, then you
+can specify the fields of the record in the environment variable,
+separated by colons. For example:
+
+```{r}
+library(testthat)
+test_that("another GitHub user", {
+  cred <- paste0(
+    "protocol:https:",
+    "host:github.com:",
+    "username:user1:",
+    "password:secret"
+  )
+  withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = cred))
+  # Your test code comes here. This is just an illustration:
+  print(gitcreds_get())
+})
+```
+
 If you want gitcreds to fail for a specific host, set the corresponding
 environment variable to `"FAIL"`:
 

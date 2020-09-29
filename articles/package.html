@@ -168,8 +168,28 @@
     <span class="st">"bad"</span>
   <span class="op">)</span>
 <span class="op">}</span><span class="op">)</span></pre></div>
-<p>If you want gitcreds to fail for a specific host, set the corresponding environment variable to <code>"FAIL"</code>:</p>
+<p>If you want gitcreds to return a specific credential record, then you can specify the fields of the record in the environment variable, separated by colons. For example:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://testthat.r-lib.org">testthat</a></span><span class="op">)</span>
+<span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html">test_that</a></span><span class="op">(</span><span class="st">"another GitHub user"</span>, <span class="op">{</span>
+  <span class="va">cred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span>
+    <span class="st">"protocol:https:"</span>,
+    <span class="st">"host:github.com:"</span>,
+    <span class="st">"username:user1:"</span>,
+    <span class="st">"password:secret"</span>
+  <span class="op">)</span>
+  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html">local_envvar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>GITHUB_PAT_GITHUB_COM <span class="op">=</span> <span class="va">cred</span><span class="op">)</span><span class="op">)</span>
+  <span class="co"># Your test code comes here. This is just an illustration:</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_get.html">gitcreds_get</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_get.html">gitcreds_get</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">username</span>, <span class="st">"user1"</span><span class="op">)</span>
+<span class="op">}</span><span class="op">)</span></pre></div>
+<pre><code>## &lt;gitcreds&gt;
+##   protocol: https
+##   host    : github.com
+##   username: user1
+##   password: &lt;-- hidden --&gt;</code></pre>
+<p>If you want gitcreds to fail for a specific host, set the corresponding environment variable to <code>"FAIL"</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit">
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://testthat.r-lib.org">testthat</a></span><span class="op">)</span>
 <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html">test_that</a></span><span class="op">(</span><span class="st">"no credentials from git"</span>, <span class="op">{</span>
   <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html">local_envvar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>GITHUB_PAT_GITHUB_COM <span class="op">=</span> <span class="st">"FAIL"</span><span class="op">)</span><span class="op">)</span>
@@ -181,7 +201,7 @@
   <span class="op">)</span>
 <span class="op">}</span><span class="op">)</span></pre></div>
 <p>If you want gitcreds to fail with a specific error, then include the error class after a <code>"FAIL:"</code> prefix, in the environment variable. See the list of possible error classes above. For example:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
+<div class="sourceCode" id="cb8"><pre class="downlit">
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://testthat.r-lib.org">testthat</a></span><span class="op">)</span>
 <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html">test_that</a></span><span class="op">(</span><span class="st">"no git installation"</span>, <span class="op">{</span>
   <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html">local_envvar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>

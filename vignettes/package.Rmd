@@ -164,7 +164,8 @@ test_that("another GitHub user", {
   )
   withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = cred))
   # Your test code comes here. This is just an illustration:
-  print(gitcreds_get())
+  print(gitcreds::gitcreds_get())
+  expect_equal(gitcreds::gitcreds_get()$username, "user1")
 })
 ```
 

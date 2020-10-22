@@ -7,14 +7,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 editor_options:
   markdown:
-    wrap: 72
+    wrap: sentence
     canonical: true
 ---
 
 # General remarks
 
--   For `git credential approve` git (2.28.0 macOS) does not even call
-    the credential helper if no username is supplied:
+-   For `git credential approve` git (2.28.0 macOS) does not even call the credential helper if no username is supplied:
 
     ``` {.sh}
     ❯ export GIT_TRACE=true
@@ -23,9 +22,8 @@ editor_options:
     ❯
     ```
 
--   The `credential.helper` key has a multi-set value, so if you add a
-    new value, the old values are still kept. From git 2.9 specifying an
-    empty string removes the previously defined helpers.
+-   The `credential.helper` key has a multi-set value, so if you add a new value, the old values are still kept.
+    From git 2.9 specifying an empty string removes the previously defined helpers.
 
 # Credential helper survey
 
@@ -35,8 +33,8 @@ We do this with an eye of supporting usernames and multiple users.
 
 -   Docs: <https://git-scm.com/docs/git-credential-cache>
 
--   This helper is not included in the default git installer on Windows
-    . :(
+-   This helper is not included in the default git installer on Windows .
+    :(
 
 -   This is how we can set up `cache` for a particular repository:
 
@@ -196,8 +194,7 @@ We do this with an eye of supporting usernames and multiple users.
         username=token2
         password=secret2
 
--   Query without username returns *some* credentials, apparently not
-    the ones that were set first:
+-   Query without username returns *some* credentials, apparently not the ones that were set first:
 
         ❯ (echo url=https://github.com; echo ) | git credential fill
         11:56:12.394594 git.c:444               trace: built-in: git credential fill
@@ -227,8 +224,7 @@ We do this with an eye of supporting usernames and multiple users.
 
 ## `osxkeychain`
 
--   Some docs:
-    <https://docs.github.com/en/github/using-git/updating-credentials-from-the-osx-keychain>
+-   Some docs: <https://docs.github.com/en/github/using-git/updating-credentials-from-the-osx-keychain>
 
 -   This is the default helper on macOS currently (git 2.28.0).
 
@@ -241,8 +237,7 @@ We do this with an eye of supporting usernames and multiple users.
     Where: https://github.com
     ```
 
--   It installs as a git subcommand, so it is possible to call its
-    internal api directly:
+-   It installs as a git subcommand, so it is possible to call its internal api directly:
 
         ❯ git credential-osxkeychain
         11:50:56.325499 git.c:704               trace: exec: git-credential-osxkeychain
@@ -251,8 +246,9 @@ We do this with an eye of supporting usernames and multiple users.
 
 -   As always, needs `username` when setting the credential.
 
--   No need to supply `username` to get *some* token that matches the
-    host. This is in a clean keychain. First we set two credentials:
+-   No need to supply `username` to get *some* token that matches the host.
+    This is in a clean keychain.
+    First we set two credentials:
 
     ``` {.sh}
     ❯ (echo url=https://github.com; echo username=token; echo password=secret; echo ) | git credential approve
@@ -296,8 +292,7 @@ We do this with an eye of supporting usernames and multiple users.
     password=secret2
     ```
 
-    To check that without a username we get an arbitrary one, let's
-    remove `token`:
+    To check that without a username we get an arbitrary one, let's remove `token`:
 
     ``` {.sh}
     ❯ (echo url=https://token@github.com; echo ) | git credential reject
@@ -318,8 +313,7 @@ We do this with an eye of supporting usernames and multiple users.
     password=secret2
     ```
 
-    Now let's re-add token to make sure that `osxkeychain` does not
-    prefer `token`:
+    Now let's re-add token to make sure that `osxkeychain` does not prefer `token`:
 
     ``` {.sh}
     ❯ (echo url=https://github.com; echo username=token; echo password=secret; echo ) | git credential approve
@@ -339,15 +333,13 @@ We do this with an eye of supporting usernames and multiple users.
     password=secret2
     ```
 
-    So it seems that `osxkeychain` will just find an arbitrary one, or
-    the one that was added first.
+    So it seems that `osxkeychain` will just find an arbitrary one, or the one that was added first.
 
 ## `manager-core` (on macOS), before version 2.0.246-beta
 
 -   Not installed by default (git 2.28.0).
 
--   Install from brew, according to the instructions:
-    <https://github.com/microsoft/Git-Credential-Manager-Core#macos-homebrew>
+-   Install from brew, according to the instructions: <https://github.com/microsoft/Git-Credential-Manager-Core#macos-homebrew>
 
 -   If updates your global git config, adding these lines:
 
@@ -360,11 +352,10 @@ We do this with an eye of supporting usernames and multiple users.
         helper = manager-core
     ```
 
-    The `helper = ""` line deletes previous handlers. The system helper
-    is kept as `osxkeychain`.
+    The `helper = ""` line deletes previous handlers.
+    The system helper is kept as `osxkeychain`.
 
--   It installs as a git subcommand, and you can call its internal API
-    directly:
+-   It installs as a git subcommand, and you can call its internal API directly:
 
         ❯ git credential-manager-core
         11:51:56.434300 git.c:704               trace: exec: git-credential-manager-core
@@ -384,14 +375,12 @@ We do this with an eye of supporting usernames and multiple users.
             --version, version
             --help, -h, -?
 
--   It is not compatible with the `osxkeychain` helper, because it uses
-    different keys in the keychain.
+-   It is not compatible with the `osxkeychain` helper, because it uses different keys in the keychain.
 
--   It supports different *providers*. Providers are auto-detected by
-    default. GitHub has its own provider, detected via the `github.com`
-    URL. The provider can be configured user a git config key or an
-    environment variable:
-    <https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/configuration.md#credentialprovider>
+-   It supports different *providers*.
+    Providers are auto-detected by default.
+    GitHub has its own provider, detected via the `github.com` URL.
+    The provider can be configured user a git config key or an environment variable: <https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/configuration.md#credentialprovider>
 
 -   It does not currently supports namepaces (like `manager`).
 
@@ -414,8 +403,7 @@ We do this with an eye of supporting usernames and multiple users.
         username=token
         password=secret
 
--   If there are multiple credentials, a random one (or the one set
-    first?) is returned:
+-   If there are multiple credentials, a random one (or the one set first?) is returned:
 
         ❯  (echo url=https://github.com; echo username=token2; echo password=secret2; echo ) | git credential approve
         11:25:41.553761 git.c:444               trace: built-in: git credential approve
@@ -423,8 +411,7 @@ We do this with an eye of supporting usernames and multiple users.
         11:25:41.565748 git.c:704               trace: exec: git-credential-manager-core store
         11:25:41.566218 run-command.c:663       trace: run_command: git-credential-manager-core store
 
--   In fact the username is completely ignored when getting credentials,
-    at least for the GitHub provider:
+-   In fact the username is completely ignored when getting credentials, at least for the GitHub provider:
 
         ❯ (echo url=https://token2@github.com; echo ) | git credential fill
         11:29:49.274574 git.c:444               trace: built-in: git credential fill
@@ -436,11 +423,8 @@ We do this with an eye of supporting usernames and multiple users.
         username=token
         password=secret
 
-    This is because the username is not stored as part of the URL by the
-    GitHub provider. Related issue:
-    <https://github.com/microsoft/Git-Credential-Manager-Core/issues/160>
-    `manager` has a similar problem, it is linked from this GitHub
-    issue.
+    This is because the username is not stored as part of the URL by the GitHub provider.
+    Related issue: <https://github.com/microsoft/Git-Credential-Manager-Core/issues/160> `manager` has a similar problem, it is linked from this GitHub issue.
 
 -   If you set the provider to Generic, then usernames work as expected.
     In this case, this is stored in the keychain:
@@ -450,8 +434,7 @@ We do this with an eye of supporting usernames and multiple users.
         Account: token
         Where: git:https://token@github.com/
 
-    These credentials are not compatible with the ones set by the GitHub
-    provider.
+    These credentials are not compatible with the ones set by the GitHub provider.
 
         ❯ export GCM_PROVIDER=generic
 
@@ -489,21 +472,15 @@ We do this with an eye of supporting usernames and multiple users.
 
 ## `manager-core` (macOS), 2.0.246-beta or later
 
--   This version adds better support for multiple credentials for the
-    same host.
--   It does not save the `username` as part of the service any more, for
-    the generic provider.
--   It does save the `username` as `account` and it uses it when
-    searching for credentials, both for the `generic` and the `github`
-    provider.
+-   This version adds better support for multiple credentials for the same host.
+-   It does not save the `username` as part of the service any more, for the generic provider.
+-   It does save the `username` as `account` and it uses it when searching for credentials, both for the `generic` and the `github` provider.
 
 ## `manager` (GitHub authority)
 
--   This is Git Credential Manager for Windows, and it is the default
-    helper on Windows (for git 2.28.0.windows.1).
+-   This is Git Credential Manager for Windows, and it is the default helper on Windows (for git 2.28.0.windows.1).
 
--   Docs:
-    <https://github.com/Microsoft/Git-Credential-Manager-for-Windows>
+-   Docs: <https://github.com/Microsoft/Git-Credential-Manager-for-Windows>
 
 -   It is installed as a git subcommand, so it can be called directly:
 
@@ -515,10 +492,9 @@ We do this with an eye of supporting usernames and multiple users.
         usage: git-credential-manager.exe [approve|clear|config|delete|deploy|erase|fill|get|install|reject|remove|store|uninstall|version] [<args>]
         fatal: Unable to open help documentation.
 
--   Setting credentials. The `username` must be provided, and it is
-    stored in the credential, but the GitHub provider overwrites
-    credentials with the same host name, even if they have a different
-    `username`. I.e. after this, there will be only one credential:
+-   Setting credentials.
+    The `username` must be provided, and it is stored in the credential, but the GitHub provider overwrites credentials with the same host name, even if they have a different `username`.
+    I.e. after this, there will be only one credential:
 
         ❯  %  { echo url=https://github.com; echo username=token; echo password=secret; echo "" } | git credential approve
         13:16:58.118611 exec-cmd.c:237          trace: resolved executable dir: C:/Program Files/Git/mingw64/bin
@@ -543,19 +519,18 @@ We do this with an eye of supporting usernames and multiple users.
         Password: ****
         Persistence: Local computer
 
-\<!- - --\>
+\<!-
+- --\>
 
 -   It has multiple authorities, (like providers for `manager-core`).
-    The GitHub authority is used for `github.com` URLs by default. The
-    authority can be set with a config option or an env var.
+    The GitHub authority is used for `github.com` URLs by default.
+    The authority can be set with a config option or an env var.
 
--   We need to set the `GCM_VALIDATE` env var to `false` , otherwise it
-    tries to validate the GitHub token every time we query it.
+-   We need to set the `GCM_VALIDATE` env var to `false` , otherwise it tries to validate the GitHub token every time we query it.
 
         ❯ $env:GCM_VALIDATE="false"
 
--   No `username` is needed for getting *the* credential, for the GitHub
-    provider.
+-   No `username` is needed for getting *the* credential, for the GitHub provider.
 
         ❯  %  { echo url=https://github.com; echo "" } | git credential fill
         13:24:43.831089 exec-cmd.c:237          trace: resolved executable dir: C:/Program Files/Git/mingw64/bin
@@ -585,17 +560,14 @@ We do this with an eye of supporting usernames and multiple users.
         username=token2
         password=secret2
 
--   Supports namespaces, the default namespace is `git`. The namespace
-    is included in the name of the credential: `namespace:URL`.
+-   Supports namespaces, the default namespace is `git`.
+    The namespace is included in the name of the credential: `namespace:URL`.
 
--   There is a pull request to include the `username` in the URL as
-    well:
-    <https://github.com/microsoft/Git-Credential-Manager-for-Windows/pull/891>
+-   There is a pull request to include the `username` in the URL as well: <https://github.com/microsoft/Git-Credential-Manager-for-Windows/pull/891>
 
 ## `manager` (Basic authority)
 
--   `Basic` authority can be configured with an env var or config
-    option:
+-   `Basic` authority can be configured with an env var or config option:
 
         ❯ $env:GCM_AUTHORITY="Basic"
 
@@ -614,11 +586,9 @@ We do this with an eye of supporting usernames and multiple users.
         username=token2
         password=secret2
 
--   But it supports usernames as well. Note that since the username is
-    stored in the URL, it does not return some arbitrary credentials if
-    we query the URL without a username. We need to tell GCM here not to
-    ask for a password, but just fall back to the next credential
-    helper.
+-   But it supports usernames as well.
+    Note that since the username is stored in the URL, it does not return some arbitrary credentials if we query the URL without a username.
+    We need to tell GCM here not to ask for a password, but just fall back to the next credential helper.
 
         ❯ $env:GCM_INTERACTIVE="Never"
 
@@ -671,25 +641,18 @@ We do this with an eye of supporting usernames and multiple users.
 
 ## `manager-core` (on Windows), before version 2.0.246-beta
 
--   Not installed by default (git 2.28.0), but this is supposed to be
-    the future canonical implementation. See above for the macOS
-    version.
+-   Not installed by default (git 2.28.0), but this is supposed to be the future canonical implementation.
+    See above for the macOS version.
 
--   It works similarly to `manager` , I haven't seen any differences in
-    behavior (version was 2.0.194.40577). Instead of authorities, we
-    need to set up providers:
-    <https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/migration.md#gcm_authority.>
-    The `Generic` provider works the same way as the `Basic` authority
-    in `manager`.
+-   It works similarly to `manager` , I haven't seen any differences in behavior (version was 2.0.194.40577).
+    Instead of authorities, we need to set up providers: <https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/migration.md#gcm_authority.>
+    The `Generic` provider works the same way as the `Basic` authority in `manager`.
 
--   Unfortunately setting `GCM_AUTHORITY` will make `manager-core`
-    break, so it is not possible to use both `manager` and
-    `manager-core` if you need to set this environment variable.
+-   Unfortunately setting `GCM_AUTHORITY` will make `manager-core` break, so it is not possible to use both `manager` and `manager-core` if you need to set this environment variable.
 
 ## `manager-core` (on Windows, from 2.0.246-beta
 
--   This is supposed to support multiple users better, but it does not:
-    <https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700058010>
+-   This is supposed to support multiple users better, but it does not: <https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700058010>
 
 # Recommendations for multiple accounts
 
@@ -697,51 +660,38 @@ We do this with an eye of supporting usernames and multiple users.
 
 1.  Use the `osxkeychain` helper.
 
-2.  FIrst remove all your current credentials for the host you are
-    targeting. E.g. for GitHub, search for "Internet Passwords" for
-    github.com.
+2.  FIrst remove all your current credentials for the host you are targeting.
+    E.g. for GitHub, search for "Internet Passwords" for github.com.
 
 3.  Then add the credential that you want to use for "generic access".
-    This is the credential that will be used for URLs without user
-    names. The user name for this credential does not matter, but you
-    can choose something descriptive, e.g. "token", or "generic".
+    This is the credential that will be used for URLs without user names.
+    The user name for this credential does not matter, but you can choose something descriptive, e.g. "token", or "generic".
 
-4.  Configure git to use this username by default. E.g. if you chose
-    "generic", then run
+4.  Configure git to use this username by default.
+    E.g. if you chose "generic", then run
 
         git config --global crendetial.username generic
 
-5.  Add all the other credentials, with appropriate user names. These
-    are the user names that you need to put in the URLs for the
-    repositories or operations you want to use them for. (GitHub does
-    not actually use the user names if the password is a PAT.)
+5.  Add all the other credentials, with appropriate user names.
+    These are the user names that you need to put in the URLs for the repositories or operations you want to use them for.
+    (GitHub does not actually use the user names if the password is a PAT.)
 
 ## Windows
 
 ### At most one github.com credential
 
-If you only need to manage a single github.com credential, together with
-possibly multiple credentials to other hosts (including GitHub
-Enterprise hosts), then you can use the default `manager` helper, and
-get away with the default auto-detected GCM authority setting.
+If you only need to manage a single github.com credential, together with possibly multiple credentials to other hosts (including GitHub Enterprise hosts), then you can use the default `manager` helper, and get away with the default auto-detected GCM authority setting.
 
-In this case, you can add you github.com credential with an arbitrary
-user name, and for each other host you can add configure a default user
-name, and/or include user names in the URLs to these hosts. This is how
-to set a default user name for a host:
+In this case, you can add you github.com credential with an arbitrary user name, and for each other host you can add configure a default user name, and/or include user names in the URLs to these hosts.
+This is how to set a default user name for a host:
 
     git config --global credential.https://example.com.username myusername
 
 ### Multiple GitHub credentials
 
-If you need to manage multiple github.com credentials, then you can
-still use the `manager` helper, but you need to change the GCM authority
-by setting an option or an environment variable, see
-<https://github.com/microsoft/Git-Credential-Manager-for-Windows/blob/master/Docs/Configuration.md#authority.>
-Once
-<https://github.com/microsoft/Git-Credential-Manager-for-Windows/pull/891>
-is merged, you won't need to do this. (At least in recent git versions,
-that contain a GCM build with the fix.)
+If you need to manage multiple github.com credentials, then you can still use the `manager` helper, but you need to change the GCM authority by setting an option or an environment variable, see <https://github.com/microsoft/Git-Credential-Manager-for-Windows/blob/master/Docs/Configuration.md#authority.>
+Once <https://github.com/microsoft/Git-Credential-Manager-for-Windows/pull/891> is merged, you won't need to do this.
+(At least in recent git versions, that contain a GCM build with the fix.)
 
 This is how to change the config for this:
 
@@ -751,10 +701,8 @@ You can also change it only for github.com:
 
     git config --global credential.github.com.authority Basic
 
-Then you can configure a default user name, this will be used for URLs
-without a user name:
+Then you can configure a default user name, this will be used for URLs without a user name:
 
     git config --global credential.username generic
 
-Now you can add you credentials, the default one with the "generic" user
-name, and all the others with their specific user and host names.
+Now you can add you credentials, the default one with the "generic" user name, and all the others with their specific user and host names.

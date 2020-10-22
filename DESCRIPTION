@@ -16,7 +16,10 @@ Roxygen: list(markdown = TRUE)
 Suggests: 
     testthat,
     knitr,
+    oskeyring,
     rmarkdown
+Remotes:
+    gaborcsardi/oskeyring
 Encoding: UTF-8
 SystemRequirements: git
 VignetteBuilder: knitr

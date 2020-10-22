@@ -64,7 +64,8 @@
 
       
 
-      </header><script src="helper-survey_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="helper-survey_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="helper-survey_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="helper-survey_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>git credential helpers</h1>
@@ -386,9 +387,9 @@ usage: git credential-osxkeychain &lt;get|store|erase&gt;</code></pre>
 </li>
 </ul>
 </div>
-<div id="manager-core-on-macos" class="section level2">
+<div id="manager-core-on-macos-before-version-2-0-246-beta" class="section level2">
 <h2 class="hasAnchor">
-<a href="#manager-core-on-macos" class="anchor"></a><code>manager-core</code> (on macOS)</h2>
+<a href="#manager-core-on-macos-before-version-2-0-246-beta" class="anchor"></a><code>manager-core</code> (on macOS), before version 2.0.246-beta</h2>
 <ul>
 <li><p>Not installed by default (git 2.28.0).</p></li>
 <li><p>Install from brew, according to the instructions: <a href="https://github.com/microsoft/Git-Credential-Manager-Core#macos-homebrew" class="uri">https://github.com/microsoft/Git-Credential-Manager-Core#macos-homebrew</a></p></li>
@@ -506,6 +507,15 @@ host=github.com
 username=token2
 password=secret2</code></pre>
 </li>
+</ul>
+</div>
+<div id="manager-core-macos-2-0-246-beta-or-later" class="section level2">
+<h2 class="hasAnchor">
+<a href="#manager-core-macos-2-0-246-beta-or-later" class="anchor"></a><code>manager-core</code> (macOS), 2.0.246-beta or later</h2>
+<ul>
+<li>This version adds better support for multiple credentials for the same host.</li>
+<li>It does not save the <code>username</code> as part of the service any more, for the generic provider.</li>
+<li>It does save the <code>username</code> as <code>account</code> and it uses it when searching for credentials, both for the <code>generic</code> and the <code>github</code> provider.</li>
 </ul>
 </div>
 <div id="manager-github-authority" class="section level2">
@@ -661,13 +671,21 @@ password=secret</code></pre>
 </li>
 </ul>
 </div>
-<div id="manager-core-on-windows" class="section level2">
+<div id="manager-core-on-windows-before-version-2-0-246-beta" class="section level2">
 <h2 class="hasAnchor">
-<a href="#manager-core-on-windows" class="anchor"></a>manager-core (on Windows)</h2>
+<a href="#manager-core-on-windows-before-version-2-0-246-beta" class="anchor"></a><code>manager-core</code> (on Windows), before version 2.0.246-beta</h2>
 <ul>
 <li><p>Not installed by default (git 2.28.0), but this is supposed to be the future canonical implementation. See above for the macOS version.</p></li>
 <li><p>It works similarly to <code>manager</code> , I haven’t seen any differences in behavior (version was 2.0.194.40577). Instead of authorities, we need to set up providers: <a href="https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/migration.md#gcm_authority." class="uri">https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/migration.md#gcm_authority.</a> The <code>Generic</code> provider works the same way as the <code>Basic</code> authority in <code>manager</code>.</p></li>
 <li><p>Unfortunately setting <code>GCM_AUTHORITY</code> will make <code>manager-core</code> break, so it is not possible to use both <code>manager</code> and <code>manager-core</code> if you need to set this environment variable.</p></li>
+</ul>
+</div>
+<div id="manager-core-on-windows-from-2-0-246-beta" class="section level2">
+<h2 class="hasAnchor">
+<a href="#manager-core-on-windows-from-2-0-246-beta" class="anchor"></a><code>manager-core</code> (on Windows, from 2.0.246-beta</h2>
+<ul>
+<li>This is supposed to support multiple users better, but it does not: <a href="https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700058010" class="uri">https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700058010</a>
+</li>
 </ul>
 </div>
 </div>

@@ -522,7 +522,7 @@ password=secret2</code></pre>
 <h2 class="hasAnchor">
 <a href="#manager-github-authority" class="anchor"></a><code>manager</code> (GitHub authority)</h2>
 <ul>
-<li><p>This is Git Credential Manager for Windows, and it is the default helper on Windows (for git 2.28.0.windows.1).</p></li>
+<li><p>This was Git Credential Manager for Windows, and it is the default helper on Windows for git 2.28.0. In git 2.29.0 it is not the default any more, and it is deprecated in favor of <code>manager-core</code>. It is still installed, though.</p></li>
 <li><p>Docs: <a href="https://github.com/Microsoft/Git-Credential-Manager-for-Windows" class="uri">https://github.com/Microsoft/Git-Credential-Manager-for-Windows</a></p></li>
 <li>
 <p>It is installed as a git subcommand, so it can be called directly:</p>
@@ -673,7 +673,7 @@ password=secret</code></pre>
 </div>
 <div id="manager-core-on-windows-before-version-2-0-246-beta" class="section level2">
 <h2 class="hasAnchor">
-<a href="#manager-core-on-windows-before-version-2-0-246-beta" class="anchor"></a><code>manager-core</code> (on Windows), before version 2.0.246-beta</h2>
+<a href="#manager-core-on-windows-before-version-2-0-246-beta" class="anchor"></a><code>manager-core</code> (on Windows, before version 2.0.246-beta)</h2>
 <ul>
 <li><p>Not installed by default (git 2.28.0), but this is supposed to be the future canonical implementation. See above for the macOS version.</p></li>
 <li><p>It works similarly to <code>manager</code> , I haven’t seen any differences in behavior (version was 2.0.194.40577). Instead of authorities, we need to set up providers: <a href="https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/migration.md#gcm_authority." class="uri">https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/migration.md#gcm_authority.</a> The <code>Generic</code> provider works the same way as the <code>Basic</code> authority in <code>manager</code>.</p></li>
@@ -682,10 +682,14 @@ password=secret</code></pre>
 </div>
 <div id="manager-core-on-windows-from-2-0-246-beta" class="section level2">
 <h2 class="hasAnchor">
-<a href="#manager-core-on-windows-from-2-0-246-beta" class="anchor"></a><code>manager-core</code> (on Windows, from 2.0.246-beta</h2>
+<a href="#manager-core-on-windows-from-2-0-246-beta" class="anchor"></a><code>manager-core</code> (on Windows, from 2.0.246-beta)</h2>
 <ul>
-<li>This is supposed to support multiple users better, but it does not: <a href="https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700058010" class="uri">https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700058010</a>
+<li>This is now the version that is the default helper in git 2.29.0 and later. <code>manager</code> is still installed, but the default system config sets <code>manager-core</code>.</li>
+<li>It supports multiple users better: <a href="https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700544889" class="uri">https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700544889</a>
 </li>
+<li>When storing a credential, it first checks if there is a target name without a username. If there is, then it uses the target name without the username. It stores the username in the <code>username</code> field of the credential, still. so it is not lost.</li>
+<li>When looking up a credential without a username, it will return the first credential it can find, even if the target name contains a username, and there is another credential without a username in the target name.</li>
+<li>When looking up a credential with a username, it may return any credential with a matching username, and a target name that matches the host. The username inside the target name does not actually matter.</li>
 </ul>
 </div>
 </div>
@@ -697,8 +701,8 @@ password=secret</code></pre>
 <a href="#macos" class="anchor"></a>macOS</h2>
 <ol style="list-style-type: decimal">
 <li><p>Use the <code>osxkeychain</code> helper.</p></li>
-<li><p>FIrst remove all your current credentials for the host you are targeting. E.g. for GitHub, search for “Internet Passwords” for github.com.</p></li>
-<li><p>Then add the credential that you want to use for “generic access”. This is the credential that will be used for URLs without user names. The user name for this credential does not matter, but you can choose something descriptive, e.g. “token”, or “generic”.</p></li>
+<li><p>FIrst remove all your current credentials for the host you are targeting. E.g. for GitHub, search for “Internet Passwords” for github.com, or use <code><a href="../reference/gitcreds_list.html">gitcreds::gitcreds_list()</a></code> and the oskeyring package to remove them. You can also use the oskeyring package to back up the tokens and passwords.</p></li>
+<li><p>Then add the credential that you want to use for “generic access”. This is the credential that will be used for URLs without user names. The user name for this credential does not matter, but you can choose something descriptive, e.g. “PersonalAccessToken”, “token”, or “generic”.</p></li>
 <li>
 <p>Configure git to use this username by default. E.g. if you chose “generic”, then run</p>
 <pre><code>git config --global crendetial.username generic</code></pre>
@@ -706,9 +710,23 @@ password=secret</code></pre>
 <li><p>Add all the other credentials, with appropriate user names. These are the user names that you need to put in the URLs for the repositories or operations you want to use them for. (GitHub does not actually use the user names if the password is a PAT.)</p></li>
 </ol>
 </div>
-<div id="windows" class="section level2">
+<div id="windows-with-git-2-29-0-or-later-and-manager-core" class="section level2">
 <h2 class="hasAnchor">
-<a href="#windows" class="anchor"></a>Windows</h2>
+<a href="#windows-with-git-2-29-0-or-later-and-manager-core" class="anchor"></a>Windows, with git 2.29.0 or later and manager-core</h2>
+<ol style="list-style-type: decimal">
+<li><p>We suggest that you update to the latest git version, but at least 2.29.0, and use the <code>manager-core</code> helper which is now default. If you installed <code>manager-core</code> separately from git, we suggest that you remove it, because it might cause confusion as to which helper is actually used.</p></li>
+<li><p>Remove all current credentials first, for the host you are targeting. You can do this in ‘Credential Manager’ or <code><a href="../reference/gitcreds_list.html">gitcreds::gitcreds_list()</a></code> to find them and the oskeyring package to remove them. You can also use the oskeyring packaeg to back up the tokens and passwords.</p></li>
+<li><p>Then add the credential that you want to use for “generic access”. This is the credential that will be used for URLs without user names. The user name for this credential does not matter, but you can choose something descriptive, e.g. “PersonalAccessToken”, “token”, or “generic”.</p></li>
+<li>
+<p>Configure git to use this username by default. E.g. if you chose “generic”, then run</p>
+<p>git config –global crendetial.username generic</p>
+</li>
+<li><p>Add all the other credentials, with appropriate user names. These are the user names that you need to put in the URLs for the repositories or operations you want to use them for. (GitHub does not actually use the user names if the password is a PAT.)</p></li>
+</ol>
+</div>
+<div id="windows-with-older-git-version" class="section level2">
+<h2 class="hasAnchor">
+<a href="#windows-with-older-git-version" class="anchor"></a>Windows with older git version</h2>
 <div id="at-most-one-github-com-credential" class="section level3">
 <h3 class="hasAnchor">
 <a href="#at-most-one-github-com-credential" class="anchor"></a>At most one github.com credential</h3>

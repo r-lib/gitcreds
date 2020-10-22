@@ -478,7 +478,9 @@ We do this with an eye of supporting usernames and multiple users.
 
 ## `manager` (GitHub authority)
 
--   This is Git Credential Manager for Windows, and it is the default helper on Windows (for git 2.28.0.windows.1).
+-   This was Git Credential Manager for Windows, and it is the default helper on Windows for git 2.28.0.
+    In git 2.29.0 it is not the default any more, and it is deprecated in favor of `manager-core`.
+    It is still installed, though.
 
 -   Docs: <https://github.com/Microsoft/Git-Credential-Manager-for-Windows>
 
@@ -639,7 +641,7 @@ We do this with an eye of supporting usernames and multiple users.
         username=token
         password=secret
 
-## `manager-core` (on Windows), before version 2.0.246-beta
+## `manager-core` (on Windows, before version 2.0.246-beta)
 
 -   Not installed by default (git 2.28.0), but this is supposed to be the future canonical implementation.
     See above for the macOS version.
@@ -650,9 +652,13 @@ We do this with an eye of supporting usernames and multiple users.
 
 -   Unfortunately setting `GCM_AUTHORITY` will make `manager-core` break, so it is not possible to use both `manager` and `manager-core` if you need to set this environment variable.
 
-## `manager-core` (on Windows, from 2.0.246-beta
+## `manager-core` (on Windows, from 2.0.246-beta)
 
--   This is supposed to support multiple users better, but it does not: <https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700058010>
+-   This is now the version that is the default helper in git 2.29.0 and later. `manager` is still installed, but the default system config sets `manager-core`.
+-   It supports multiple users better: <https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700544889>
+-   When storing a credential, it first checks if there is a target name without a username. If there is, then it uses the target name without the username. It stores the username in the `username` field of the credential, still. so it is not lost.
+-   When looking up a credential without a username, it will return the first credential it can find, even if the target name contains a username, and there is another credential without a username in the target name.
+-   When looking up a credential with a username, it may return any credential with a matching username, and a target name that matches the host. The username inside the target name does not actually matter.
 
 # Recommendations for multiple accounts
 
@@ -661,11 +667,12 @@ We do this with an eye of supporting usernames and multiple users.
 1.  Use the `osxkeychain` helper.
 
 2.  FIrst remove all your current credentials for the host you are targeting.
-    E.g. for GitHub, search for "Internet Passwords" for github.com.
+    E.g. for GitHub, search for "Internet Passwords" for github.com, or use `gitcreds::gitcreds_list()` and the oskeyring package to remove them.
+    You can also use the oskeyring package to back up the tokens and passwords.
 
 3.  Then add the credential that you want to use for "generic access".
     This is the credential that will be used for URLs without user names.
-    The user name for this credential does not matter, but you can choose something descriptive, e.g. "token", or "generic".
+    The user name for this credential does not matter, but you can choose something descriptive, e.g. "PersonalAccessToken", "token", or "generic".
 
 4.  Configure git to use this username by default.
     E.g. if you chose "generic", then run
@@ -676,7 +683,29 @@ We do this with an eye of supporting usernames and multiple users.
     These are the user names that you need to put in the URLs for the repositories or operations you want to use them for.
     (GitHub does not actually use the user names if the password is a PAT.)
 
-## Windows
+## Windows, with git 2.29.0 or later and manager-core
+
+1.  We suggest that you update to the latest git version, but at least 2.29.0, and use the `manager-core` helper which is now default.
+    If you installed `manager-core` separately from git, we suggest that you remove it, because it might cause confusion as to which helper is actually used.
+
+2.  Remove all current credentials first, for the host you are targeting.
+    You can do this in 'Credential Manager' or `gitcreds::gitcreds_list()` to find them and the oskeyring package to remove them.
+    You can also use the oskeyring packaeg to back up the tokens and passwords.
+
+3.  Then add the credential that you want to use for "generic access".
+    This is the credential that will be used for URLs without user names.
+    The user name for this credential does not matter, but you can choose something descriptive, e.g. "PersonalAccessToken", "token", or "generic".
+
+4.   Configure git to use this username by default.
+    E.g. if you chose "generic", then run
+
+        git config --global crendetial.username generic
+
+5.  Add all the other credentials, with appropriate user names.
+    These are the user names that you need to put in the URLs for the repositories or operations you want to use them for.
+    (GitHub does not actually use the user names if the password is a PAT.)
+
+## Windows with older git version
 
 ### At most one github.com credential
 

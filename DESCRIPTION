@@ -17,6 +17,7 @@ Suggests:
     testthat,
     knitr,
     oskeyring,
+    pkgcache,
     rmarkdown
 Remotes:
     gaborcsardi/oskeyring

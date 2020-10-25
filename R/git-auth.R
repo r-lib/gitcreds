@@ -462,6 +462,15 @@ gitcreds_cache_envvar <- function(url) {
   paste0("GITHUB_PAT_", toupper(slug3))
 }
 
+#' Parse a gitcreds cache environment variable
+#'
+#' @param ev Environment variable to parse.
+#' @return A `gitcreds`object, or `NULL`, if the environment variable
+#' is not set, or contains an invalid cache record. For an invalid
+#' record it will also throw a warning.
+#'
+#' @export
+
 gitcreds_get_cache <- function(ev) {
   val <- Sys.getenv(ev, NA_character_)
   if (is.na(val) && ev == "GITHUB_PAT_GITHUB_COM") {
@@ -579,6 +588,11 @@ format.gitcreds <- function(x, header = TRUE, ...) {
 #' @export
 
 gitcreds_fill <- function(input, args = character(), dummy = TRUE) {
+  args <- gitcreds_fill_args(args, dummy)
+  gitcreds_run("fill", input, args)
+}
+
+gitcreds_fill_args <- function(args, dummy) {
   if (dummy) {
     helper <- paste0(
       "credential.helper=\"! echo protocol=dummy;",
@@ -588,8 +602,7 @@ gitcreds_fill <- function(input, args = character(), dummy = TRUE) {
     )
     args <- c(args, "-c", helper)
   }
-
-  gitcreds_run("fill", input, args)
+  args
 }
 
 #' @details `gitcreds_approve()` calls `git credential approve`
@@ -1116,4 +1129,34 @@ squote <- function(x) {
 
 read_file <- function(path, ...) {
   readChar(path, nchars = file.info(path)$size, ...)
+}
+
+# ------------------------------------------------------------------------
+# for async queries
+# ------------------------------------------------------------------------
+
+#' The command that [gitcreds_get()] would run
+#'
+#' It is sometimes useful to get the system command that [gitcreds_get()]
+#' would run, to run it in a different way, e.g. in a background process.
+#'
+#' Differences with [gitcreds_get()]:
+#' * Does not deal with cache environment variables. You can do that
+#'   manually with [gitcreds_cache_envvar()] and [gitcreds_get_cache()].
+#' * Does not check for git separately, so you will never get a
+#'   `gitcreds_nogit_error` error. You can run `git --version` if you
+#'   want to check for git.
+#'
+#' @inheritParams gitcreds_get
+#'
+#' @export
+
+gitcreds_get_cmd <- function(url = "https://github.com") {
+  args <- gitcreds_fill_args(args = character(), dummy = TRUE)
+  list(
+    command = "git",
+    args = c(args, "credential", "fill"),
+    input = create_gitcreds_input(list(url = url)),
+    env = gitcreds_env()
+  )
 }

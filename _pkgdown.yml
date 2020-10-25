@@ -14,14 +14,15 @@ navbar:
 reference:
 - title: Easy API
   contents:
-  - gitcreds_get
-  - gitcreds_set
   - gitcreds_delete
+  - gitcreds_get
   - gitcreds_list_helpers
+  - gitcreds_set
 
 - title: Caching credentials
   contents:
   - gitcreds_cache_envvar
+  - gitcreds_get_cache
 
 - title: List credentials
   contents:
@@ -29,7 +30,8 @@ reference:
   
 - title: Low level API
   contents:
-  - gitcreds_fill
   - gitcreds_approve
-  - gitcreds_reject
+  - gitcreds_get_cmd
+  - gitcreds_fill
   - gitcreds_parse_output
+  - gitcreds_reject

@@ -51,11 +51,14 @@ jobs:
 
       - name: Install latest git, Windows
         if: runner.os == 'Windows'
-        run: choco install git.install
+        run: choco upgrade -y git.install
 
       - name: Install latest git, macOS
         if: runner.os == 'macOS'
-        run: brew cask install git-credential-manager-core
+        run: |
+          brew upgrade git
+          brew tap microsoft/git
+          brew cask install git-credential-manager-core
 
       - name: Query dependencies
         run: |

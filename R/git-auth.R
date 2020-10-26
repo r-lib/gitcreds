@@ -444,6 +444,7 @@ gitcreds_list_helpers <- function() {
 
 gitcreds_cache_envvar <- function(url) {
   pcs <- parse_url(url)
+  if (is.na(pcs$protocol) || is.na(pcs$host)) stop("Invalid URL")
 
   proto <- sub("^https?_$", "", paste0(pcs$protocol, "_"))
   user <- ifelse(pcs$username != "", paste0(pcs$username, "_AT_"), "")
@@ -538,6 +539,7 @@ gitcreds_delete_cache <- function(ev) {
 
 print.gitcreds <- function(x, header = TRUE, ...) {
   cat(format(x, header = header, ...), sep = "\n")
+  invisible(x)
 }
 
 #' @export
@@ -831,7 +833,7 @@ gitcreds_username_for_url <- function(url) {
       "config", "--get-urlmatch", "credential.username", shQuote(url)
     )),
     git_error = function(err) {
-      if (err$status == 1) NULL else throw(err)
+      if (err$status == 1) NULL else throw(err) # nocov
     }
   )
 }
@@ -840,7 +842,7 @@ gitcreds_username_generic <- function() {
   tryCatch(
     git_run(c("config", "credential.username")),
     git_error = function(err) {
-      if (err$status == 1) NULL else throw(err)
+      if (err$status == 1) NULL else throw(err) # nocov
     }
   )
 }
@@ -1043,7 +1045,7 @@ null_file <- function() {
 msg <- function(..., domain = NULL, appendLF = TRUE) {
   cnd <- .makeMessage(..., domain = domain, appendLF = appendLF)
   withRestarts(muffleMessage = function() NULL, {
-    signalCondition(simpleMessage(msg))
+    signalCondition(simpleMessage(cnd))
     output <- default_output()
     cat(cnd, file = output, sep = "")
   })

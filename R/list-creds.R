@@ -134,8 +134,8 @@ gitcreds_list <- function(url = "https://github.com",
     purl <- parse_url(url)
     if (!is.na(purl$host)) host <- purl$host
     if (!is.na(purl$protocol)) protocol <- purl$protocol
-    protocol <- protocol %||% "https"
   }
+  protocol <- protocol %||% "https"
 
   switch(
     credential_helper,
@@ -178,11 +178,7 @@ gitcreds_list_osxkeychain <- function(url, host, protocol) {
     attributes = attr
   )
 
-  if (is.null(host)) {
-    its <- Filter(is_osxkeychain_item, its)
-  }
-
-  its
+  Filter(is_osxkeychain_item, its)
 }
 
 is_osxkeychain_item <- function(it) {
@@ -194,9 +190,9 @@ is_osxkeychain_item <- function(it) {
 
 gitcreds_list_manager_core <- function(url, host, protocol) {
   os <- get_os()
-  if (os == "mac") {
+  if (os == "macos") {
     gitcreds_list_manager_core_macos(url, host, protocol)
-  } else if (os == "win") {
+  } else if (os == "windows") {
     gitcreds_list_manager_core_win(url, host, protocol)
   } else {
     stop("Unsupported OS for `manager-core`")
@@ -276,9 +272,9 @@ is_manager_item <- is_manager_core_win_item
 
 get_os <- function() {
   if (.Platform$OS.type == "windows") {
-    "win"
+    "windows"
   } else if (Sys.info()[["sysname"]] == "Darwin") {
-    "mac"
+    "macos"
   } else if (Sys.info()[["sysname"]] == "Linux") {
     "linux"
   } else {

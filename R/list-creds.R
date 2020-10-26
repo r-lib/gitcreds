@@ -246,6 +246,7 @@ is_manager_core_win_item <- function(it, protocol, host) {
   if (it$type != "generic") return(FALSE)
   if (!grepl("^git:", it$target_name)) return(FALSE)
   iturl <- sub("^git:", "", it$target_name)
+  if (is.null(host)) return(TRUE)
   piturl <- parse_url(iturl)
   !is.na(piturl$host) && piturl$host == host &&
     !is.na(piturl$protocol) && piturl$protocol == protocol

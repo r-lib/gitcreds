@@ -64,11 +64,29 @@ cleanup_windows <- function() {
 }
 
 cleanup_windows_manager <- function() {
-  # TODO
+  recs <- gitcreds_list(credential_helper = "manager", url = NULL)
+  for (rec in recs) {
+    try_silently({
+      cred <- list(
+        url = sub("^git:", "", rec$target_name),
+        username = rec$username
+      )
+      gitcreds_reject(cred, c("-c", "credential.helper=manager"))
+    })
+  }
 }
 
 cleanup_windows_manager_core <- function() {
-  # TODO
+  recs <- gitcreds_list(credential_helper = "manager-core", url = NULL)
+  for (rec in recs) {
+    try_silently({
+      cred <- list(
+        url = sub("^git:", "", rec$target_name),
+        username = rec$username
+      )
+      gitcreds_reject(cred, c("-c", "credential.helper=manager-core"))
+    })
+  }
 }
 
 cleanup_macos <- function() {

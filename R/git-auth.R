@@ -444,7 +444,10 @@ gitcreds_list_helpers <- function() {
 
 gitcreds_cache_envvar <- function(url) {
   pcs <- parse_url(url)
-  if (is.na(pcs$protocol) || is.na(pcs$host)) stop("Invalid URL")
+  bad <- is.na(pcs$protocol) | is.na(pcs$host)
+  if (any(bad)) {
+    stop("Invalid URL(s): ", paste(url[bad], collapse = ", "))
+  }
 
   proto <- sub("^https?_$", "", paste0(pcs$protocol, "_"))
   user <- ifelse(pcs$username != "", paste0(pcs$username, "_AT_"), "")

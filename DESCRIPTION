@@ -16,8 +16,10 @@ Roxygen: list(markdown = TRUE)
 Suggests: 
     testthat,
     knitr,
+    mockery,
     oskeyring,
-    rmarkdown
+    rmarkdown,
+    withr
 Remotes:
     gaborcsardi/oskeyring
 Encoding: UTF-8

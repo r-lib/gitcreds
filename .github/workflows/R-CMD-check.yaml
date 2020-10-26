@@ -49,6 +49,14 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@master
 
+      - name: Install latest git, Windows
+        if: runner.os == 'Windows'
+        run: choco install git.install
+
+      - name: Install latest git, macOS
+        if: runner.os == 'macOS'
+        run: brew cask install git-credential-manager-core
+
       - name: Query dependencies
         run: |
           install.packages('remotes')

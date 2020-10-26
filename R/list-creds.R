@@ -126,7 +126,7 @@ gitcreds_list <- function(url = "https://github.com",
   }
   if (length(credential_helper) > 1) {
     throw(new_warning("gitcreds_multiple_helpers"))
-    credential_helpers <- credential_helper[[1]]
+    credential_helper <- credential_helper[[1]]
   }
 
   host <- NULL

@@ -22,7 +22,7 @@ Suggests:
     rmarkdown,
     withr
 Remotes:
-    gaborcsardi/oskeyring
+    r-lib/oskeyring
 Encoding: UTF-8
 SystemRequirements: git
 VignetteBuilder: knitr

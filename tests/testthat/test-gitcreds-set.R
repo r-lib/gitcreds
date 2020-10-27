@@ -77,3 +77,33 @@ gc_test_that("gitcreds_set", {
   # deletes the cache
   expect_null(gitcreds_get_cache(gitcreds_cache_envvar("https://github.com")))
 })
+
+gc_test_that("multiple matching credentials", {
+  cred <- list(
+    url = "https://github.com",
+    username = "PersonalAccessToken",
+    password = "secret"
+  )
+  gitcreds_approve(cred)
+  cred2 <- list(
+    url = "https://github.com",
+    username = "PersonalAccessToken2",
+    password = "secret2"
+  )
+  gitcreds_approve(cred2)
+
+  mockery::stub(gitcreds_set_replace, "ack", FALSE)
+  mockery::stub(gitcreds_set_replace, "readline", "new-secret-2")
+  mockery::stub(gitcreds_set_replace, "cat", NULL)
+  expect_error(
+    gitcreds_set_replace("https://github.com", gitcreds_get()),
+    class = "gitcreds_abort_replace_error"
+  )
+
+  mockery::stub(gitcreds_set_replace, "ack", TRUE)
+  gitcreds_set_replace("https://github.com", gitcreds_get())
+
+  cred <- gitcreds_get(use_cache = FALSE)
+  expect_equal(cred$host, "github.com")
+  expect_equal(cred$password, "new-secret-2")
+})

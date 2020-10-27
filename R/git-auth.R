@@ -362,8 +362,25 @@ gitcreds_set <- function(url = "https://github.com") {
 #' @noRd
 
 gitcreds_set_replace <- function(url, current) {
-  if (!ack(url, current, "Replace")) {
-    throw(new_error("gitcreds_abort_replace_error"))
+
+  # Potentially take username from the credential we are replacing
+  current_username <- current$username
+
+  # Keep warning until there is a credential to replace.
+  # In case there are multiple credentials for the same URL.
+  while (!is.null(current)) {
+    if (!ack(url, current, "Replace")) {
+      throw(new_error("gitcreds_abort_replace_error"))
+    }
+
+    msg("\n-> Removing current credentials...")
+    gitcreds_reject(current)
+
+    current <- tryCatch(
+      gitcreds_get(url, use_cache = FALSE, set_cache = FALSE),
+      gitcreds_no_credentials = function(e) NULL
+    )
+    if (!is.null(current)) msg("\n!! Found more matching credentials!")
   }
 
   cat("\n")
@@ -371,10 +388,7 @@ gitcreds_set_replace <- function(url, current) {
 
   username <- get_url_username(url) %||%
     gitcreds_username(url) %||%
-    current$username
-
-  msg("-> Removing current credentials...")
-  gitcreds_reject(current)
+    current_username
 
   msg("-> Adding new credentials...")
   gitcreds_approve(list(url = url, username = username, password = pat))

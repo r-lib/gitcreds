@@ -13,9 +13,11 @@ URL: https://github.com/r-lib/gitcreds
 BugReports: https://github.com/r-lib/gitcreds/issues
 RoxygenNote: 7.1.1.9000
 Roxygen: list(markdown = TRUE)
-Suggests: 
+Suggests:
+    callr (>= 3.5.1),
     testthat,
     knitr,
+    mockery,
     oskeyring,
     rmarkdown,
     withr

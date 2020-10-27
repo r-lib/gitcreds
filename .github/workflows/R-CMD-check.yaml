@@ -49,6 +49,17 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@master
 
+      - name: Install latest git, Windows
+        if: runner.os == 'Windows'
+        run: choco upgrade -y git.install
+
+      - name: Install latest git, macOS
+        if: runner.os == 'macOS'
+        run: |
+          brew upgrade git
+          brew tap microsoft/git
+          brew cask install git-credential-manager-core
+
       - name: Query dependencies
         run: |
           install.packages('remotes')
@@ -76,6 +87,7 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
+          remotes::install_github("r-lib/testthat")
         shell: Rscript {0}
 
       - name: Session info

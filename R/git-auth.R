@@ -485,6 +485,10 @@ gitcreds_list_helpers <- function() {
 
 gitcreds_cache_envvar <- function(url) {
   pcs <- parse_url(url)
+  bad <- is.na(pcs$protocol) | is.na(pcs$host)
+  if (any(bad)) {
+    stop("Invalid URL(s): ", paste(url[bad], collapse = ", "))
+  }
 
   proto <- sub("^https?_$", "", paste0(pcs$protocol, "_"))
   user <- ifelse(pcs$username != "", paste0(pcs$username, "_AT_"), "")
@@ -579,6 +583,7 @@ gitcreds_delete_cache <- function(ev) {
 
 print.gitcreds <- function(x, header = TRUE, ...) {
   cat(format(x, header = header, ...), sep = "\n")
+  invisible(x)
 }
 
 #' @export
@@ -1066,7 +1071,7 @@ re_match <- function(text, pattern, perl = TRUE, ...) {
 }
 
 null_file <- function() {
-  if (.Platform$OS.type == "windows") "nul:" else "/dev/null"
+  if (get_os() == "windows") "nul:" else "/dev/null"
 }
 
 `%||%` <- function(l, r) if (is.null(l)) r else l
@@ -1084,7 +1089,7 @@ null_file <- function() {
 msg <- function(..., domain = NULL, appendLF = TRUE) {
   cnd <- .makeMessage(..., domain = domain, appendLF = appendLF)
   withRestarts(muffleMessage = function() NULL, {
-    signalCondition(simpleMessage(msg))
+    signalCondition(simpleMessage(cnd))
     output <- default_output()
     cat(cnd, file = output, sep = "")
   })

@@ -836,7 +836,7 @@ gitcreds_username_for_url <- function(url) {
       "config", "--get-urlmatch", "credential.username", shQuote(url)
     )),
     git_error = function(err) {
-      if (err$status == 1) NULL else throw(err) # nocov
+      if (err$status == 1) NULL else throw(err)
     }
   )
 }
@@ -845,7 +845,7 @@ gitcreds_username_generic <- function() {
   tryCatch(
     git_run(c("config", "credential.username")),
     git_error = function(err) {
-      if (err$status == 1) NULL else throw(err) # nocov
+      if (err$status == 1) NULL else throw(err)
     }
   )
 }
@@ -1030,7 +1030,7 @@ re_match <- function(text, pattern, perl = TRUE, ...) {
 }
 
 null_file <- function() {
-  if (.Platform$OS.type == "windows") "nul:" else "/dev/null"
+  if (get_os() == "windows") "nul:" else "/dev/null"
 }
 
 `%||%` <- function(l, r) if (is.null(l)) r else l

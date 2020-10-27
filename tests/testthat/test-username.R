@@ -24,7 +24,7 @@ gc_test_that("gitcreds_username_generic", {
 gc_test_that("errors", {
   mock <- function(args, ...) {
     args[1] <- basename(tempfile())
-    gitcreds::git_run(args, ...)
+    gitcreds:::git_run(args, ...)
   }
   mockery::stub(gitcreds_username_for_url, "git_run", mock)
   mockery::stub(gitcreds_username_generic, "git_run", mock)
@@ -32,7 +32,7 @@ gc_test_that("errors", {
   expect_null(gitcreds_username_generic())
 
   mock2 <- function(...) {
-    gitcreds::git_run(c("config", "--unset", "xxxxxx.yyyyy"))
+    gitcreds:::git_run(c("config", "--unset", "xxxxxx.yyyyy"))
   }
   mockery::stub(gitcreds_username_for_url, "git_run", mock2)
   mockery::stub(gitcreds_username_generic, "git_run", mock2)

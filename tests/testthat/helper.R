@@ -34,7 +34,8 @@ gc_test_that <- function(desc, code, os = NULL, helpers = NULL) {
 gc_test_that_run <- function(desc, code) {
   if (interactive() && !isTRUE(getOption("gitcreds_test_consent"))) {
     ch <- utils::menu(
-      title = "\n\nThis testsuite will delete your git credentials !!!",
+      title = paste0("\n\nThis testsuite will delete your ",
+                     "git credentials and config !!!"),
       choices = c("Yeah, fine.", "Wait, what?")
     )
     if (ch == 2) { cat("\nAborting...\n"); invokeRestart("abort") }
@@ -130,15 +131,15 @@ cleanup_macos_manager_core <- function() {
 
 clear_helpers <- function() {
   # Might return startus 5 if no helpers are set
-  try_silently(git_run(c("config", "--unset-all", "credential.helper")))
-  try_silently(git_run(c("config", "--remove-section", "credential")))
+  try_silently(git_run(c("config", "--global", "--unset-all", "credential.helper")))
+  try_silently(git_run(c("config", "--global", "--remove-section", "credential")))
 }
 
 local_helpers <- function(helpers, .local_envir = parent.frame()) {
   withr::defer(clear_helpers(), envir = .local_envir)
   clear_helpers()
-  git_run(c("config", "--add", "credential.helper", "\"\""))
+  git_run(c("config", "--global", "--add", "credential.helper", "\"\""))
   for (helper in helpers) {
-    git_run(c("config", "--add", "credential.helper", helper))
+    git_run(c("config", "--global", "--add", "credential.helper", helper))
   }
 }

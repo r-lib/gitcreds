@@ -17,7 +17,8 @@ Suggests:
     testthat,
     knitr,
     oskeyring,
-    rmarkdown
+    rmarkdown,
+    withr
 Remotes:
     gaborcsardi/oskeyring
 Encoding: UTF-8

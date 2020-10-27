@@ -15,10 +15,10 @@
 #'
 #' `gitcreds_get()` queries git credentials. It is typically used by package
 #' code that needs to authenticate to GitHub or another git repository.
-#' The end user might call it to checks that credentials are properly set
-#' up.
+#' The end user might call `gitcreds_get()` directly to check that the
+#' credentials are properly set up.
 #'
-#' `gitcreds_set()` add or updates git credentials in the credential store.
+#' `gitcreds_set()` adds or updates git credentials in the credential store.
 #' It is typically called by the user, and it only works in interactive
 #' sessions. It always asks for acknowledgement before it overwrites
 #' existing credentials.
@@ -31,8 +31,8 @@
 #'
 #' These functions use the `git credential` system command to query and set
 #' git credentials. They need an external git installation. You can
-#' download git from https://git-scm.com/downloads. A recent version, but
-#' at least git 2.9 is suggested.
+#' download git from https://git-scm.com/downloads. A recent version is
+#' best, but at least git 2.9 is suggested.
 #'
 #' If you want to avoid installing git, see 'Environment variables' below.
 #'
@@ -41,7 +41,7 @@
 #' ### New setup
 #'
 #' To set up password-less authentication to GitHub:
-#' 1. create a personal access token (PAT). See
+#' 1. Create a personal access token (PAT). See
 #'    https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token.
 #' 2. Call `gitcreds_set()` and give this token as the password.
 #' 3. Run `gitcreds_get(use_cache = FALSE)` to check that the new
@@ -58,7 +58,8 @@
 #' However, we still suggest that you add your token to the git credential
 #' store with `gitcreds_set()` and remove `GITHUB_PAT` from your
 #' `.Renviron` file. The credential store is more secure than storing
-#' tokens in files.
+#' tokens in files, and command line git also uses the credential store
+#' for password-less authentication.
 #'
 #' # Advanced topics
 #'
@@ -85,6 +86,14 @@
 #'    separate them with a colon. (If your user name or passwrd has `:`
 #'    characters, then you need to escape them with a preceding backslash.)
 #'
+#' ## Proxies
+#'
+#' git should pick up the proxy configuration from the `http_proxy`,
+#' `https_proxy`, and `all_proxy` environment variables. To override
+#' these, you can set the `http.proxy` git configuration key.
+#' More info here: https://git-scm.com/docs/git-config#Documentation/git-config.txt-httpproxy
+#' and here: https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/netconfig.md
+#'
 #' ## Credential helpers
 #'
 #' git credential helpers are an extensible, configurable mechanism to
@@ -95,12 +104,13 @@
 #' file system.
 #'
 #' gitcreds only works if a credential helper is configured. For the current
-#' git version (2.28.0), this is the case by default on Windows and macOS
+#' git version (2.29.0), this is the case by default on Windows and macOS
 #' (for git from HomeBrew), but most Linux distributions do not set up a
 #' default credential helper.
 #'
 #' You can use `gitcreds_list_helpers()` to see the _active_ credential
-#' helper(s) for a repository.
+#' helper(s) for a repository. Make sure you set the working directory
+#' to the git tree before calling `gitcreds_list_helpers()`.
 #'
 #' ## The current working directory
 #'
@@ -124,8 +134,8 @@
 #'
 #' ## Multiple accounts
 #'
-#' The various credential helpers support multiple accounts in different
-#' ways. Here are our recommendations.
+#' The various credential helpers support having multiple accounts on the
+#' same server in different ways. Here are our recommendations.
 #'
 #' ### macOS
 #'
@@ -137,18 +147,46 @@
 #'    This is the credential that will be used for URLs without user
 #'    names. The user name for this credential does not matter, but you
 #'    can choose something descriptive, e.g. "token", or "generic".
-#'4.  Configure git to use this username by default. E.g. if you chose
+#' 4. Configure git to use this username by default. E.g. if you chose
 #'    "generic", then run
 #'
 #'        git config --global crendetial.username generic
 #'
-#' 5.  Add all the other credentials, with appropriate user names. These
-#'     are the user names that you need to put in the URLs for the
-#'     repositories or operations you want to use them for. (GitHub does
-#'     not actually use the user names if the password is a PAT, but they
-#'     are used to look up the correct token in the credential store.)
+#' 5. Add all the other credentials, with appropriate user names. These
+#'    are the user names that you need to put in the URLs for the
+#'    repositories or operations you want to use them for. (GitHub does
+#'    not actually use the user names if the password is a PAT, but they
+#'    are used to look up the correct token in the credential store.)
 #'
-#' ### Windows
+#' ### Windows with git 2.29.0 or later
+#'
+#' 1. We suggest that you update to the latest git version, but at
+#'    least 2.29.0, and use the `manager-core` helper which is now default.
+#'    If you installed `manager-core` separately from git, we suggest that
+#'    you remove it, because it might cause confusion as to which helper is
+#'    actually used.
+#' 2. Remove all current credentials first, for the host you are targeting.
+#'    You can do this in 'Credential Manager' or `gitcreds::gitcreds_list()`
+#'    to find them and 'Credential Manager' or the oskeyring package to
+#'    remove them. You can also use the oskeyring package to back up the
+#'    tokens and passwords.
+#' 3. Then add the credential that you want to use for "generic access".
+#'    This is the credential that will be used for URLs without user names.
+#'    The user name for this credential does not matter, but you can choose
+#'    something descriptive, e.g. "PersonalAccessToken", "token", or
+#'    "generic".
+#' 4. Configure git to use this username by default. E.g. if you chose
+#'    "generic", then run
+#'
+#'        git config --global crendetial.username generic
+#'
+#' 5. Add all the other credentials, with appropriate user names.
+#'    These are the user names that you need to put in the URLs for the
+#'    repositories or operations you want to use them for. (GitHub does
+#'    not actually use the user names if the password is a PAT, but they
+#'    are used to look up the correct token from the credential store.)
+#'
+#' ### Windows with older git versions, 2.28.0 and before
 #'
 #' #### A single GitHub account
 #'
@@ -157,10 +195,10 @@
 #' Enterprise hosts), then you can use the default `manager` helper, and
 #' get away with the default auto-detected GCM authority setting.
 #'
-#' In this case, you can add you github.com credential with an arbitrary
+#' In this case, you can add your github.com credential with an arbitrary
 #' user name, and for each other host you can configure a default user
 #' name, and/or include user names in the URLs to these hosts. This is how
-#' to set a default user name for a host:
+#' to set a default user name for a host called `https://example.com`:
 #'
 #' ```
 #' git config --global credential.https://example.com.username myusername
@@ -172,10 +210,6 @@
 #' still use the `manager` helper, but you need to change the GCM authority
 #' by setting an option or an environment variable, see
 #' <https://github.com/microsoft/Git-Credential-Manager-for-Windows/blob/master/Docs/Configuration.md#authority.>
-#' Once
-#' <https://github.com/microsoft/Git-Credential-Manager-for-Windows/pull/891>
-#' is merged, you won't need to do this. (At least in recent git versions,
-#' that contain a GCM build with the fix.)
 #'
 #' This is how to change GCM authority in the config:
 #'
@@ -199,12 +233,19 @@
 #' Now you can add you credentials, the default one with the "generic" user
 #' name, and all the others with their specific user and host names.
 #'
+#' Alternatively, you can install a newer version of Git Credential Manager
+#' Core (GCM Core), at least version 2.0.252-beta, and use the
+#' `manager-core` helper. You'll potentially need to delete the older
+#' `manager-core` helper that came with git itself. With the newer version
+#' of GCM Core, you can use the same method as for newer git versions, see
+#' above.
+#'
 #' ## Multiple credential helpers
 #'
 #' It is possible to configure multiple credential helpers. If multiple
 #' helpers are configured for a repository, then `gitcreds_get()` will
-#' go over them until a credential is found. `gitcreds_set()` will set the
-#' new credentials in _every_ configured credential helper.
+#' go over them until a credential is found. `gitcreds_set()` will try to
+#' set the new credentials in _every_ configured credential helper.
 #'
 #' You can use [gitcreds_list_helpers()] to list all configured helpers.
 #'

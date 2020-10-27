@@ -694,7 +694,7 @@ We do this with an eye of supporting usernames and multiple users.
 
 3.  Then add the credential that you want to use for "generic access".
     This is the credential that will be used for URLs without user names.
-    The user name for this credential does not matter, but you can choose something descriptive, e.g. "PersonalAccessToken", "token", or "generic".
+    The user name for this credential does not matter, but you can choose something descriptive, e.g. "PersonalAccessToken", "token", or "generic".
 
 4.   Configure git to use this username by default.
     E.g. if you chose "generic", then run
@@ -705,7 +705,7 @@ We do this with an eye of supporting usernames and multiple users.
     These are the user names that you need to put in the URLs for the repositories or operations you want to use them for.
     (GitHub does not actually use the user names if the password is a PAT.)
 
-## Windows with older git version
+## Windows with older git versions
 
 ### At most one github.com credential
 

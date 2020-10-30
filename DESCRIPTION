@@ -21,8 +21,6 @@ Suggests:
     oskeyring,
     rmarkdown,
     withr
-Remotes:
-    r-lib/oskeyring
 Encoding: UTF-8
 SystemRequirements: git
 VignetteBuilder: knitr

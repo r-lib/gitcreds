@@ -159,7 +159,7 @@ gc_test_that("gitcreds_list_manager_core_macos", os = "macos",
 gc_test_that("gitcreds_list_manager_core_win", os = "windows",
              helper = "manager-core", {
 
-  if (packageVersion("oskeyring") < "0.1.0") skip("Needs newer oskeyring")
+  if (packageVersion("oskeyring") <= "0.1.0") skip("Needs newer oskeyring")
 
   # needs oskeyring
   fun <- function() {
@@ -219,7 +219,7 @@ gc_test_that("gitcreds_list_manager_core_win", os = "windows",
 gc_test_that("gitcreds_list_manager", os = "windows",
              helper = "manager", {
 
-  if (packageVersion("oskeyring") < "0.1.0") skip("Needs newer oskeyring")
+  if (packageVersion("oskeyring") <= "0.1.0") skip("Needs newer oskeyring")
 
   # needs oskeyring
   fun <- function() {

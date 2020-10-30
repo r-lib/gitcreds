@@ -158,6 +158,9 @@ gc_test_that("gitcreds_list_manager_core_macos", os = "macos",
 
 gc_test_that("gitcreds_list_manager_core_win", os = "windows",
              helper = "manager-core", {
+
+  if (packageVersion("oskeyring") < "0.1.0") skip("Needs newer oskeyring")
+
   # needs oskeyring
   fun <- function() {
     mockery::stub(gitcreds_list_manager_core_macos, "requireNamespace", FALSE)
@@ -215,6 +218,9 @@ gc_test_that("gitcreds_list_manager_core_win", os = "windows",
 
 gc_test_that("gitcreds_list_manager", os = "windows",
              helper = "manager", {
+
+  if (packageVersion("oskeyring") < "0.1.0") skip("Needs newer oskeyring")
+
   # needs oskeyring
   fun <- function() {
     mockery::stub(gitcreds_list_manager_core_macos, "requireNamespace", FALSE)

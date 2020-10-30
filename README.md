@@ -32,7 +32,7 @@ Query git credentials from R
 
 ## Installation
 
-Once on CRAN, install the package as usual:
+Install the package from CRAN:
 
 ``` r
 install.packages("gitcreds")

@@ -6,10 +6,7 @@
 <!-- badges: start -->
 
 [![R build
-status](https://github.com/gaborcsardi/gitcreds/workflows/R-CMD-check/badge.svg)](https://github.com/gaborcsardi/gitcreds/actions)
-[![](http://www.r-pkg.org/badges/version/gitcreds)](http://www.r-pkg.org/pkg/gitcreds)
-[![CRAN RStudio mirror
-downloads](http://cranlogs.r-pkg.org/badges/gitcreds)](http://www.r-pkg.org/pkg/gitcreds)
+status](https://github.com/r-lib/gitcreds/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/gitcreds/actions)
 <!-- badges: end -->
 
 Query git credentials from R

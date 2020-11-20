@@ -138,8 +138,8 @@ clear_helpers <- function() {
 local_helpers <- function(helpers, .local_envir = parent.frame()) {
   withr::defer(clear_helpers(), envir = .local_envir)
   clear_helpers()
-  git_run(c("config", "--global", "--add", "credential.helper", "\"\""))
+  gitcreds$git_run(c("config", "--global", "--add", "credential.helper", "\"\""))
   for (helper in helpers) {
-    git_run(c("config", "--global", "--add", "credential.helper", helper))
+    gitcreds$git_run(c("config", "--global", "--add", "credential.helper", helper))
   }
 }

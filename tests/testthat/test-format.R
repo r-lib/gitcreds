@@ -1,6 +1,6 @@
 
 test_that("format.gitcreds", {
-  cred <- new_gitcreds(
+  cred <- gitcreds$new_gitcreds(
     protocol = "https",
     host = "github.com",
     username = "user",
@@ -16,7 +16,7 @@ test_that("format.gitcreds", {
 })
 
 test_that("print.gitcreds", {
-  cred <- new_gitcreds(
+  cred <- gitcreds$new_gitcreds(
     protocol = "https",
     host = "github.com",
     username = "user",

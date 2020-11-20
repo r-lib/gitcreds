@@ -25,13 +25,13 @@ gc_test_that("gitcreds_cache_envvvar", {
 gc_test_that("gitcreds_get_cache", {
   # single password
   withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = "token"))
-  cred <- gitcreds_get_cache("GITHUB_PAT_GITHUB_COM")
+  cred <- gitcreds$gitcreds_get_cache("GITHUB_PAT_GITHUB_COM")
   expect_s3_class(cred, "gitcreds")
   expect_equal(cred$password, "token")
 
   # username + password
   withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = "user:pass"))
-  cred <- gitcreds_get_cache("GITHUB_PAT_GITHUB_COM")
+  cred <- gitcreds$gitcreds_get_cache("GITHUB_PAT_GITHUB_COM")
   expect_s3_class(cred, "gitcreds")
   expect_equal(cred$username, "user")
   expect_equal(cred$password, "pass")
@@ -41,7 +41,7 @@ gc_test_that("gitcreds_get_cache", {
     GITHUB_PAT_GITHUB_COM = NA_character_,
     GITHUB_PAT = "mytoken"
   ))
-  cred <- gitcreds_get_cache("GITHUB_PAT_GITHUB_COM")
+  cred <- gitcreds$gitcreds_get_cache("GITHUB_PAT_GITHUB_COM")
   expect_s3_class(cred, "gitcreds")
   expect_equal(cred$password, "mytoken")
 
@@ -51,7 +51,7 @@ gc_test_that("gitcreds_get_cache", {
     GITHUB_PAT = NA_character_,
     GITHUB_TOKEN = "mytoken3"
   ))
-  cred <- gitcreds_get_cache("GITHUB_PAT_GITHUB_COM")
+  cred <- gitcreds$gitcreds_get_cache("GITHUB_PAT_GITHUB_COM")
   expect_s3_class(cred, "gitcreds")
   expect_equal(cred$password, "mytoken3")
 
@@ -61,33 +61,33 @@ gc_test_that("gitcreds_get_cache", {
     GITHUB_PAT = NA_character_,
     GITHUB_TOKEN = NA_character_
   ))
-  expect_null(gitcreds_get_cache("GITHUB_PAT_GITHUB_COM"))
+  expect_null(gitcreds$gitcreds_get_cache("GITHUB_PAT_GITHUB_COM"))
 
   # Warn for invalid
   withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = "what:is:this"))
   expect_warning(
-    expect_null(gitcreds_get_cache("GITHUB_PAT_GITHUB_COM")),
+    expect_null(gitcreds$gitcreds_get_cache("GITHUB_PAT_GITHUB_COM")),
     "Invalid gitcreds credentials in env var"
   )
 
   # fails if it has to
   withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = "FAIL"))
   expect_error(
-    gitcreds_get_cache("GITHUB_PAT_GITHUB_COM"),
+    gitcreds$gitcreds_get_cache("GITHUB_PAT_GITHUB_COM"),
     class = "gitcreds_no_credentials"
   )
 
   withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = "FAIL:gitcreds_no_helper"))
   expect_error(
-    gitcreds_get_cache("GITHUB_PAT_GITHUB_COM"),
+    gitcreds$gitcreds_get_cache("GITHUB_PAT_GITHUB_COM"),
     class = "gitcreds_no_helper"
   )
 })
 
 gc_test_that("gitcreds_set_cache", {
   # : is escaped
-  gitcreds_set_cache("GITHUB_PAT_GITHUB_COM", list("x:y" = "a:b"))
-  cred <- gitcreds_get_cache("GITHUB_PAT_GITHUB_COM")
+  gitcreds$gitcreds_set_cache("GITHUB_PAT_GITHUB_COM", list("x:y" = "a:b"))
+  cred <- gitcreds$gitcreds_get_cache("GITHUB_PAT_GITHUB_COM")
   expect_s3_class(cred, "gitcreds")
   expect_equal(cred$username, "x:y")
   expect_equal(cred$password, "a:b")

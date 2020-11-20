@@ -189,7 +189,7 @@ is_osxkeychain_item <- function(it) {
 }
 
 gitcreds_list_manager_core <- function(url, host, protocol) {
-  os <- get_os()
+  os <- gitcreds$get_os()
   if (os == "macos") {
     gitcreds_list_manager_core_macos(url, host, protocol)
   } else if (os == "windows") {
@@ -270,17 +270,5 @@ gitcreds_list_manager <- function(url, host, protocol) {
 # this is the same, apparently
 
 is_manager_item <- is_manager_core_win_item
-
-get_os <- function() {
-  if (.Platform$OS.type == "windows") {
-    "windows"
-  } else if (Sys.info()[["sysname"]] == "Darwin") {
-    "macos"
-  } else if (Sys.info()[["sysname"]] == "Linux") {
-    "linux"
-  } else {
-    "unknown"
-  }
-}
 
 `%||%` <- function(l, r) if (is.null(l)) r else l

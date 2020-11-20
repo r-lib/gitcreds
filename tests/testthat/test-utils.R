@@ -74,8 +74,8 @@ gc_test_that("check_for_git", {
 })
 
 gc_test_that("get_os", os = "macos", helpers = "osxkeychain", {
-  mockery::stub(get_os, "Sys.info", c(sysname = "foobar"))
-  expect_equal(get_os(), "unknown")
+  mockery::stub(gitcreds$get_os, "Sys.info", c(sysname = "foobar"))
+  expect_equal(gitcreds$get_os(), "unknown")
 })
 
 test_that("get_url_username", {

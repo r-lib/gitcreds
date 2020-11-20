@@ -86,13 +86,13 @@ gc_test_that("gitcreds_list_manager_core", os = c("windows", "macos"), {
   mockery::stub(gitcreds_list_manager_core, "gitcreds_list_manager_core_macos", "macos")
   mockery::stub(gitcreds_list_manager_core, "gitcreds_list_manager_core_win", "win")
 
-  mockery::stub(gitcreds_list_manager_core, "get_os", "windows")
+  mockery::stub(gitcreds_list_manager_core, "gitcreds$get_os", "windows")
   expect_equal(gitcreds_list_manager_core(), "win")
 
-  mockery::stub(gitcreds_list_manager_core, "get_os", "macos")
+  mockery::stub(gitcreds_list_manager_core, "gitcreds$get_os", "macos")
   expect_equal(gitcreds_list_manager_core(), "macos")
 
-  mockery::stub(gitcreds_list_manager_core, "get_os", "linux")
+  mockery::stub(gitcreds_list_manager_core, "gitcreds$get_os", "linux")
   expect_error(
     gitcreds_list_manager_core(),
     "Unsupported OS"

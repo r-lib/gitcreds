@@ -709,6 +709,18 @@ null_file <- function() {
   if (get_os() == "windows") "nul:" else "/dev/null"
 }
 
+get_os <- function() {
+  if (.Platform$OS.type == "windows") {
+    "windows"
+  } else if (Sys.info()[["sysname"]] == "Darwin") {
+    "macos"
+  } else if (Sys.info()[["sysname"]] == "Linux") {
+    "linux"
+  } else {
+    "unknown"
+  }
+}
+
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
 #' Like [message()], but print to standard output in interactive

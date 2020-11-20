@@ -30,11 +30,15 @@ gc_test_that("gitcreds_get", os = c("windows", "macos"), {
   )
 
   # set_cache is FALSE
-  gitcreds_delete_cache(gitcreds_cache_envvar("https://github.com"))
-  expect_null(gitcreds_get_cache(gitcreds_cache_envvar("https://github.com")))
+  gitcreds$gitcreds_delete_cache(gitcreds_cache_envvar("https://github.com"))
+  expect_null(gitcreds$gitcreds_get_cache(
+    gitcreds_cache_envvar("https://github.com")
+  ))
 
-  gitcreds_approve(cred)
+gitcreds_approve(cred)
   cred4 <- gitcreds_get(set_cache = FALSE)
   chk(cred4)
-  expect_null(gitcreds_get_cache(gitcreds_cache_envvar("https://github.com")))
+  expect_null(gitcreds$gitcreds_get_cache(
+    gitcreds_cache_envvar("https://github.com")
+  ))
 })

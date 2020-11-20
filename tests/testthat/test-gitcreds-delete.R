@@ -36,5 +36,7 @@ gc_test_that("gitcreds_delete", {
   )
 
   # deletes cache as well
-  expect_null(gitcreds_get_cache(gitcreds_cache_envvar("https://github.com")))
+  expect_null(gitcreds$gitcreds_get_cache(
+    gitcreds_cache_envvar("https://github.com")
+  ))
 })

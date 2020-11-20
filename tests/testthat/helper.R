@@ -6,11 +6,11 @@ is_ci <- function() {
 gc_test_that <- function(desc, code, os = NULL, helpers = NULL) {
   if (!is_ci()) return()
   if (!is.null(os)) {
-    if (! get_os() %in% os) return()
+    if (! gitcreds$get_os() %in% os) return()
   }
 
   if (is.null(helpers)) {
-    os <- get_os()
+    os <- gitcreds$get_os()
     if (os == "windows") {
       helpers <- c("manager", "manager-core")
     } else if (os == "macos") {
@@ -42,11 +42,11 @@ gc_test_that_run <- function(desc, code) {
     options(gitcreds_test_consent = TRUE)
   }
 
-  if (get_os() == "windows") {
+  if (gitcreds$get_os() == "windows") {
     cleanup_windows()
     on.exit(cleanup_windows(), add = TRUE)
   }
-  if (get_os() == "macos")  {
+  if (gitcreds$get_os() == "macos")  {
     cleanup_macos()
     on.exit(cleanup_macos(), add = TRUE)
   }
@@ -138,8 +138,8 @@ clear_helpers <- function() {
 local_helpers <- function(helpers, .local_envir = parent.frame()) {
   withr::defer(clear_helpers(), envir = .local_envir)
   clear_helpers()
-  git_run(c("config", "--global", "--add", "credential.helper", "\"\""))
+  gitcreds$git_run(c("config", "--global", "--add", "credential.helper", "\"\""))
   for (helper in helpers) {
-    git_run(c("config", "--global", "--add", "credential.helper", helper))
+    gitcreds$git_run(c("config", "--global", "--add", "credential.helper", helper))
   }
 }

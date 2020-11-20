@@ -1,8 +1,8 @@
 
 gc_test_that("gitcreds_set_new", os = c("windows", "macos"), {
-  mockery::stub(gitcreds_set_new, "readline", "new-secret")
-  mockery::stub(gitcreds_set_new, "cat", NULL)
-  gitcreds_set_new("https://github.com")
+  mockery::stub(gitcreds$gitcreds_set_new, "readline", "new-secret")
+  mockery::stub(gitcreds$gitcreds_set_new, "cat", NULL)
+  gitcreds$gitcreds_set_new("https://github.com")
 
   cred <- gitcreds_get(set_cache = FALSE)
   expect_equal(cred$host, "github.com")
@@ -17,16 +17,16 @@ gc_test_that("gitcreds_set_replace", os = c("windows", "macos"), {
   )
   gitcreds_approve(cred)
 
-  mockery::stub(gitcreds_set_replace, "ack", FALSE)
-  mockery::stub(gitcreds_set_replace, "readline", "new-secret-2")
-  mockery::stub(gitcreds_set_replace, "cat", NULL)
+  mockery::stub(gitcreds$gitcreds_set_replace, "ack", FALSE)
+  mockery::stub(gitcreds$gitcreds_set_replace, "readline", "new-secret-2")
+  mockery::stub(gitcreds$gitcreds_set_replace, "cat", NULL)
   expect_error(
-    gitcreds_set_replace("https://github.com", gitcreds_get()),
+    gitcreds$gitcreds_set_replace("https://github.com", gitcreds_get()),
     class = "gitcreds_abort_replace_error"
   )
 
-  mockery::stub(gitcreds_set_replace, "ack", TRUE)
-  gitcreds_set_replace("https://github.com", gitcreds_get())
+  mockery::stub(gitcreds$gitcreds_set_replace, "ack", TRUE)
+  gitcreds$gitcreds_set_replace("https://github.com", gitcreds_get())
 
   cred <- gitcreds_get(use_cache = FALSE)
   expect_equal(cred$host, "github.com")
@@ -75,7 +75,9 @@ gc_test_that("gitcreds_set", {
   expect_equal(called, "gitcreds_set_new")
 
   # deletes the cache
-  expect_null(gitcreds_get_cache(gitcreds_cache_envvar("https://github.com")))
+  expect_null(gitcreds$gitcreds_get_cache(
+    gitcreds_cache_envvar("https://github.com")
+  ))
 })
 
 gc_test_that("multiple matching credentials", {
@@ -92,16 +94,16 @@ gc_test_that("multiple matching credentials", {
   )
   gitcreds_approve(cred2)
 
-  mockery::stub(gitcreds_set_replace, "ack", FALSE)
-  mockery::stub(gitcreds_set_replace, "readline", "new-secret-2")
-  mockery::stub(gitcreds_set_replace, "cat", NULL)
+  mockery::stub(gitcreds$gitcreds_set_replace, "ack", FALSE)
+  mockery::stub(gitcreds$gitcreds_set_replace, "readline", "new-secret-2")
+  mockery::stub(gitcreds$gitcreds_set_replace, "cat", NULL)
   expect_error(
-    gitcreds_set_replace("https://github.com", gitcreds_get()),
+    gitcreds$gitcreds_set_replace("https://github.com", gitcreds_get()),
     class = "gitcreds_abort_replace_error"
   )
 
-  mockery::stub(gitcreds_set_replace, "ack", TRUE)
-  gitcreds_set_replace("https://github.com", gitcreds_get())
+  mockery::stub(gitcreds$gitcreds_set_replace, "ack", TRUE)
+  gitcreds$gitcreds_set_replace("https://github.com", gitcreds_get())
 
   cred <- gitcreds_get(use_cache = FALSE)
   expect_equal(cred$host, "github.com")

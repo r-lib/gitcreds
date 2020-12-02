@@ -393,7 +393,7 @@ git_run <- function(args, input = NULL) {
   )
 
   if (!is.null(attr(out, "status")) && attr(out, "status") != 0) {
-    throw(new_error(
+    throw(new_git_error(
       "git_error",
       args = args,
       stdout = out,
@@ -580,6 +580,12 @@ new_error <- function(class, ..., message = "", call. = TRUE, domain = NULL) {
   cond <- list(message = message, ...)
   if (call.) cond$call <- sys.call(-1)
   class(cond) <- c(class, "gitcreds_error", "error", "condition")
+  cond
+}
+
+new_git_error <- function(class, ..., stderr) {
+  cond <- new_error(class, ..., stderr = stderr)
+  cond$message <- paste0(cond$message, ": ", stderr)
   cond
 }
 

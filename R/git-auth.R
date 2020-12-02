@@ -377,9 +377,17 @@ gitcreds_run <- function(command, input, args = character()) {
 git_run <- function(args, input = NULL) {
   stderr_file <- tempfile("gitcreds-stderr-")
   on.exit(unlink(stderr_file, recursive = TRUE), add = TRUE)
+  if (!is.null(input)) {
+    stdin_file <- tempfile("gitcreds-stdin-")
+    on.exit(unlink(stdin_file, recursive = TRUE), add = TRUE)
+    writeBin(charToRaw(input), stdin_file)
+    stdin <- stdin_file
+  } else {
+    stdin <- ""
+  }
   out <- tryCatch(
     suppressWarnings(system2(
-      "git", args, input = input, stdout = TRUE, stderr = stderr_file
+      "git", args, stdin = stdin, stdout = TRUE, stderr = stderr_file
     )),
     error = function(e) NULL
   )

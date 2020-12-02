@@ -204,3 +204,10 @@ test_that("is_interactive", {
     )
   )
 })
+
+gc_test_that("git_run", {
+  err <- tryCatch(gitcreds$git_run("qwertyzxcvbn"), error = function(x) x)
+  expect_s3_class(err, "git_error")
+  expect_s3_class(err, "gitcreds_error")
+  expect_match(conditionMessage(err), "System git failed:.*qwertyzxcvbn")
+})

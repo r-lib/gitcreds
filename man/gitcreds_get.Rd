@@ -77,13 +77,24 @@ It is typically called by the user, and it only works in interactive
 sessions. It always asks for acknowledgement.
 
 \code{gitcreds_list_helpers()} lists the active credential helpers.
+\subsection{git versions}{
 
 These functions use the \verb{git credential} system command to query and set
 git credentials. They need an external git installation. You can
 download git from https://git-scm.com/downloads. A recent version is
 best, but at least git 2.9 is suggested.
 
+gitcreds should work out of the box on macOS with git versions 2.9.2
+or later, and on Windows with git versions 2.12.1 or later, using the
+default git settings. On Windows, for git versions from 2.9.2 up until
+1.12.1 you probably need to set the default credetial helper:\preformatted{git config --global credential.helper wincred
+}
+
+See more about credential helpers below.
+
 If you want to avoid installing git, see 'Environment variables' below.
+}
+
 \subsection{GitHub}{
 \subsection{New setup}{
 

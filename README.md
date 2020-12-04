@@ -188,7 +188,7 @@ level `gitcreds_fill()`, `gitcreds_approve()` and `gitcreds_reject()`
 functions.
 
 See also [gitcreds for package
-authors](https://r-lib.github.io/gitcreds/articles/package.html).
+authors](https://gitcreds.r-lib.org/articles/package.html).
 
 ## License
 

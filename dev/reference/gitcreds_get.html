@@ -200,11 +200,12 @@ best, but at least git 2.9 is suggested.</p>
 <p>gitcreds should work out of the box on macOS with git versions 2.9.2
 or later, and on Windows with git versions 2.12.1 or later, using the
 default git settings. On Windows, for git versions from 2.9.2 up until
-1.12.1 you probably need to set the default credetial helper:</p><pre>git config --global credential.helper wincred
-</pre>
-
-<p>See more about credential helpers below.</p>
-<p>If you want to avoid installing git, see 'Environment variables' below.</p>
+2.12.1 you probably need to set the default credetial helper to
+<code>wincred</code>. It is usually simpler to update git to a recent version.</p>
+<p>To see your current git version run <code>git --version</code> from your shell.
+Or from R:<div class="r"></p><pre><span class='fu'><a href='https://rdrr.io/r/base/system.html'>system</a></span><span class='op'>(</span><span class='st'>"git --version"</span><span class='op'>)</span>
+</pre><p></div></p>
+<p>If you need to avoid installing git, see 'Environment variables' below.</p>
 
 <h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>GitHub</h3>
 

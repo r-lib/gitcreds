@@ -1,5 +1,5 @@
 
-# gitcreds development version
+# gitcreds 0.1.1
 
 * gitcreds now works with older git versions on Windows. It should work
   without any configuration for git 2.12.1 or later, and with minimal

@@ -76,7 +76,7 @@ Otherwise please start at 'Basics' below." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">gitcreds</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -113,7 +113,7 @@ Otherwise please start at 'Basics' below." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Query and set git credentials</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/gitcreds/blob/master/R/git-auth.R'><code>R/git-auth.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/gitcreds/blob/master/R/aaa-doc.R'><code>R/aaa-doc.R</code></a></small>
     <div class="hidden name"><code>gitcreds_get.Rd</code></div>
     </div>
 
@@ -190,12 +190,24 @@ existing credentials.</p>
 <p><code>gitcreds_delete()</code> deletes git credentials from the credential store.
 It is typically called by the user, and it only works in interactive
 sessions. It always asks for acknowledgement.</p>
-<p><code>gitcreds_list_helpers()</code> lists the active credential helpers.</p>
+<p><code>gitcreds_list_helpers()</code> lists the active credential helpers.</p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>git versions</h3>
+
+
 <p>These functions use the <code>git credential</code> system command to query and set
 git credentials. They need an external git installation. You can
 download git from https://git-scm.com/downloads. A recent version is
 best, but at least git 2.9 is suggested.</p>
-<p>If you want to avoid installing git, see 'Environment variables' below.</p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>GitHub</h3>
+<p>gitcreds should work out of the box on macOS with git versions 2.9.2
+or later, and on Windows with git versions 2.12.1 or later, using the
+default git settings. On Windows, for git versions from 2.9.2 up until
+2.12.1 you probably need to set the default credetial helper to
+<code>wincred</code>. It is usually simpler to update git to a recent version.</p>
+<p>To see your current git version run <code>git --version</code> from your shell.
+Or from R:<div class="r"></p><pre><span class='fu'><a href='https://rdrr.io/r/base/system.html'>system</a></span><span class='op'>(</span><span class='st'>"git --version"</span><span class='op'>)</span>
+</pre><p></div></p>
+<p>If you need to avoid installing git, see 'Environment variables' below.</p>
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>GitHub</h3>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>New setup</h4>
 

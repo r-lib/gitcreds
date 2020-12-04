@@ -87,12 +87,14 @@ best, but at least git 2.9 is suggested.
 gitcreds should work out of the box on macOS with git versions 2.9.2
 or later, and on Windows with git versions 2.12.1 or later, using the
 default git settings. On Windows, for git versions from 2.9.2 up until
-1.12.1 you probably need to set the default credetial helper:\preformatted{git config --global credential.helper wincred
-}
+2.12.1 you probably need to set the default credetial helper to
+\code{wincred}. It is usually simpler to update git to a recent version.
 
-See more about credential helpers below.
+To see your current git version run \code{git --version} from your shell.
+Or from R:\if{html}{\out{<div class="r">}}\preformatted{system("git --version")
+}\if{html}{\out{</div>}}
 
-If you want to avoid installing git, see 'Environment variables' below.
+If you need to avoid installing git, see 'Environment variables' below.
 }
 
 \subsection{GitHub}{

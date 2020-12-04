@@ -39,15 +39,17 @@
 #' gitcreds should work out of the box on macOS with git versions 2.9.2
 #' or later, and on Windows with git versions 2.12.1 or later, using the
 #' default git settings. On Windows, for git versions from 2.9.2 up until
-#' 1.12.1 you probably need to set the default credetial helper:
+#' 2.12.1 you probably need to set the default credetial helper to
+#' `wincred`. It is usually simpler to update git to a recent version.
 #'
+#' To see your current git version run `git --version` from your shell.
+#' Or from R:
+#'
+#' ```r
+#' system("git --version")
 #' ```
-#' git config --global credential.helper wincred
-#' ```
 #'
-#' See more about credential helpers below.
-#'
-#' If you want to avoid installing git, see 'Environment variables' below.
+#' If you need to avoid installing git, see 'Environment variables' below.
 #'
 #' ## GitHub
 #'

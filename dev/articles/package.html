@@ -51,7 +51,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/r-lib/gitcreds/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -65,8 +65,7 @@
 
       
 
-      </header><script src="package_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="package_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="package_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="package_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>gitcreds for package authors</h1>
@@ -170,7 +169,7 @@
     <span class="st">"bad"</span>
   <span class="op">)</span>
 <span class="op">}</span><span class="op">)</span></code></pre></div>
-<pre><code>## Test passed 🌈</code></pre>
+<pre><code>## Test passed 😀</code></pre>
 <p>If you want gitcreds to return a specific credential record, then you can specify the fields of the record in the environment variable, separated by colons. For example:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org">testthat</a></span><span class="op">)</span>
@@ -191,7 +190,7 @@
 ##   host    : github.com
 ##   username: user1
 ##   password: &lt;-- hidden --&gt;
-## Test passed 😀</code></pre>
+## Test passed 🥳</code></pre>
 <p>If you want gitcreds to fail for a specific host, set the corresponding environment variable to <code>"FAIL"</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org">testthat</a></span><span class="op">)</span>
@@ -204,7 +203,7 @@
     class <span class="op">=</span> <span class="st">"gitcreds_no_credentials"</span>
   <span class="op">)</span>
 <span class="op">}</span><span class="op">)</span></code></pre></div>
-<pre><code>## Test passed 🎉</code></pre>
+<pre><code>## Test passed 🥳</code></pre>
 <p>If you want gitcreds to fail with a specific error, then include the error class after a <code>"FAIL:"</code> prefix, in the environment variable. See the list of possible error classes above. For example:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org">testthat</a></span><span class="op">)</span>
@@ -219,7 +218,7 @@
     class <span class="op">=</span> <span class="st">"gitcreds_nogit_error"</span>
   <span class="op">)</span>
 <span class="op">}</span><span class="op">)</span></code></pre></div>
-<pre><code>## Test passed 🎉</code></pre>
+<pre><code>## Test passed 🎊</code></pre>
 <p>It is not currently possible to simulate the additional data in the error object, e.g. the standard output of a failed git command. If you need this for a test case, then your test case can call <code><a href="../reference/gitcreds_get.html">gitcreds_get()</a></code> directly and you can use the mockery package to make gitcreds fail with the desired error object.</p>
 </div>
   </div>

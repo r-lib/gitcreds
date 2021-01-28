@@ -58,7 +58,7 @@ jobs:
         run: |
           brew upgrade git
           brew tap microsoft/git
-          brew cask install git-credential-manager-core
+          brew install --cask git-credential-manager-core
 
       - name: Query dependencies
         run: |

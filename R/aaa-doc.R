@@ -39,7 +39,7 @@
 #' gitcreds should work out of the box on macOS with git versions 2.9.2
 #' or later, and on Windows with git versions 2.12.1 or later, using the
 #' default git settings. On Windows, for git versions from 2.9.2 up until
-#' 2.12.1 you probably need to set the default credetial helper to
+#' 2.12.1 you probably need to set the default credential helper to
 #' `wincred`. It is usually simpler to update git to a recent version.
 #'
 #' To see your current git version run `git --version` from your shell.
@@ -165,7 +165,7 @@
 #' 4. Configure git to use this username by default. E.g. if you chose
 #'    "generic", then run
 #'
-#'        git config --global crendetial.username generic
+#'        git config --global credential.username generic
 #'
 #' 5. Add all the other credentials, with appropriate user names. These
 #'    are the user names that you need to put in the URLs for the
@@ -193,7 +193,7 @@
 #' 4. Configure git to use this username by default. E.g. if you chose
 #'    "generic", then run
 #'
-#'        git config --global crendetial.username generic
+#'        git config --global credential.username generic
 #'
 #' 5. Add all the other credentials, with appropriate user names.
 #'    These are the user names that you need to put in the URLs for the

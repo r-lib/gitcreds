@@ -677,7 +677,7 @@ We do this with an eye of supporting usernames and multiple users.
 4.  Configure git to use this username by default.
     E.g. if you chose "generic", then run
 
-        git config --global crendetial.username generic
+        git config --global credential.username generic
 
 5.  Add all the other credentials, with appropriate user names.
     These are the user names that you need to put in the URLs for the repositories or operations you want to use them for.
@@ -699,7 +699,7 @@ We do this with an eye of supporting usernames and multiple users.
 4.   Configure git to use this username by default.
     E.g. if you chose "generic", then run
 
-        git config --global crendetial.username generic
+        git config --global credential.username generic
 
 5.  Add all the other credentials, with appropriate user names.
     These are the user names that you need to put in the URLs for the repositories or operations you want to use them for.

@@ -339,7 +339,7 @@ We do this with an eye of supporting usernames and multiple users.
 
 -   Not installed by default (git 2.28.0).
 
--   Install from brew, according to the instructions: <https://github.com/microsoft/Git-Credential-Manager-Core#macos-homebrew>
+-   Install from brew, according to the instructions: <https://github.com/GitCredentialManager/git-credential-manager#macos-homebrew>
 
 -   If updates your global git config, adding these lines:
 
@@ -380,7 +380,7 @@ We do this with an eye of supporting usernames and multiple users.
 -   It supports different *providers*.
     Providers are auto-detected by default.
     GitHub has its own provider, detected via the `github.com` URL.
-    The provider can be configured user a git config key or an environment variable: <https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/configuration.md#credentialprovider>
+    The provider can be configured user a git config key or an environment variable: <https://github.com/GitCredentialManager/git-credential-manager/blob/master/docs/configuration.md>
 
 -   It does not currently supports namepaces (like `manager`).
 
@@ -424,7 +424,7 @@ We do this with an eye of supporting usernames and multiple users.
         password=secret
 
     This is because the username is not stored as part of the URL by the GitHub provider.
-    Related issue: <https://github.com/microsoft/Git-Credential-Manager-Core/issues/160> `manager` has a similar problem, it is linked from this GitHub issue.
+    Related issue: <https://github.com/GitCredentialManager/git-credential-manager/issues/160> `manager` has a similar problem, it is linked from this GitHub issue.
 
 -   If you set the provider to Generic, then usernames work as expected.
     In this case, this is stored in the keychain:
@@ -647,7 +647,7 @@ We do this with an eye of supporting usernames and multiple users.
     See above for the macOS version.
 
 -   It works similarly to `manager` , I haven't seen any differences in behavior (version was 2.0.194.40577).
-    Instead of authorities, we need to set up providers: <https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/migration.md#gcm_authority.>
+    Instead of authorities, we need to set up providers: <https://github.com/GitCredentialManager/git-credential-manager/blob/master/docs/migration.md>.
     The `Generic` provider works the same way as the `Basic` authority in `manager`.
 
 -   Unfortunately setting `GCM_AUTHORITY` will make `manager-core` break, so it is not possible to use both `manager` and `manager-core` if you need to set this environment variable.
@@ -655,7 +655,7 @@ We do this with an eye of supporting usernames and multiple users.
 ## `manager-core` (on Windows, from 2.0.246-beta)
 
 -   This is now the version that is the default helper in git 2.29.0 and later. `manager` is still installed, but the default system config sets `manager-core`.
--   It supports multiple users better: <https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700544889>
+-   It supports multiple users better: <https://github.com/GitCredentialManager/git-credential-manager/issues/160#issuecomment-700544889>
 -   When storing a credential, it first checks if there is a target name without a username. If there is, then it uses the target name without the username. It stores the username in the `username` field of the credential, still. so it is not lost.
 -   When looking up a credential without a username, it will return the first credential it can find, even if the target name contains a username, and there is another credential without a username in the target name.
 -   When looking up a credential with a username, it may return any credential with a matching username, and a target name that matches the host. The username inside the target name does not actually matter.

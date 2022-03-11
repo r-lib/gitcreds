@@ -12,7 +12,7 @@ gc_test_that <- function(desc, code, os = NULL, helpers = NULL) {
   if (is.null(helpers)) {
     os <- gitcreds$get_os()
     if (os == "windows") {
-      helpers <- c("manager", "manager-core")
+      helpers <- c("manager-core")
     } else if (os == "macos") {
       helpers <- c("osxkeychain", "manager-core")
     } else {

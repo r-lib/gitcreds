@@ -12,8 +12,6 @@ coverage](https://codecov.io/gh/r-lib/gitcreds/branch/main/graph/badge.svg)](htt
 [![R-CMD-check](https://github.com/r-lib/gitcreds/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r-lib/gitcreds/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-Query git credentials from R
-
 ## Features
 
 -   (Re)use the same credentials in command line git, R and the RStudio

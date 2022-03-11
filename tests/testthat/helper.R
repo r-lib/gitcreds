@@ -26,7 +26,8 @@ gc_test_that <- function(desc, code, os = NULL, helpers = NULL) {
   lapply(helpers, function(helper) {
     local_helpers(helper)
     withr::local_envvar(GITCREDS_TEST_HELPER = helper)
-    test <- substitute(gc_test_that_run(desc, code), list(code = code))
+    label <- paste0(desc, " [", helper, "]")
+    test <- substitute(gc_test_that_run(label, code), list(code = code))
     eval(test)
   })
 }

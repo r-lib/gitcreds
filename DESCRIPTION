@@ -9,8 +9,7 @@ Description: Query, set, delete credentials from the 'git' credential
     and/or other 'git' repositories.
 License: MIT + file LICENSE
 LazyData: true
-URL:
-    https://gitcreds.r-lib.org/,
+URL: https://gitcreds.r-lib.org/,
     https://github.com/r-lib/gitcreds
 BugReports: https://github.com/r-lib/gitcreds/issues
 RoxygenNote: 7.1.1.9000
@@ -26,3 +25,4 @@ Suggests:
 Encoding: UTF-8
 SystemRequirements: git
 VignetteBuilder: knitr
+Config/Needs/website: tidyverse/tidytemplate

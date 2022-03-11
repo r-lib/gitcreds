@@ -1,3 +1,7 @@
++url: https://gitcreds.r-lib.org/
++template:
++  bootstrap: 5
+
 development:
   mode: auto
 

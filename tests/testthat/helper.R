@@ -59,7 +59,7 @@ gc_test_that_run <- function(desc, code) {
     GCM_PROVIDER = NA_character_
   ))
 
-  test_that(desc, code)
+  test_that(desc, { code })
 }
 
 cleanup_windows <- function() {

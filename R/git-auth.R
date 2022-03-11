@@ -422,7 +422,7 @@ ack <- function(url, current, what = "Replace") {
   msg(paste0(format(current, header = FALSE), collapse = "\n"), "\n")
 
   choices <- c(
-    "Keep these credentials",
+    "Abort update with error, and keep the existing credentials",
     paste(what, "these credentials"),
     if (has_password(current)) "See the password / token"
   )

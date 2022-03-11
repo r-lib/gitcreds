@@ -10,6 +10,7 @@ Description: Query, set, delete credentials from the 'git' credential
 License: MIT + file LICENSE
 URL: https://gitcreds.r-lib.org/, https://github.com/r-lib/gitcreds
 BugReports: https://github.com/r-lib/gitcreds/issues
+Depends: R (>= 3.4)
 Suggests:
     codetools,
     covr,

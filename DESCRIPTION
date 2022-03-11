@@ -1,26 +1,34 @@
 Package: gitcreds
 Title: Query 'git' Credentials from 'R'
 Version: 0.1.1.9000
-Author: Gábor Csárdi
-Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
+Authors@R: c(
+    person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
+    person("RStudio", role = c("cph", "fnd"))
+  )
 Description: Query, set, delete credentials from the 'git' credential
-    store. Manage 'GitHub' tokens and other 'git' credentials. This package
-    is to be used by other packages that need to authenticate to 'GitHub'
-    and/or other 'git' repositories.
+    store. Manage 'GitHub' tokens and other 'git' credentials. This
+    package is to be used by other packages that need to authenticate to
+    'GitHub' and/or other 'git' repositories.
 License: MIT + file LICENSE
-LazyData: true
-URL: https://github.com/r-lib/gitcreds
+URL: https://gitcreds.r-lib.org/, https://github.com/r-lib/gitcreds
 BugReports: https://github.com/r-lib/gitcreds/issues
-RoxygenNote: 7.1.1.9000
-Roxygen: list(markdown = TRUE)
+Depends: R (>= 3.4)
+Remotes:
+    r-lib/oskeyring
 Suggests:
     codetools,
-    testthat,
+    covr,
     knitr,
     mockery,
     oskeyring,
     rmarkdown,
+    testthat (>= 3.0.0),
     withr
+VignetteBuilder: 
+    knitr
+Config/Needs/website: tidyverse/tidytemplate
 Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
 SystemRequirements: git
-VignetteBuilder: knitr
+Config/testthat/edition: 3

@@ -12,7 +12,7 @@ gc_test_that <- function(desc, code, os = NULL, helpers = NULL) {
   if (is.null(helpers)) {
     os <- gitcreds$get_os()
     if (os == "windows") {
-      helpers <- c("manager", "manager-core")
+      helpers <- c("manager-core")
     } else if (os == "macos") {
       helpers <- c("osxkeychain", "manager-core")
     } else {
@@ -26,7 +26,8 @@ gc_test_that <- function(desc, code, os = NULL, helpers = NULL) {
   lapply(helpers, function(helper) {
     local_helpers(helper)
     withr::local_envvar(GITCREDS_TEST_HELPER = helper)
-    test <- substitute(gc_test_that_run(desc, code), list(code = code))
+    label <- paste0(desc, " [", helper, "]")
+    test <- substitute(gc_test_that_run(label, code), list(code = code))
     eval(test)
   })
 }
@@ -59,7 +60,7 @@ gc_test_that_run <- function(desc, code) {
     GCM_PROVIDER = NA_character_
   ))
 
-  test_that(desc, code)
+  test_that(desc, { code })
 }
 
 cleanup_windows <- function() {

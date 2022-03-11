@@ -17,9 +17,9 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R build status](https://github.com/r-lib/gitcreds/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/gitcreds/actions)
+[![Codecov test coverage](https://codecov.io/gh/r-lib/gitcreds/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r-lib/gitcreds?branch=main)
+[![R-CMD-check](https://github.com/r-lib/gitcreds/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r-lib/gitcreds/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
-
-Query git credentials from R
 
 ## Features
 
@@ -196,6 +196,12 @@ If you want more control or a different UI, take a look at the lower level
 `gitcreds_fill()`, `gitcreds_approve()` and `gitcreds_reject()` functions.
 
 See also [gitcreds for package authors](https://gitcreds.r-lib.org/articles/package.html).
+
+## Code of Conduct
+
+Please note that the gitcreds project is released with a
+[Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
 
 ## License
 

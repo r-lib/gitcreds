@@ -87,11 +87,11 @@ best, but at least git 2.9 is suggested.
 gitcreds should work out of the box on macOS with git versions 2.9.2
 or later, and on Windows with git versions 2.12.1 or later, using the
 default git settings. On Windows, for git versions from 2.9.2 up until
-2.12.1 you probably need to set the default credetial helper to
+2.12.1 you probably need to set the default credential helper to
 \code{wincred}. It is usually simpler to update git to a recent version.
 
 To see your current git version run \code{git --version} from your shell.
-Or from R:\if{html}{\out{<div class="r">}}\preformatted{system("git --version")
+Or from R:\if{html}{\out{<div class="sourceCode r">}}\preformatted{system("git --version")
 }\if{html}{\out{</div>}}
 
 If you need to avoid installing git, see 'Environment variables' below.
@@ -220,7 +220,7 @@ This is the credential that will be used for URLs without user
 names. The user name for this credential does not matter, but you
 can choose something descriptive, e.g. "token", or "generic".
 \item Configure git to use this username by default. E.g. if you chose
-"generic", then run\preformatted{git config --global crendetial.username generic
+"generic", then run\preformatted{git config --global credential.username generic
 }
 \item Add all the other credentials, with appropriate user names. These
 are the user names that you need to put in the URLs for the
@@ -248,7 +248,7 @@ The user name for this credential does not matter, but you can choose
 something descriptive, e.g. "PersonalAccessToken", "token", or
 "generic".
 \item Configure git to use this username by default. E.g. if you chose
-"generic", then run\preformatted{git config --global crendetial.username generic
+"generic", then run\preformatted{git config --global credential.username generic
 }
 \item Add all the other credentials, with appropriate user names.
 These are the user names that you need to put in the URLs for the

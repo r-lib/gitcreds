@@ -1,8 +1,8 @@
-pandoc: 2.7.3
-pkgdown: 1.6.1
+pandoc: 2.14.2
+pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   helper-survey: helper-survey.html
   package: package.html
-last_built: 2020-12-04T14:09Z
+last_built: 2022-03-11T11:47Z
 

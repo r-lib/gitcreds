@@ -190,6 +190,13 @@ functions.
 See also [gitcreds for package
 authors](https://gitcreds.r-lib.org/articles/package.html).
 
+## Code of Conduct
+
+Please note that the gitcreds project is released with a [Contributor
+Code of
+Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
+
 ## License
 
 MIT © [RStudio](https://github.com/rstudio)

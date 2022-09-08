@@ -1,5 +1,6 @@
+# gitcreds 0.1.2
 
-# gitcreds development version
+* No user visible changes.
 
 # gitcreds 0.1.1
 

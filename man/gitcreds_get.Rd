@@ -91,7 +91,9 @@ default git settings. On Windows, for git versions from 2.9.2 up until
 \code{wincred}. It is usually simpler to update git to a recent version.
 
 To see your current git version run \code{git --version} from your shell.
-Or from R:\if{html}{\out{<div class="sourceCode r">}}\preformatted{system("git --version")
+Or from R:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{system("git --version")
 }\if{html}{\out{</div>}}
 
 If you need to avoid installing git, see 'Environment variables' below.
@@ -220,8 +222,10 @@ This is the credential that will be used for URLs without user
 names. The user name for this credential does not matter, but you
 can choose something descriptive, e.g. "token", or "generic".
 \item Configure git to use this username by default. E.g. if you chose
-"generic", then run\preformatted{git config --global credential.username generic
-}
+"generic", then run
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{git config --global credential.username generic
+}\if{html}{\out{</div>}}
 \item Add all the other credentials, with appropriate user names. These
 are the user names that you need to put in the URLs for the
 repositories or operations you want to use them for. (GitHub does
@@ -248,8 +252,10 @@ The user name for this credential does not matter, but you can choose
 something descriptive, e.g. "PersonalAccessToken", "token", or
 "generic".
 \item Configure git to use this username by default. E.g. if you chose
-"generic", then run\preformatted{git config --global credential.username generic
-}
+"generic", then run
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{git config --global credential.username generic
+}\if{html}{\out{</div>}}
 \item Add all the other credentials, with appropriate user names.
 These are the user names that you need to put in the URLs for the
 repositories or operations you want to use them for. (GitHub does
@@ -269,8 +275,10 @@ get away with the default auto-detected GCM authority setting.
 In this case, you can add your github.com credential with an arbitrary
 user name, and for each other host you can configure a default user
 name, and/or include user names in the URLs to these hosts. This is how
-to set a default user name for a host called \verb{https://example.com}:\preformatted{git config --global credential.https://example.com.username myusername
-}
+to set a default user name for a host called \verb{https://example.com}:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{git config --global credential.https://example.com.username myusername
+}\if{html}{\out{</div>}}
 }
 
 \subsection{Multiple GitHub credentials}{
@@ -280,15 +288,21 @@ still use the \code{manager} helper, but you need to change the GCM authority
 by setting an option or an environment variable, see
 \url{https://github.com/microsoft/Git-Credential-Manager-for-Windows/blob/master/Docs/Configuration.md#authority.}
 
-This is how to change GCM authority in the config:\preformatted{git config --global credential.authority Basic
-}
+This is how to change GCM authority in the config:
 
-You can also change it only for github.com:\preformatted{git config --global credential.github.com.authority Basic
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{git config --global credential.authority Basic
+}\if{html}{\out{</div>}}
+
+You can also change it only for github.com:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{git config --global credential.github.com.authority Basic
+}\if{html}{\out{</div>}}
 
 Then you can configure a default user name, this will be used for URLs
-without a user name:\preformatted{git config --global credential.username generic
-}
+without a user name:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{git config --global credential.username generic
+}\if{html}{\out{</div>}}
 
 Now you can add you credentials, the default one with the "generic" user
 name, and all the others with their specific user and host names.

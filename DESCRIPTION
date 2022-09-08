@@ -13,8 +13,6 @@ License: MIT + file LICENSE
 URL: https://gitcreds.r-lib.org/, https://github.com/r-lib/gitcreds
 BugReports: https://github.com/r-lib/gitcreds/issues
 Depends: R (>= 3.4)
-Remotes:
-    r-lib/oskeyring
 Suggests:
     codetools,
     covr,

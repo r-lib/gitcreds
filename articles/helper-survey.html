@@ -8,9 +8,9 @@
 <meta name="description" content="gitcreds">
 <title>git credential helpers • gitcreds</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><link href="../deps/_Source%20Sans%20Pro-0.4.0/font.css" rel="stylesheet">
-<link href="../deps/_Source%20Code%20Pro-0.4.0/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.2/font.css" rel="stylesheet">
+<link href="../deps/Source_Code_Pro-0.4.2/font.css" rel="stylesheet">
 <!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="git credential helpers">
@@ -28,7 +28,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gitcreds</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@
 
 
 <div class="row">
-  <main id="main"><div class="page-header">
+  <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>git credential helpers</h1>
             
       
@@ -394,7 +394,7 @@ usage: git credential-osxkeychain &lt;get|store|erase&gt;</code></pre>
 </h3>
 <ul>
 <li><p>Not installed by default (git 2.28.0).</p></li>
-<li><p>Install from brew, according to the instructions: <a href="https://github.com/microsoft/Git-Credential-Manager-Core#macos-homebrew" class="external-link uri">https://github.com/microsoft/Git-Credential-Manager-Core#macos-homebrew</a></p></li>
+<li><p>Install from brew, according to the instructions: <a href="https://github.com/GitCredentialManager/git-credential-manager#macos-homebrew" class="external-link uri">https://github.com/GitCredentialManager/git-credential-manager#macos-homebrew</a></p></li>
 <li>
 <p>If updates your global git config, adding these lines:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[credential]</span></span>
@@ -426,7 +426,7 @@ usage: git-credential-manager-core &lt;command&gt;
     --help, -h, -?</code></pre>
 </li>
 <li><p>It is not compatible with the <code>osxkeychain</code> helper, because it uses different keys in the keychain.</p></li>
-<li><p>It supports different <em>providers</em>. Providers are auto-detected by default. GitHub has its own provider, detected via the <code>github.com</code> URL. The provider can be configured user a git config key or an environment variable: <a href="https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/configuration.md#credentialprovider" class="external-link uri">https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/configuration.md#credentialprovider</a></p></li>
+<li><p>It supports different <em>providers</em>. Providers are auto-detected by default. GitHub has its own provider, detected via the <code>github.com</code> URL. The provider can be configured user a git config key or an environment variable: <a href="https://github.com/GitCredentialManager/git-credential-manager/blob/master/docs/configuration.md" class="external-link uri">https://github.com/GitCredentialManager/git-credential-manager/blob/master/docs/configuration.md</a></p></li>
 <li><p>It does not currently supports namepaces (like <code>manager</code>).</p></li>
 <li>
 <p>This is how it stores a credential:</p>
@@ -466,7 +466,7 @@ protocol=https
 host=github.com
 username=token
 password=secret</code></pre>
-<p>This is because the username is not stored as part of the URL by the GitHub provider. Related issue: <a href="https://github.com/microsoft/Git-Credential-Manager-Core/issues/160" class="external-link uri">https://github.com/microsoft/Git-Credential-Manager-Core/issues/160</a> <code>manager</code> has a similar problem, it is linked from this GitHub issue.</p>
+<p>This is because the username is not stored as part of the URL by the GitHub provider. Related issue: <a href="https://github.com/GitCredentialManager/git-credential-manager/issues/160" class="external-link uri">https://github.com/GitCredentialManager/git-credential-manager/issues/160</a> <code>manager</code> has a similar problem, it is linked from this GitHub issue.</p>
 </li>
 <li>
 <p>If you set the provider to Generic, then usernames work as expected. In this case, this is stored in the keychain:</p>
@@ -682,7 +682,7 @@ password=secret</code></pre>
 </h3>
 <ul>
 <li><p>Not installed by default (git 2.28.0), but this is supposed to be the future canonical implementation. See above for the macOS version.</p></li>
-<li><p>It works similarly to <code>manager</code> , I haven’t seen any differences in behavior (version was 2.0.194.40577). Instead of authorities, we need to set up providers: <a href="https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/migration.md#gcm_authority." class="external-link uri">https://github.com/microsoft/Git-Credential-Manager-Core/blob/master/docs/migration.md#gcm_authority.</a> The <code>Generic</code> provider works the same way as the <code>Basic</code> authority in <code>manager</code>.</p></li>
+<li><p>It works similarly to <code>manager</code> , I haven’t seen any differences in behavior (version was 2.0.194.40577). Instead of authorities, we need to set up providers: <a href="https://github.com/GitCredentialManager/git-credential-manager/blob/master/docs/migration.md" class="external-link uri">https://github.com/GitCredentialManager/git-credential-manager/blob/master/docs/migration.md</a>. The <code>Generic</code> provider works the same way as the <code>Basic</code> authority in <code>manager</code>.</p></li>
 <li><p>Unfortunately setting <code>GCM_AUTHORITY</code> will make <code>manager-core</code> break, so it is not possible to use both <code>manager</code> and <code>manager-core</code> if you need to set this environment variable.</p></li>
 </ul>
 </div>
@@ -692,7 +692,7 @@ password=secret</code></pre>
 </h3>
 <ul>
 <li>This is now the version that is the default helper in git 2.29.0 and later. <code>manager</code> is still installed, but the default system config sets <code>manager-core</code>.</li>
-<li>It supports multiple users better: <a href="https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700544889" class="external-link uri">https://github.com/microsoft/Git-Credential-Manager-Core/issues/160#issuecomment-700544889</a>
+<li>It supports multiple users better: <a href="https://github.com/GitCredentialManager/git-credential-manager/issues/160#issuecomment-700544889" class="external-link uri">https://github.com/GitCredentialManager/git-credential-manager/issues/160#issuecomment-700544889</a>
 </li>
 <li>When storing a credential, it first checks if there is a target name without a username. If there is, then it uses the target name without the username. It stores the username in the <code>username</code> field of the credential, still. so it is not lost.</li>
 <li>When looking up a credential without a username, it will return the first credential it can find, even if the target name contains a username, and there is another credential without a username in the target name.</li>
@@ -712,7 +712,7 @@ password=secret</code></pre>
 <li><p>Then add the credential that you want to use for “generic access”. This is the credential that will be used for URLs without user names. The user name for this credential does not matter, but you can choose something descriptive, e.g. “PersonalAccessToken”, “token”, or “generic”.</p></li>
 <li>
 <p>Configure git to use this username by default. E.g. if you chose “generic”, then run</p>
-<pre><code>git config --global crendetial.username generic</code></pre>
+<pre><code>git config --global credential.username generic</code></pre>
 </li>
 <li><p>Add all the other credentials, with appropriate user names. These are the user names that you need to put in the URLs for the repositories or operations you want to use them for. (GitHub does not actually use the user names if the password is a PAT.)</p></li>
 </ol>
@@ -726,7 +726,7 @@ password=secret</code></pre>
 <li><p>Then add the credential that you want to use for “generic access”. This is the credential that will be used for URLs without user names. The user name for this credential does not matter, but you can choose something descriptive, e.g. “PersonalAccessToken”, “token”, or “generic”.</p></li>
 <li>
 <p>Configure git to use this username by default. E.g. if you chose “generic”, then run</p>
-<p>git config –global crendetial.username generic</p>
+<p>git config –global credential.username generic</p>
 </li>
 <li><p>Add all the other credentials, with appropriate user names. These are the user names that you need to put in the URLs for the repositories or operations you want to use them for. (GitHub does not actually use the user names if the password is a PAT.)</p></li>
 </ol>
@@ -765,12 +765,12 @@ password=secret</code></pre>
   <footer><div class="container">
   <div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by <a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a>.</p>
+<p>Developed by <a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a>, <a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
   </div></footer>

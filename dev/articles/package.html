@@ -8,9 +8,9 @@
 <meta name="description" content="gitcreds">
 <title>gitcreds for package authors • gitcreds</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><link href="../deps/_Source%20Sans%20Pro-0.4.0/font.css" rel="stylesheet">
-<link href="../deps/_Source%20Code%20Pro-0.4.0/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.2/font.css" rel="stylesheet">
+<link href="../deps/Source_Code_Pro-0.4.2/font.css" rel="stylesheet">
 <!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="gitcreds for package authors">
@@ -70,7 +70,7 @@
 
 
 <div class="row">
-  <main id="main"><div class="page-header">
+  <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>gitcreds for package authors</h1>
             
       
@@ -129,9 +129,9 @@
 <p>In a typical setup, if git does not find credentials for the requested host after querying all defined credential helpers, it’ll ask for a password in a dialog box, or a terminal prompt. It is often best to avoid these, and deal with the situation within R.</p>
 <p>gitcreds has a dummy credential helper, that always supplies dummy credentials. By default <code><a href="../reference/gitcreds-api.html">gitcreds_fill()</a></code> adds this dummy helper to the list of configured credential helpers, and code calling <code><a href="../reference/gitcreds-api.html">gitcreds_fill()</a></code> can check if git returned the dummy credentials, meaning that no real credentials were found. This is how the dummy credentials look:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/gitcreds-api.html">gitcreds_fill</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>url<span class="op">=</span><span class="st">"https://impossible.com"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] "protocol=dummy"     "host=dummy"</span>
-<span class="co">#&gt; [3] "username=dummy"     "password=dummy get"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/gitcreds-api.html">gitcreds_fill</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>url<span class="op">=</span><span class="st">"https://impossible.com"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "protocol=dummy"     "host=dummy"</span></span>
+<span><span class="co">#&gt; [3] "username=dummy"     "password=dummy get"</span></span></code></pre></div>
 <p>It is best to look for <code>protocol=dummy</code> as the first line of the git output.</p>
 </div>
 <div class="section level3">
@@ -156,71 +156,71 @@
 <p>If your package uses gitcreds, either directly, or through another package, then you might want to test your package for the the various possible states of the user’s git installation and credential store. gitcreds has some facilities to help you with this.</p>
 <p>If you want to test your package for a specific output from gitcreds, you can temporarily set the environment variable that gitcreds uses as a cache to the desired value. Use the <code><a href="../reference/gitcreds_cache_envvar.html">gitcreds_cache_envvar()</a></code> function to see which environment variable you need to set for a url:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_cache_envvar.html">gitcreds_cache_envvar</a></span><span class="op">(</span><span class="st">"https://github.com"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "GITHUB_PAT_GITHUB_COM"</span></code></pre>
+<code class="sourceCode R"><span><span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_cache_envvar.html">gitcreds_cache_envvar</a></span><span class="op">(</span><span class="st">"https://github.com"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "GITHUB_PAT_GITHUB_COM"</span></span></code></pre>
 <p>It is easiest to use the withr package to temporarily change this environment variable in a test case:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org" class="external-link">testthat</a></span><span class="op">)</span>
-<span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"bad credentials from git"</span>, <span class="op">{</span>
-  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html" class="external-link">local_envvar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>GITHUB_PAT_GITHUB_COM <span class="op">=</span> <span class="st">"bad"</span><span class="op">)</span><span class="op">)</span>
-  <span class="co"># Test code that calls gitcreds_get(), potentially downstream.</span>
-  <span class="co"># gitcreds_get() will return `bad` as the password.</span>
-  <span class="co"># Illustration:</span>
-  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html" class="external-link">expect_equal</a></span><span class="op">(</span>
-    <span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_get.html">gitcreds_get</a></span><span class="op">(</span><span class="st">"https://github.com"</span><span class="op">)</span><span class="op">$</span><span class="va">password</span>,
-    <span class="st">"bad"</span>
-  <span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## <span style="color: #00BB00;">Test passed</span> 😀</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org" class="external-link">testthat</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"bad credentials from git"</span>, <span class="op">{</span></span>
+<span>  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html" class="external-link">local_envvar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>GITHUB_PAT_GITHUB_COM <span class="op">=</span> <span class="st">"bad"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co"># Test code that calls gitcreds_get(), potentially downstream.</span></span>
+<span>  <span class="co"># gitcreds_get() will return `bad` as the password.</span></span>
+<span>  <span class="co"># Illustration:</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html" class="external-link">expect_equal</a></span><span class="op">(</span></span>
+<span>    <span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_get.html">gitcreds_get</a></span><span class="op">(</span><span class="st">"https://github.com"</span><span class="op">)</span><span class="op">$</span><span class="va">password</span>,</span>
+<span>    <span class="st">"bad"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">Test passed</span> 🥳</span></span></code></pre>
 <p>If you want gitcreds to return a specific credential record, then you can specify the fields of the record in the environment variable, separated by colons. For example:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org" class="external-link">testthat</a></span><span class="op">)</span>
-<span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"another GitHub user"</span>, <span class="op">{</span>
-  <span class="va">cred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span>
-    <span class="st">"protocol:https:"</span>,
-    <span class="st">"host:github.com:"</span>,
-    <span class="st">"username:user1:"</span>,
-    <span class="st">"password:secret"</span>
-  <span class="op">)</span>
-  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html" class="external-link">local_envvar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>GITHUB_PAT_GITHUB_COM <span class="op">=</span> <span class="va">cred</span><span class="op">)</span><span class="op">)</span>
-  <span class="co"># Your test code comes here. This is just an illustration:</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_get.html">gitcreds_get</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html" class="external-link">expect_equal</a></span><span class="op">(</span><span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_get.html">gitcreds_get</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">username</span>, <span class="st">"user1"</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## &lt;gitcreds&gt;</span>
-<span class="co">##   protocol: https</span>
-<span class="co">##   host    : github.com</span>
-<span class="co">##   username: user1</span>
-<span class="co">##   password: &lt;-- hidden --&gt;</span>
-<span class="co">## <span style="color: #00BB00;">Test passed</span> 😸</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org" class="external-link">testthat</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"another GitHub user"</span>, <span class="op">{</span></span>
+<span>  <span class="va">cred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
+<span>    <span class="st">"protocol:https:"</span>,</span>
+<span>    <span class="st">"host:github.com:"</span>,</span>
+<span>    <span class="st">"username:user1:"</span>,</span>
+<span>    <span class="st">"password:secret"</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html" class="external-link">local_envvar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>GITHUB_PAT_GITHUB_COM <span class="op">=</span> <span class="va">cred</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co"># Your test code comes here. This is just an illustration:</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_get.html">gitcreds_get</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html" class="external-link">expect_equal</a></span><span class="op">(</span><span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_get.html">gitcreds_get</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">username</span>, <span class="st">"user1"</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## &lt;gitcreds&gt;</span></span>
+<span><span class="co">##   protocol: https</span></span>
+<span><span class="co">##   host    : github.com</span></span>
+<span><span class="co">##   username: user1</span></span>
+<span><span class="co">##   password: &lt;-- hidden --&gt;</span></span>
+<span><span class="co">## <span style="color: #00BB00;">Test passed</span> 🥳</span></span></code></pre>
 <p>If you want gitcreds to fail for a specific host, set the corresponding environment variable to <code>"FAIL"</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org" class="external-link">testthat</a></span><span class="op">)</span>
-<span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"no credentials from git"</span>, <span class="op">{</span>
-  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html" class="external-link">local_envvar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>GITHUB_PAT_GITHUB_COM <span class="op">=</span> <span class="st">"FAIL"</span><span class="op">)</span><span class="op">)</span>
-  <span class="co"># The test code that calls gitcreds_get() comes here.</span>
-  <span class="co"># It will fail with error "gitcreds_no_credentials"</span>
-  <span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html" class="external-link">expect_error</a></span><span class="op">(</span>
-    <span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_get.html">gitcreds_get</a></span><span class="op">(</span><span class="st">"https://github.com"</span><span class="op">)</span>,
-    class <span class="op">=</span> <span class="st">"gitcreds_no_credentials"</span>
-  <span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## <span style="color: #00BB00;">Test passed</span> 😀</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org" class="external-link">testthat</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"no credentials from git"</span>, <span class="op">{</span></span>
+<span>  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html" class="external-link">local_envvar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>GITHUB_PAT_GITHUB_COM <span class="op">=</span> <span class="st">"FAIL"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co"># The test code that calls gitcreds_get() comes here.</span></span>
+<span>  <span class="co"># It will fail with error "gitcreds_no_credentials"</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html" class="external-link">expect_error</a></span><span class="op">(</span></span>
+<span>    <span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_get.html">gitcreds_get</a></span><span class="op">(</span><span class="st">"https://github.com"</span><span class="op">)</span>,</span>
+<span>    class <span class="op">=</span> <span class="st">"gitcreds_no_credentials"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">Test passed</span> 🥳</span></span></code></pre>
 <p>If you want gitcreds to fail with a specific error, then include the error class after a <code>"FAIL:"</code> prefix, in the environment variable. See the list of possible error classes above. For example:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org" class="external-link">testthat</a></span><span class="op">)</span>
-<span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"no git installation"</span>, <span class="op">{</span>
-  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html" class="external-link">local_envvar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
-    GITHUB_PAT_GITHUB_COM <span class="op">=</span> <span class="st">"FAIL:gitcreds_nogit_error"</span>
-  <span class="op">)</span><span class="op">)</span>
-  <span class="co"># Test code that calls gitcreds_get() comes here.</span>
-  <span class="co"># Illustration:</span>
-  <span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html" class="external-link">expect_error</a></span><span class="op">(</span>
-    <span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_get.html">gitcreds_get</a></span><span class="op">(</span><span class="st">"https://github.com"</span><span class="op">)</span>,
-    class <span class="op">=</span> <span class="st">"gitcreds_nogit_error"</span>
-  <span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## <span style="color: #00BB00;">Test passed</span> 🎊</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org" class="external-link">testthat</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"no git installation"</span>, <span class="op">{</span></span>
+<span>  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html" class="external-link">local_envvar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    GITHUB_PAT_GITHUB_COM <span class="op">=</span> <span class="st">"FAIL:gitcreds_nogit_error"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co"># Test code that calls gitcreds_get() comes here.</span></span>
+<span>  <span class="co"># Illustration:</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html" class="external-link">expect_error</a></span><span class="op">(</span></span>
+<span>    <span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="../reference/gitcreds_get.html">gitcreds_get</a></span><span class="op">(</span><span class="st">"https://github.com"</span><span class="op">)</span>,</span>
+<span>    class <span class="op">=</span> <span class="st">"gitcreds_nogit_error"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">Test passed</span> 🥇</span></span></code></pre>
 <p>It is not currently possible to simulate the additional data in the error object, e.g. the standard output of a failed git command. If you need this for a test case, then your test case can call <code><a href="../reference/gitcreds_get.html">gitcreds_get()</a></code> directly and you can use the mockery package to make gitcreds fail with the desired error object.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -238,7 +238,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
   </div></footer>

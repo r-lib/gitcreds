@@ -216,7 +216,7 @@ environment variable in a test case:</p>
 <span>    <span class="st">"bad"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">Test passed</span> 🥇</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">Test passed</span> 🌈</span></span></code></pre>
 <p>If you want gitcreds to return a specific credential record, then you
 can specify the fields of the record in the environment variable,
 separated by colons. For example:</p>
@@ -239,7 +239,7 @@ separated by colons. For example:</p>
 <span><span class="co">##   host    : github.com</span></span>
 <span><span class="co">##   username: user1</span></span>
 <span><span class="co">##   password: &lt;-- hidden --&gt;</span></span>
-<span><span class="co">## <span style="color: #00BB00;">Test passed</span> 😸</span></span></code></pre>
+<span><span class="co">## <span style="color: #00BB00;">Test passed</span> 🥇</span></span></code></pre>
 <p>If you want gitcreds to fail for a specific host, set the
 corresponding environment variable to <code>"FAIL"</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -253,7 +253,7 @@ corresponding environment variable to <code>"FAIL"</code>:</p>
 <span>    class <span class="op">=</span> <span class="st">"gitcreds_no_credentials"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">Test passed</span> 🌈</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">Test passed</span> 🎉</span></span></code></pre>
 <p>If you want gitcreds to fail with a specific error, then include the
 error class after a <code>"FAIL:"</code> prefix, in the environment
 variable. See the list of possible error classes above. For example:</p>
@@ -270,7 +270,7 @@ variable. See the list of possible error classes above. For example:</p>
 <span>    class <span class="op">=</span> <span class="st">"gitcreds_nogit_error"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">Test passed</span> 🥳</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">Test passed</span> 😀</span></span></code></pre>
 <p>It is not currently possible to simulate the additional data in the
 error object, e.g. the standard output of a failed git command. If you
 need this for a test case, then your test case can call

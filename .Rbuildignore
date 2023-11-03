@@ -10,3 +10,4 @@
 ^pkgdown$
 ^codecov\.yml$
 ^revdep$
+^LICENSE\.md$

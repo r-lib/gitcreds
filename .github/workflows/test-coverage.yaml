@@ -25,17 +25,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install latest git, Windows
-        if: runner.os == 'Windows'
-        run: choco upgrade -y git.install
-
-      - name: Install latest git, macOS
-        if: runner.os == 'macOS'
-        run: |
-          brew upgrade git
-          brew tap microsoft/git
-          brew install --cask git-credential-manager-core
-
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true

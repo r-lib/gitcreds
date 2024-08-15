@@ -105,7 +105,8 @@ If you need to avoid installing git, see 'Environment variables' below.
 To set up password-less authentication to GitHub:
 \enumerate{
 \item Create a personal access token (PAT). See
-https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token.
+\url{https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token}.
+Note that personal access tokens can expire, and the default expiration time is 30 days.
 \item Call \code{gitcreds_set()} and give this token as the password.
 \item Run \code{gitcreds_get(use_cache = FALSE)} to check that the new
 PAT is set up. To see the token, you can run

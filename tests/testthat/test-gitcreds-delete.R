@@ -1,13 +1,13 @@
 
 gc_test_that("gitcreds_delete", {
   # fails if not interactive
-  mockery::stub(gitcreds_delete, "is_interactive", FALSE)
+  local_mocked_bindings(is_interactive = function() FALSE)
   expect_error(
     gitcreds_delete(),
     class = "gitcreds_not_interactive_error"
   )
 
-  mockery::stub(gitcreds_delete, "is_interactive", TRUE)
+  local_mocked_bindings(is_interactive = function() TRUE)
 
   # FALSE if nothing was deleted
   expect_false(gitcreds_delete())
@@ -21,14 +21,14 @@ gc_test_that("gitcreds_delete", {
   gitcreds_approve(cred)
   gitcreds_get()
 
-  mockery::stub(gitcreds_delete, "ack", FALSE)
+  local_mocked_bindings(ack = function(...) FALSE)
   expect_error(
     gitcreds_delete(),
     class = "gitcreds_abort_delete_error"
   )
 
   # really deletes
-  mockery::stub(gitcreds_delete, "ack", TRUE)
+  local_mocked_bindings(ack = function(...) TRUE)
   gitcreds_delete()
   expect_error(
     gitcreds_get(use_cache = FALSE),

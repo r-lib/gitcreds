@@ -39,21 +39,21 @@ test_that("ack", {
     arbitrary = "xxxxxxxxx"
   )
 
-  mockery::stub(gitcreds$ack, "utils::menu", 1)
-  expect_false(gitcreds$ack("https://github.com", cred))
+  local_mocked_bindings(menu = function(...) 1)
+  expect_false(ack("https://github.com", cred))
 
-  mockery::stub(gitcreds$ack, "utils::menu", 2)
-  expect_true(gitcreds$ack("https://github.com", cred))
+  local_mocked_bindings(menu = function(...) 2)
+  expect_true(ack("https://github.com", cred))
 
   num <- 0L
-  mockery::stub(gitcreds$ack, "utils::menu", function(...) {
+  local_mocked_bindings(menu = function(...) {
     num <<- num + 1L
     if (num == 1L) 3 else 1
   })
 
   mm <- NULL
   withCallingHandlers(
-    ret <- gitcreds$ack("https://github.com", cred),
+    ret <- ack("https://github.com", cred),
     message = function(m) mm <<- m
   )
   expect_equal(num, 2)
@@ -64,8 +64,8 @@ test_that("ack", {
 gc_test_that("check_for_git", {
   expect_silent(gitcreds$check_for_git())
 
-  mockery::stub(gitcreds$check_for_git, "system2", function(command, ...) {
-    base::system2(basename(tempfile()), ...)
+  local_mocked_bindings(system2 = function(command, ...) {
+    system2(basename(tempfile()), ...)
   })
   expect_error(
     gitcreds$check_for_git(),
@@ -74,33 +74,33 @@ gc_test_that("check_for_git", {
 })
 
 gc_test_that("get_os", os = "macos", helpers = "osxkeychain", {
-  mockery::stub(gitcreds$get_os, "Sys.info", c(sysname = "foobar"))
-  expect_equal(gitcreds$get_os(), "unknown")
+  local_mocked_bindings(Sys.info = c(sysname = "foobar"))
+  expect_equal(get_os(), "unknown")
 })
 
 test_that("get_url_username", {
-  expect_equal(gitcreds$get_url_username("https://user1@host.com"), "user1")
-  expect_null(gitcreds$get_url_username("https://host.com"))
+  expect_equal(get_url_username("https://user1@host.com"), "user1")
+  expect_null(get_url_username("https://host.com"))
 })
 
 test_that("throw", {
-  err <- gitcreds$new_error("myerror", message = "boo")
-  expect_error(gitcreds$throw(err), class = "myerror")
+  err <- new_error("myerror", message = "boo")
+  expect_error(throw(err), class = "myerror")
 
   wrn <- gitcreds$new_warning("mywarning", message = "ouch")
-  expect_warning(gitcreds$throw(wrn), class = "mywarning")
+  expect_warning(throw(wrn), class = "mywarning")
 
   msg <- structure(
     list(message = "hey"),
     class = c("mymessage", "message", "condition")
   )
-  expect_message(gitcreds$throw(msg), class = "mymessage")
+  expect_message(throw(msg), class = "mymessage")
 
   cnd <- structure(
     list(message = "this"),
     class = c("mycondition", "condition")
   )
-  expect_condition(gitcreds$throw(cnd), class = "mycondition")
+  expect_condition(throw(cnd), class = "mycondition")
 })
 
 test_that("null_file", {
@@ -111,7 +111,7 @@ test_that("null_file", {
 test_that("msg", {
   # testthat is catching all messages, so we need to change the
   # class to test this
-  mockery::stub(gitcreds$msg, "simpleMessage", function(message, call = NULL) {
+  local_mocked_bindings(simpleMessage = function(message, call = NULL) {
     structure(
       list(message = message, call = call),
       class = c("mymessage", "condition")
@@ -119,38 +119,38 @@ test_that("msg", {
   })
 
   # not interactive, we have a sink, goes to stderr
-  out <- capture.output(gitcreds$msg("foo", "bar"), type = "message")
+  out <- capture.output(msg("foo", "bar"), type = "message")
   expect_equal(out, "foobar")
 
   # no output if we catch it
   mm <- NULL
   out <- capture.output(
-    tryCatch(gitcreds$msg("foo", "bar"), mymessage = function(m) mm <<- m)
+    tryCatch(msg("foo", "bar"), mymessage = function(m) mm <<- m)
   )
   expect_equal(out, character())
   expect_true(mm$message %in% c("foobar\n", "foobar\r\n"))
 })
 
 test_that("default_output", {
-  mockery::stub(gitcreds$default_output, "is_interactive", TRUE)
-  expect_equal(gitcreds$default_output(), stdout())
+  local_mocked_bindings(is_interactive = function() TRUE)
+  expect_equal(default_output(), stdout())
   expect_equal(
-    withr::with_output_sink(tempfile(), gitcreds$default_output()),
+    withr::with_output_sink(tempfile(), default_output()),
     stderr()
   )
   expect_equal(
-    withr::with_message_sink(tempfile(), gitcreds$default_output()),
+    withr::with_message_sink(tempfile(), default_output()),
     stderr()
   )
 
-  mockery::stub(gitcreds$default_output, "is_interactive", FALSE)
-  expect_equal(gitcreds$default_output(), stderr())
+  local_mocked_bindings(is_interactive = function() FALSE)
+  expect_equal(default_output(), stderr())
   expect_equal(
-    withr::with_output_sink(tempfile(), gitcreds$default_output()),
+    withr::with_output_sink(tempfile(), default_output()),
     stderr()
   )
   expect_equal(
-    withr::with_message_sink(tempfile(), gitcreds$default_output()),
+    withr::with_message_sink(tempfile(), default_output()),
     stderr()
   )
 })
@@ -158,49 +158,49 @@ test_that("default_output", {
 test_that("is_interactive", {
   withr::with_options(
     list(rlib_interactive = TRUE, rlang_interactive = NULL),
-    expect_true(gitcreds$is_interactive())
+    expect_true(is_interactive())
   )
   withr::with_options(
     list(rlib_interactive = FALSE, rlang_interactive = NULL),
-    expect_false(gitcreds$is_interactive())
+    expect_false(is_interactive())
   )
   withr::with_options(
     list(rlib_interactive = NULL, rlang_interactive = TRUE),
-    expect_true(gitcreds$is_interactive())
+    expect_true(is_interactive())
   )
   withr::with_options(
     list(rlib_interactive = NULL, rlang_interactive = FALSE),
-    expect_false(gitcreds$is_interactive())
+    expect_false(is_interactive())
   )
   withr::with_options(
     list(rlib_interactive = TRUE, rlang_interactive = FALSE),
-    expect_true(gitcreds$is_interactive())
+    expect_true(is_interactive())
   )
   withr::with_options(
     list(rlib_interactive = FALSE, rlang_interactive = TRUE),
-    expect_false(gitcreds$is_interactive())
+    expect_false(is_interactive())
   )
   withr::with_options(
     list(rlib_interactive = NULL, rlang_interactive = NULL,
          knitr.in.progress = TRUE),
-    expect_false(gitcreds$is_interactive())
+    expect_false(is_interactive())
   )
   withr::with_options(
     list(rlib_interactive = NULL, rlang_interactive = NULL,
          knitr.in.progress = NULL),
     withr::with_envvar(
       c(TESTTHAT = "true"),
-      expect_false(gitcreds$is_interactive())
+      expect_false(is_interactive())
     )
   )
 
-  mockery::stub(gitcreds$is_interactive, "base::interactive", "yes")
+  local_mocked_bindings(interactive = function() "yes")
   withr::with_options(
     list(rlib_interactive = NULL, rlang_interactive = NULL,
          knitr.in.progress = NULL),
     withr::with_envvar(
       c(TESTTHAT = NA_character_),
-      expect_equal(gitcreds$is_interactive(), "yes")
+      expect_equal(is_interactive(), "yes")
     )
   )
 })

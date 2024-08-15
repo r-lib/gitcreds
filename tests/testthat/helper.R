@@ -34,7 +34,7 @@ gc_test_that <- function(desc, code, os = NULL, helpers = NULL) {
 
 gc_test_that_run <- function(desc, code) {
   if (interactive() && !isTRUE(getOption("gitcreds_test_consent"))) {
-    ch <- utils::menu(
+    ch <- menu(
       title = paste0("\n\nThis testsuite will delete your ",
                      "git credentials and config !!!"),
       choices = c("Yeah, fine.", "Wait, what?")

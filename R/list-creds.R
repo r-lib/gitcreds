@@ -115,9 +115,9 @@ gitcreds_list <- function(url = "https://github.com",
                           protocol = NULL) {
 
   stopifnot(
-    is.null(credential_helper) || gitcreds$is_string(credential_helper),
-    is.null(url) || gitcreds$is_string(url),
-    is.null(protocol) || gitcreds$is_string(protocol)
+    is.null(credential_helper) || is_string(credential_helper),
+    is.null(url) || is_string(url),
+    is.null(protocol) || is_string(protocol)
   )
 
   credential_helper <- credential_helper %||% gitcreds_list_helpers()
@@ -189,7 +189,7 @@ is_osxkeychain_item <- function(it) {
 }
 
 gitcreds_list_manager_core <- function(url, host, protocol) {
-  os <- gitcreds$get_os()
+  os <- get_os()
   if (os == "macos") {
     gitcreds_list_manager_core_macos(url, host, protocol)
   } else if (os == "windows") {

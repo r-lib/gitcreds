@@ -15,16 +15,16 @@ gc_test_that("gitcreds_list", {
   )
 
   # the right helper function is chosen
-  mockery::stub(gitcreds_list, "gitcreds_list_osxkeychain", "osx")
-  mockery::stub(gitcreds_list, "gitcreds_list_manager", "gcm")
-  mockery::stub(gitcreds_list, "gitcreds_list_manager_core", "gcmcore")
+  local_mocked_bindings(gitcreds_list_osxkeychain = function(...) "osx")
+  local_mocked_bindings(gitcreds_list_manager = function(...) "gcm")
+  local_mocked_bindings(gitcreds_list_manager_core = function(...) "gcmcore")
   expect_equal(gitcreds_list(credential_helper = "osxkeychain"), "osx")
   expect_equal(gitcreds_list(credential_helper = "manager"), "gcm")
   expect_equal(gitcreds_list(credential_helper = "manager-core"), "gcmcore")
 
   # warn for multiple helpers
   local_helpers(c("foo", "bar"))
-  mockery::stub(gitcreds_list, "switch", NULL)
+  local_mocked_bindings(switch = function(...) NULL)
   expect_warning(
     gitcreds_list(),
     class = "gitcreds_multiple_helpers"
@@ -35,7 +35,7 @@ gc_test_that("gitcreds_list_osxkeychain", os = "macos",
              helpers = "osxkeychain", {
   # needs oskeyring
   fun <- function() {
-    mockery::stub(gitcreds_list_osxkeychain, "requireNamespace", FALSE)
+    local_mocked_bindings(requireNamespace = function(...) FALSE)
     gitcreds_list_osxkeychain()
   }
   expect_error(
@@ -83,16 +83,16 @@ gc_test_that("gitcreds_list_osxkeychain", os = "macos",
 })
 
 gc_test_that("gitcreds_list_manager_core", os = c("windows", "macos"), {
-  mockery::stub(gitcreds_list_manager_core, "gitcreds_list_manager_core_macos", "macos")
-  mockery::stub(gitcreds_list_manager_core, "gitcreds_list_manager_core_win", "win")
+  local_mocked_bindings(gitcreds_list_manager_core_macos = function(...) "macos")
+  local_mocked_bindings(gitcreds_list_manager_core_win = function(...) "win")
 
-  mockery::stub(gitcreds_list_manager_core, "gitcreds$get_os", "windows")
+  local_mocked_bindings(get_os = function(...) "windows")
   expect_equal(gitcreds_list_manager_core(), "win")
 
-  mockery::stub(gitcreds_list_manager_core, "gitcreds$get_os", "macos")
+  local_mocked_bindings(get_os = function(...) "macos")
   expect_equal(gitcreds_list_manager_core(), "macos")
 
-  mockery::stub(gitcreds_list_manager_core, "gitcreds$get_os", "linux")
+  local_mocked_bindings(get_os = function(...) "linux")
   expect_error(
     gitcreds_list_manager_core(),
     "Unsupported OS"
@@ -103,7 +103,7 @@ gc_test_that("gitcreds_list_manager_core_macos", os = "macos",
              helper = "manager-core", {
   # needs oskeyring
   fun <- function() {
-    mockery::stub(gitcreds_list_manager_core_macos, "requireNamespace", FALSE)
+    local_mocked_bindings(requireNamespace = function(...) FALSE)
     gitcreds_list_manager_core_macos()
   }
   expect_error(
@@ -111,7 +111,12 @@ gc_test_that("gitcreds_list_manager_core_macos", os = "macos",
     "needs the `oskeyring` package"
   )
 
-  # no credentials just yet
+  # FIXME: Testing interactively I get
+  #   Error in gitcreds$throw(gitcreds$new_error("gitcreds_unknown_helper",  :
+  #      Unknown credential helper: `foo`, cannot list credentials
+  #    In addition: Warning message:
+  #      In gitcreds$throw(gitcreds$new_warning("gitcreds_multiple_helpers")) :
+  #      Multiple credential helpers, only using the first no credentials just yet
   expect_equal(gitcreds_list(), list())
 
   cred <- list(
@@ -163,7 +168,7 @@ gc_test_that("gitcreds_list_manager_core_win", os = "windows",
 
   # needs oskeyring
   fun <- function() {
-    mockery::stub(gitcreds_list_manager_core_macos, "requireNamespace", FALSE)
+    local_mocked_bindings(requireNamespace = function(...) FALSE)
     gitcreds_list_manager_core_macos()
   }
   expect_error(

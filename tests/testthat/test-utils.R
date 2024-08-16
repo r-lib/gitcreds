@@ -62,13 +62,13 @@ test_that("ack", {
 })
 
 gc_test_that("check_for_git", {
-  expect_silent(gitcreds$check_for_git())
+  expect_silent(check_for_git())
 
   local_mocked_bindings(system2 = function(command, ...) {
     system2(basename(tempfile()), ...)
   })
   expect_error(
-    gitcreds$check_for_git(),
+    check_for_git(),
     class = "gitcreds_nogit_error"
   )
 })
@@ -104,8 +104,8 @@ test_that("throw", {
 })
 
 test_that("null_file", {
-  expect_silent(writeLines(letters, gitcreds$null_file()))
-  expect_equal(readLines(gitcreds$null_file()), character())
+  expect_silent(writeLines(letters, null_file()))
+  expect_equal(readLines(null_file()), character())
 })
 
 test_that("msg", {
@@ -206,7 +206,7 @@ test_that("is_interactive", {
 })
 
 gc_test_that("git_run", {
-  err <- tryCatch(gitcreds$git_run("qwertyzxcvbn"), error = function(x) x)
+  err <- tryCatch(git_run("qwertyzxcvbn"), error = function(x) x)
   expect_s3_class(err, "git_error")
   expect_s3_class(err, "gitcreds_error")
   expect_match(conditionMessage(err), "System git failed:.*qwertyzxcvbn")

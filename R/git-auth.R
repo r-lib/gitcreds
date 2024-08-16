@@ -302,26 +302,6 @@ gitcreds_env <- function() {
   )
 }
 
-#' Check if `git` is installed and can run
-#'
-#' If not installed, a `gitcreds_nogit_error` is thrown.
-#'
-#' @noRd
-#' @return Nothing
-
-check_for_git <- function() {
-  # This is simpler than Sys.which(), and also less fragile
-  has_git <- tryCatch({
-    suppressWarnings(system2(
-      "git", "--version",
-      stdout = TRUE, stderr = null_file()
-    ))
-    TRUE
-  }, error = function(e) FALSE)
-
-  if (!has_git) throw(new_error("gitcreds_nogit_error"))
-}
-
 new_gitcreds <- function(...) {
   structure(list(...), class = "gitcreds")
 }
@@ -371,16 +351,12 @@ has_no_newline <- function(url) {
   ! grepl("\n", url, fixed = TRUE)
 }
 
-null_file <- function() {
-  if (get_os() == "windows") "nul:" else "/dev/null"
-}
-
 `%||%` <- function(l, r) if (is.null(l)) r else l
 
 environment()
 })
 
-# FIXME: Moving these functions outside of `local()` to avoid
+# Moving these functions outside of `local()` to avoid
 # Error in `local_mocked_bindings()`:
 #   ! Can't find binding for `SOME_FUNCTION`
 
@@ -834,4 +810,28 @@ gitcreds_set_replace <- function(url, current) {
   gitcreds_approve(list(url = url, username = username, password = pat))
 
   invisible()
+}
+
+#' Check if `git` is installed and can run
+#'
+#' If not installed, a `gitcreds_nogit_error` is thrown.
+#'
+#' @noRd
+#' @return Nothing
+
+check_for_git <- function() {
+  # This is simpler than Sys.which(), and also less fragile
+  has_git <- tryCatch({
+    suppressWarnings(system2(
+      "git", "--version",
+      stdout = TRUE, stderr = null_file()
+    ))
+    TRUE
+  }, error = function(e) FALSE)
+
+  if (!has_git) throw(new_error("gitcreds_nogit_error"))
+}
+
+null_file <- function() {
+  if (get_os() == "windows") "nul:" else "/dev/null"
 }

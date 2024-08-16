@@ -122,16 +122,16 @@ gitcreds_list <- function(url = "https://github.com",
 
   credential_helper <- credential_helper %||% gitcreds_list_helpers()
   if (length(credential_helper) == 0) {
-    gitcreds$throw(gitcreds$new_error("gitcreds_no_helper"))
+    throw(new_error("gitcreds_no_helper"))
   }
   if (length(credential_helper) > 1) {
-    gitcreds$throw(gitcreds$new_warning("gitcreds_multiple_helpers"))
+    throw(gitcreds$new_warning("gitcreds_multiple_helpers"))
     credential_helper <- credential_helper[[1]]
   }
 
   host <- NULL
   if (!is.null(url)) {
-    purl <- gitcreds$parse_url(url)
+    purl <- parse_url(url)
     if (!is.na(purl$host)) host <- purl$host
     if (!is.na(purl$protocol)) protocol <- purl$protocol
   }
@@ -142,7 +142,7 @@ gitcreds_list <- function(url = "https://github.com",
     "osxkeychain" = gitcreds_list_osxkeychain(url, host, protocol),
     "manager" = gitcreds_list_manager(url, host, protocol),
     "manager-core" = gitcreds_list_manager_core(url, host, protocol),
-    gitcreds$throw(gitcreds$new_error(
+    throw(new_error(
       "gitcreds_unknown_helper",
       credential_helper = credential_helper,
       message = sprintf(
@@ -222,7 +222,7 @@ is_manager_core_macos_item <- function(it, protocol, host) {
   if (!grepl("^git:", it$attributes$service)) return(FALSE)
   if (is.null(host)) return(TRUE)
   iturl <- sub("^git:", "", it$attributes$service)
-  piturl <- gitcreds$parse_url(iturl)
+  piturl <- parse_url(iturl)
   !is.na(piturl$host) && piturl$host == host &&
     !is.na(piturl$protocol) && piturl$protocol == protocol
 }
@@ -247,7 +247,7 @@ is_manager_core_win_item <- function(it, protocol, host) {
   if (!grepl("^git:", it$target_name)) return(FALSE)
   iturl <- sub("^git:", "", it$target_name)
   if (is.null(host)) return(TRUE)
-  piturl <- gitcreds$parse_url(iturl)
+  piturl <- parse_url(iturl)
   !is.na(piturl$host) && piturl$host == host &&
     !is.na(piturl$protocol) && piturl$protocol == protocol
 }

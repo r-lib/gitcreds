@@ -111,12 +111,6 @@ gc_test_that("gitcreds_list_manager_core_macos", os = "macos",
     "needs the `oskeyring` package"
   )
 
-  # FIXME: Testing interactively I get
-  #   Error in gitcreds$throw(gitcreds$new_error("gitcreds_unknown_helper",  :
-  #      Unknown credential helper: `foo`, cannot list credentials
-  #    In addition: Warning message:
-  #      In gitcreds$throw(gitcreds$new_warning("gitcreds_multiple_helpers")) :
-  #      Multiple credential helpers, only using the first no credentials just yet
   expect_equal(gitcreds_list(), list())
 
   cred <- list(

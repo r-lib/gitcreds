@@ -8,7 +8,7 @@
 [![R build
 status](https://github.com/r-lib/gitcreds/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/gitcreds/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/r-lib/gitcreds/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r-lib/gitcreds?branch=main)
+coverage](https://codecov.io/gh/r-lib/gitcreds/graph/badge.svg)](https://app.codecov.io/gh/r-lib/gitcreds)
 [![R-CMD-check](https://github.com/r-lib/gitcreds/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r-lib/gitcreds/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 

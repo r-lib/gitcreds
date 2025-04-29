@@ -3,7 +3,6 @@
 \docType{package}
 \name{gitcreds-package}
 \alias{gitcreds-package}
-\alias{_PACKAGE}
 \title{gitcreds: Query 'git' Credentials from 'R'}
 \description{
 Query, set, delete credentials from the 'git' credential store. Manage 'GitHub' tokens and other 'git' credentials. This package is to be used by other packages that need to authenticate to 'GitHub' and/or other 'git' repositories.
@@ -22,7 +21,7 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item RStudio [copyright holder, funder]
+  \item Posit Software, PBC [copyright holder, funder]
 }
 
 }

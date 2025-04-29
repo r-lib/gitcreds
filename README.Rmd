@@ -47,6 +47,12 @@ Install the package from CRAN:
 install.packages("gitcreds")
 ```
 
+Install the development version from GitHub:
+
+```{r eval = FALSE}
+pak::pak("r-lib/gitcreds")
+```
+
 ## Usage
 
 gitcreds is typically used upstream, in R packages that need to

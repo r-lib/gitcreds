@@ -57,7 +57,8 @@
 #'
 #' To set up password-less authentication to GitHub:
 #' 1. Create a personal access token (PAT). See
-#'    https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token.
+#'    <https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token>.
+#'    Note that personal access tokens can expire, and the default expiration time is 30 days.
 #' 2. Call `gitcreds_set()` and give this token as the password.
 #' 3. Run `gitcreds_get(use_cache = FALSE)` to check that the new
 #'    PAT is set up. To see the token, you can run

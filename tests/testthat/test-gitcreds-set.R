@@ -81,13 +81,13 @@ gc_test_that("gitcreds_set", {
 
 gc_test_that("multiple matching credentials", {
   cred <- list(
-    url = "https://github.com",
+    url = "https://notgithub.com",
     username = "PersonalAccessToken",
     password = "secret"
   )
   gitcreds_approve(cred)
   cred2 <- list(
-    url = "https://github.com",
+    url = "https://notgithub.com",
     username = "PersonalAccessToken2",
     password = "secret2"
   )
@@ -97,12 +97,18 @@ gc_test_that("multiple matching credentials", {
   mockery::stub(gitcreds$gitcreds_set_replace, "readline", "new-secret-2")
   mockery::stub(gitcreds$gitcreds_set_replace, "cat", NULL)
   expect_error(
-    gitcreds$gitcreds_set_replace("https://github.com", gitcreds_get()),
+    gitcreds$gitcreds_set_replace(
+      "https://github.com",
+      gitcreds_get("https://notgithub.com")
+    ),
     class = "gitcreds_abort_replace_error"
   )
 
   mockery::stub(gitcreds$gitcreds_set_replace, "ack", TRUE)
-  gitcreds$gitcreds_set_replace("https://github.com", gitcreds_get())
+  gitcreds$gitcreds_set_replace(
+    "https://github.com",
+    gitcreds_get("https://notgithub.com")
+  )
 
   cred <- gitcreds_get(use_cache = FALSE)
   expect_equal(cred$host, "github.com")

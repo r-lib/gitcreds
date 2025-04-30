@@ -1,4 +1,3 @@
-
 gc_test_that("gitcreds_get", os = c("windows", "macos"), {
   cred <- list(
     url = "https://github.com",
@@ -35,7 +34,7 @@ gc_test_that("gitcreds_get", os = c("windows", "macos"), {
     gitcreds_cache_envvar("https://github.com")
   ))
 
-gitcreds_approve(cred)
+  gitcreds_approve(cred)
   cred4 <- gitcreds_get(set_cache = FALSE)
   chk(cred4)
   expect_null(gitcreds$gitcreds_get_cache(

@@ -1,4 +1,3 @@
-
 gc_test_that("gitcreds_set_new", os = c("windows", "macos"), {
   mockery::stub(gitcreds$gitcreds_set_new, "readline", "new-secret")
   mockery::stub(gitcreds$gitcreds_set_new, "cat", NULL)

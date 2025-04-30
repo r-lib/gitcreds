@@ -1,4 +1,3 @@
-
 gc_test_that("gitcreds_delete", {
   # fails if not interactive
   mockery::stub(gitcreds_delete, "is_interactive", FALSE)

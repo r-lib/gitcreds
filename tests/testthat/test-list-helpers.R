@@ -1,4 +1,3 @@
-
 gc_test_that("gitcreds_list_helpers", os = c("windows", "macos"), {
   # no helpers at all
   local_helpers(character())

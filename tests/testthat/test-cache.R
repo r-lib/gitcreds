@@ -1,4 +1,3 @@
-
 gc_test_that("gitcreds_cache_envvvar", {
   cases <- list(
     c("https://github.com", "GITHUB_PAT_GITHUB_COM"),

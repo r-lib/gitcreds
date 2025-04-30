@@ -175,3 +175,7 @@ local_helpers <- function(helpers, .local_envir = parent.frame()) {
     ))
   }
 }
+
+transform_git_failed <- function(x) {
+  sub("System git failed: .*$", "System git failed:", x)
+}

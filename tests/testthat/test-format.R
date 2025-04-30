@@ -1,4 +1,3 @@
-
 test_that("format.gitcreds", {
   cred <- gitcreds$new_gitcreds(
     protocol = "https",

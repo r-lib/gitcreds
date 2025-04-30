@@ -1,4 +1,3 @@
-
 test_that("set_env() round trip works with just 1 env var", {
   withr::local_envvar(c(FOO = NA_character_))
 
@@ -181,13 +180,19 @@ test_that("is_interactive", {
     expect_false(gitcreds$is_interactive())
   )
   withr::with_options(
-    list(rlib_interactive = NULL, rlang_interactive = NULL,
-         knitr.in.progress = TRUE),
+    list(
+      rlib_interactive = NULL,
+      rlang_interactive = NULL,
+      knitr.in.progress = TRUE
+    ),
     expect_false(gitcreds$is_interactive())
   )
   withr::with_options(
-    list(rlib_interactive = NULL, rlang_interactive = NULL,
-         knitr.in.progress = NULL),
+    list(
+      rlib_interactive = NULL,
+      rlang_interactive = NULL,
+      knitr.in.progress = NULL
+    ),
     withr::with_envvar(
       c(TESTTHAT = "true"),
       expect_false(gitcreds$is_interactive())
@@ -196,8 +201,11 @@ test_that("is_interactive", {
 
   mockery::stub(gitcreds$is_interactive, "base::interactive", "yes")
   withr::with_options(
-    list(rlib_interactive = NULL, rlang_interactive = NULL,
-         knitr.in.progress = NULL),
+    list(
+      rlib_interactive = NULL,
+      rlang_interactive = NULL,
+      knitr.in.progress = NULL
+    ),
     withr::with_envvar(
       c(TESTTHAT = NA_character_),
       expect_equal(gitcreds$is_interactive(), "yes")

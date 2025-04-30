@@ -1,4 +1,3 @@
-
 #' @export
 
 print.gitcreds <- function(x, header = TRUE, ...) {

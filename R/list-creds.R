@@ -1,4 +1,3 @@
-
 #' List all credentials stored by a git credential helper
 #'
 #' This function is meant to be used interactively, to help you when
@@ -110,10 +109,11 @@
 
 #' @export
 
-gitcreds_list <- function(url = "https://github.com",
-                          credential_helper = NULL,
-                          protocol = NULL) {
-
+gitcreds_list <- function(
+  url = "https://github.com",
+  credential_helper = NULL,
+  protocol = NULL
+) {
   stopifnot(
     is.null(credential_helper) || gitcreds$is_string(credential_helper),
     is.null(url) || gitcreds$is_string(url),
@@ -161,7 +161,7 @@ gitcreds_list <- function(url = "https://github.com",
 #' @noRd
 
 gitcreds_list_osxkeychain <- function(url, host, protocol) {
-  if (!requireNamespace("oskeyring", quietly=TRUE)) {
+  if (!requireNamespace("oskeyring", quietly = TRUE)) {
     stop("Listing `osxkeychain` credentials needs the `oskeyring` package")
   }
 
@@ -200,7 +200,7 @@ gitcreds_list_manager_core <- function(url, host, protocol) {
 }
 
 gitcreds_list_manager_core_macos <- function(url, host, protocol) {
-  if (!requireNamespace("oskeyring", quietly=TRUE)) {
+  if (!requireNamespace("oskeyring", quietly = TRUE)) {
     stop("Listing `manager-core` credentials needs the `oskeyring` package")
   }
 
@@ -223,12 +223,14 @@ is_manager_core_macos_item <- function(it, protocol, host) {
   if (is.null(host)) return(TRUE)
   iturl <- sub("^git:", "", it$attributes$service)
   piturl <- gitcreds$parse_url(iturl)
-  !is.na(piturl$host) && piturl$host == host &&
-    !is.na(piturl$protocol) && piturl$protocol == protocol
+  !is.na(piturl$host) &&
+    piturl$host == host &&
+    !is.na(piturl$protocol) &&
+    piturl$protocol == protocol
 }
 
 gitcreds_list_manager_core_win <- function(url, host, protocol) {
-  if (!requireNamespace("oskeyring", quietly=TRUE)) {
+  if (!requireNamespace("oskeyring", quietly = TRUE)) {
     stop("Listing `manager-core` credentials needs the `oskeyring` package")
   }
 
@@ -248,12 +250,14 @@ is_manager_core_win_item <- function(it, protocol, host) {
   iturl <- sub("^git:", "", it$target_name)
   if (is.null(host)) return(TRUE)
   piturl <- gitcreds$parse_url(iturl)
-  !is.na(piturl$host) && piturl$host == host &&
-    !is.na(piturl$protocol) && piturl$protocol == protocol
+  !is.na(piturl$host) &&
+    piturl$host == host &&
+    !is.na(piturl$protocol) &&
+    piturl$protocol == protocol
 }
 
 gitcreds_list_manager <- function(url, host, protocol) {
-  if (!requireNamespace("oskeyring", quietly=TRUE)) {
+  if (!requireNamespace("oskeyring", quietly = TRUE)) {
     stop("Listing `manager` credentials needs the `oskeyring` package")
   }
 

@@ -14,21 +14,22 @@ coverage](https://codecov.io/gh/r-lib/gitcreds/branch/main/graph/badge.svg)](htt
 
 ## Features
 
-- (Re)use the same credentials in command line git, R and the RStudio
-  IDE., etc. Users can set their GitHub token once and use it
-  everywhere.
+-   (Re)use the same credentials in command line git, R and the RStudio
+    IDE., etc. Users can set their GitHub token once and use it
+    everywhere.
 
-- Typically more secure than storing passwords and tokens in `.Renviron`
-  files.
+-   Typically more secure than storing passwords and tokens in
+    `.Renviron` files.
 
-- gitcreds has a cache that makes credential lookup very fast.
+-   gitcreds has a cache that makes credential lookup very fast.
 
-- gitcreds supports multiple users and multiple hosts, including
-  Enterprise GitHub installations.
+-   gitcreds supports multiple users and multiple hosts, including
+    Enterprise GitHub installations.
 
-- If git or git credential helpers are not available, e.g. typically on
-  a Linux server, or a CI, then gitcreds can fall back to use
-  environment variables, and it still supports multiple users and hosts.
+-   If git or git credential helpers are not available, e.g. typically
+    on a Linux server, or a CI, then gitcreds can fall back to use
+    environment variables, and it still supports multiple users and
+    hosts.
 
 ## Installation
 

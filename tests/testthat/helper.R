@@ -58,10 +58,13 @@ gc_test_that_run <- function(desc, code) {
 
   envnames <- grep("^GITHUB_PAT", names(Sys.getenv()), value = TRUE)
   envs <- structure(rep(NA_character_, length(envnames)), names = envnames)
+  tmpconfig <- tempfile()
+  on.exit(unlink(tmpconfig), add = TRUE)
   withr::local_envvar(c(
     envs,
     GCM_AUTHORITY = NA_character_,
-    GCM_PROVIDER = NA_character_
+    GCM_PROVIDER = NA_character_,
+    GIT_CONFIG_GLOBAL = tmpconfig
   ))
 
   test_that(desc, {

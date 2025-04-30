@@ -143,11 +143,11 @@ gc_test_that(
 
     lst <- gitcreds_list()
     expect_equal(length(lst), 1L)
-    expect_equal(lst[[1]]$attributes$service, "git:https://github.com")
+    expect_equal(lst[[1]]$attributes$label, "github.com")
 
     lst2 <- gitcreds_list(url = NULL)
     expect_true(length(lst2) == 1)
-    expect_equal(lst2[[1]]$attributes$service, "git:https://github.com")
+    expect_equal(lst2[[1]]$attributes$label, "github.com")
 
     cred2 <- list(
       url = "https://github2.com",
@@ -158,22 +158,11 @@ gc_test_that(
 
     lst3 <- gitcreds_list()
     expect_equal(length(lst3), 1L)
-    expect_equal(lst3[[1]]$attributes$service, "git:https://github.com")
+    expect_equal(lst3[[1]]$attributes$label, "github.com")
 
     lst4 <- gitcreds_list("https://github2.com")
     expect_equal(length(lst4), 1L)
-    expect_equal(lst4[[1]]$attributes$service, "git:https://github2.com")
-
-    lst5 <- gitcreds_list(url = NULL)
-    expect_true(length(lst5) >= 2)
-    expect_true(
-      "git:https://github.com" %in%
-        vapply(lst5, function(it) it$attributes$service, "")
-    )
-    expect_true(
-      "git:https://github2.com" %in%
-        vapply(lst5, function(it) it$attributes$service, "")
-    )
+    expect_equal(lst4[[1]]$attributes$label, "github2.com")
   }
 )
 

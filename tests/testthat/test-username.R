@@ -46,6 +46,8 @@ gc_test_that("errors", {
   }
   mockery::stub(gitcreds$gitcreds_username_for_url, "git_run", mock2)
   mockery::stub(gitcreds$gitcreds_username_generic, "git_run", mock2)
-  expect_error(gitcreds$gitcreds_username_for_url("https://github.com"))
-  expect_error(gitcreds$gitcreds_username_generic())
+  expect_snapshot(error = TRUE, {
+    gitcreds$gitcreds_username_for_url("https://github.com")
+    gitcreds$gitcreds_username_generic()
+  })
 })

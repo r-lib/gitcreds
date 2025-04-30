@@ -18,7 +18,7 @@ gc_test_that("gitcreds_cache_envvvar", {
   )
 
   # error
-  expect_error(gitcreds_cache_envvar("foo.bar"), "Invalid URL")
+  expect_snapshot(error = TRUE, gitcreds_cache_envvar("foo.bar"))
 })
 
 gc_test_that("gitcreds_get_cache", {

@@ -1,4 +1,3 @@
-
 test_that("gitcreds is standalone", {
   stenv <- environment(gitcreds_get)
   objs <- ls(stenv, all.names = TRUE)
@@ -7,7 +6,12 @@ test_that("gitcreds is standalone", {
   for (f in funobjs) expect_identical(environmentName(topenv(f)), "base")
 
   expect_message(
-    mapply(codetools::checkUsage, funobjs, funs,
-           MoreArgs = list(report = message)),
-    NA)
+    mapply(
+      codetools::checkUsage,
+      funobjs,
+      funs,
+      MoreArgs = list(report = message)
+    ),
+    NA
+  )
 })

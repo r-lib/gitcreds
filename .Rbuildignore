@@ -11,3 +11,5 @@
 ^codecov\.yml$
 ^revdep$
 ^LICENSE\.md$
+^[\.]?air\.toml$
+^\.vscode$

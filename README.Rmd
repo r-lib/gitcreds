@@ -185,7 +185,7 @@ msg <- function(wh) {
   msgs[wh]
 }
 
-my_private_repos <- function() {
+my_public_repos <- function() {
   token <- tryCatch(
     gitcreds::gitcreds_get(),
     gitcreds_nogit_error = function(e) stop(msg("no_git")),

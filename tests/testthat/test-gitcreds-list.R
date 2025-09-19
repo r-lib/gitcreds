@@ -171,7 +171,9 @@ gc_test_that(
   os = "windows",
   helper = "manager-core",
   {
-    if (packageVersion("oskeyring") <= "0.1.0") skip("Needs newer oskeyring")
+    if (packageVersion("oskeyring") <= "0.1.0") {
+      skip("Needs newer oskeyring")
+    }
 
     # needs oskeyring
     fun <- function() {

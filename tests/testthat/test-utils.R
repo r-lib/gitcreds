@@ -20,12 +20,12 @@ test_that("set_env() NA unsets", {
 test_that("env var set to empty string is same as unset", {
   skip_on_os("windows")
 
-  withr::local_envvar(c(GITHUB_PAT_GITHUB_ACME_COM = NA_character_))
+  withr::local_envvar(c(GIT_PAT_GITHUB_ACME_COM = NA_character_))
 
-  oenv <- gitcreds$set_env(c(GITHUB_PAT_GITHUB_ACME_COM = ""))
+  oenv <- gitcreds$set_env(c(GIT_PAT_GITHUB_ACME_COM = ""))
   on.exit(gitcreds$set_env(oenv), add = TRUE)
 
-  x <- gitcreds$gitcreds_get_cache("GITHUB_PAT_GITHUB_ACME_COM")
+  x <- gitcreds$gitcreds_get_cache("GIT_PAT_GITHUB_ACME_COM")
   expect_null(x)
 })
 

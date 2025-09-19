@@ -214,15 +214,15 @@ gitcreds <- local({
     # env vars cannot start with a number
     slug3 <- ifelse(grepl("^[0-9]", slug2), paste0("AT_", slug2), slug2)
 
-    paste0("GITHUB_PAT_", toupper(slug3))
+    paste0("GIT_PAT_", toupper(slug3))
   }
 
   gitcreds_get_cache <- function(ev) {
     val <- Sys.getenv(ev, NA_character_)
-    if (is.na(val) && ev == "GITHUB_PAT_GITHUB_COM") {
+    if (is.na(val) && ev == "GIT_PAT_GITHUB_COM") {
       val <- Sys.getenv("GITHUB_PAT", NA_character_)
     }
-    if (is.na(val) && ev == "GITHUB_PAT_GITHUB_COM") {
+    if (is.na(val) && ev == "GIT_PAT_GITHUB_COM") {
       val <- Sys.getenv("GITHUB_TOKEN", NA_character_)
     }
     if (is.na(val) || val == "") {

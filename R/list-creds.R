@@ -132,7 +132,9 @@ gitcreds_list <- function(
   host <- NULL
   if (!is.null(url)) {
     purl <- gitcreds$parse_url(url)
-    if (!is.na(purl$host)) host <- purl$host
+    if (!is.na(purl$host)) {
+      host <- purl$host
+    }
     if (!is.na(purl$protocol)) protocol <- purl$protocol
   }
   protocol <- protocol %||% "https"
@@ -218,9 +220,15 @@ gitcreds_list_manager_core_macos <- function(url, host, protocol) {
 }
 
 is_manager_core_macos_item <- function(it, protocol, host) {
-  if (is.null(it$attributes$service)) return(FALSE)
-  if (!grepl("^git:", it$attributes$service)) return(FALSE)
-  if (is.null(host)) return(TRUE)
+  if (is.null(it$attributes$service)) {
+    return(FALSE)
+  }
+  if (!grepl("^git:", it$attributes$service)) {
+    return(FALSE)
+  }
+  if (is.null(host)) {
+    return(TRUE)
+  }
   iturl <- sub("^git:", "", it$attributes$service)
   piturl <- gitcreds$parse_url(iturl)
   !is.na(piturl$host) &&
@@ -245,10 +253,16 @@ gitcreds_list_manager_core_win <- function(url, host, protocol) {
 }
 
 is_manager_core_win_item <- function(it, protocol, host) {
-  if (it$type != "generic") return(FALSE)
-  if (!grepl("^git:", it$target_name)) return(FALSE)
+  if (it$type != "generic") {
+    return(FALSE)
+  }
+  if (!grepl("^git:", it$target_name)) {
+    return(FALSE)
+  }
   iturl <- sub("^git:", "", it$target_name)
-  if (is.null(host)) return(TRUE)
+  if (is.null(host)) {
+    return(TRUE)
+  }
   piturl <- gitcreds$parse_url(iturl)
   !is.na(piturl$host) &&
     piturl$host == host &&

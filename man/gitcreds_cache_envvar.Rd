@@ -18,6 +18,11 @@ Character vector of environment variables.
 \code{gitcreds_cache_envvar()} calculates the environment variaable name
 that is used as the cache, for a URL.
 }
+\details{
+The name starts with \code{GITCREDS_PAT_}. It used to start with \code{GITHUB_PAT_},
+which was misleading for a host that is not GitHub. \code{gitcreds_get()} still
+reads the old name, and warns once per session when it uses one.
+}
 \examples{
 gitcreds_cache_envvar("https://github.com")
 gitcreds_cache_envvar("https://api.github.com/path/to/endpoint")

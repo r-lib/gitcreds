@@ -156,6 +156,10 @@ environment variable you need to set for a URL:
 separate them with a colon. (If your user name or passwrd has \code{:}
 characters, then you need to escape them with a preceding backslash.)
 }
+
+These names used to start with \code{GITHUB_PAT_}, which was misleading for a
+host that is not GitHub. The old names still work, with a warning once per
+session. Set \code{GITCREDS_LEGACY_WARN=false} to silence it while you migrate.
 }
 
 \subsection{Proxies}{

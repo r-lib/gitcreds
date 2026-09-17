@@ -1,5 +1,9 @@
 # gitcreds (development version)
 
+* The `gitcreds_no_credentials` error now names the URL and the environment
+  variable that would supply a credential for it, instead of only saying
+  "Could not find any credentials" (#56).
+
 # gitcreds 0.1.2
 
 * No user visible changes.

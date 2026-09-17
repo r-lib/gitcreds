@@ -323,7 +323,11 @@ gitcreds <- local({
 
   gitcreds_parse_output <<- function(txt, url) {
     if (is.null(txt) || txt[1] == "protocol=dummy") {
-      throw(new_error("gitcreds_no_credentials", url = url))
+      throw(new_error(
+        "gitcreds_no_credentials",
+        url = url,
+        message = no_credentials_message(url)
+      ))
     }
     nms <- sub("=.*$", "", txt)
     vls <- sub("^[^=]+=", "", txt)
@@ -597,6 +601,38 @@ gitcreds <- local({
       gitcreds_no_helper = "No credential helper is set",
       gitcreds_multiple_helpers = "Multiple credential helpers, only using the first",
       gitcreds_unknown_helper = "Unknown credential helper, cannot list credentials"
+    )
+  }
+
+  #' Message for a `gitcreds_no_credentials` error
+  #'
+  #' The condition already carries the URL, so the message can name both the
+  #' URL and the environment variable that would supply a credential for it.
+  #' Without the variable name, a user who needs to set it has no way to learn
+  #' it at the moment they need it.
+  #'
+  #' `gitcreds_cache_envvar()` rejects URLs it cannot parse, and the raw
+  #' `gitcreds_parse_output()` API can be called with one, so fall back to the
+  #' bare message rather than replacing a missing credential error with a
+  #' parse error.
+  #'
+  #' @param url URL we failed to find a credential for.
+  #' @noRd
+  #' @return String.
+
+  no_credentials_message <- function(url) {
+    msg <- paste0("Could not find any credentials for '", url, "'")
+    ev <- tryCatch(gitcreds_cache_envvar(url), error = function(e) NULL)
+    if (is.null(ev)) {
+      return(msg)
+    }
+    paste0(
+      msg,
+      ".\nRun `gitcreds_set(\"",
+      url,
+      "\")`, or set the `",
+      ev,
+      "` environment variable."
     )
   }
 

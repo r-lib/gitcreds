@@ -25,9 +25,11 @@ gitcreds <- local({
       is_flag(set_cache)
     )
 
-    cache_ev <- gitcreds_cache_envvar(url)
-    if (use_cache && !is.null(ans <- gitcreds_get_cache(cache_ev))) {
-      return(ans)
+    if (use_cache) {
+      ans <- gitcreds_get_cache(gitcreds_cache_envvars(url))
+      if (!is.null(ans)) {
+        return(ans)
+      }
     }
 
     check_for_git()
@@ -36,7 +38,7 @@ gitcreds <- local({
     creds <- gitcreds_parse_output(out, url)
 
     if (set_cache) {
-      gitcreds_set_cache(cache_ev, creds)
+      gitcreds_set_cache(gitcreds_cache_envvar(url), creds)
     }
 
     creds
@@ -64,7 +66,7 @@ gitcreds <- local({
     }
 
     msg("-> Removing credentials from cache...")
-    gitcreds_delete_cache(gitcreds_cache_envvar(url))
+    gitcreds_delete_cache(gitcreds_cache_envvars(url))
 
     msg("-> Done.")
     invisible()
@@ -176,7 +178,7 @@ gitcreds <- local({
     gitcreds_reject(current)
 
     msg("-> Removing credentials from cache...")
-    gitcreds_delete_cache(gitcreds_cache_envvar(url))
+    gitcreds_delete_cache(gitcreds_cache_envvars(url))
 
     msg("-> Done.")
 
@@ -214,28 +216,103 @@ gitcreds <- local({
     # env vars cannot start with a number
     slug3 <- ifelse(grepl("^[0-9]", slug2), paste0("AT_", slug2), slug2)
 
-    paste0("GITHUB_PAT_", toupper(slug3))
+    paste0(canonical_cache_prefix(), toupper(slug3))
   }
 
-  gitcreds_get_cache <- function(ev) {
-    val <- Sys.getenv(ev, NA_character_)
-    if (is.na(val) && ev == "GITHUB_PAT_GITHUB_COM") {
-      val <- Sys.getenv("GITHUB_PAT", NA_character_)
+  #' Every environment variable name that may hold a credential for a URL
+  #'
+  #' In read order, most preferred first. The canonical name is the one
+  #' `gitcreds_cache_envvar()` returns and the only one we ever write; the
+  #' others are accepted so that a name set before or after a prefix change
+  #' keeps working.
+  #'
+  #' Derived from `gitcreds_cache_envvar()` rather than computing the slug
+  #' separately, so that an invalid URL is still reported against the public
+  #' function a caller actually named.
+  #'
+  #' @param url A single URL.
+  #' @noRd
+  #' @return Character vector, at least one element.
+
+  gitcreds_cache_envvars <- function(url) {
+    canonical <- gitcreds_cache_envvar(url)
+    slug <- substring(canonical, nchar(canonical_cache_prefix()) + 1L)
+    paste0(cache_prefixes(), slug)
+  }
+
+  #' Prefixes for the cache environment variable, in read order
+  #'
+  #' `canonical_cache_prefix()` is what we write, and the only prefix whose
+  #' `FAIL` sentinel we act on. A copy of this file vendored into another
+  #' package writes `FAIL` under whichever prefix that copy was built with
+  #' (see `pkgdepends::git_creds_for_url()`), and honoring a sentinel from a
+  #' prefix we no longer write would let that package suppress a credential
+  #' that is present.
+  #'
+  #' @noRd
+  #' @return Character vector.
+
+  cache_prefixes <- function() {
+    c("GITCREDS_PAT_", "GITHUB_PAT_")
+  }
+
+  canonical_cache_prefix <- function() {
+    "GITHUB_PAT_"
+  }
+
+  #' Names to consult, in order, when reading a cached credential
+  #'
+  #' The bare `GITHUB_PAT` and `GITHUB_TOKEN` names apply to github.com only,
+  #' and come last, so that a prefixed value still beats a bare one.
+  #'
+  #' @param evs Prefixed names from `gitcreds_cache_envvars()`.
+  #' @noRd
+  #' @return Character vector.
+
+  cache_envvar_chain <- function(evs) {
+    if (any(evs %in% paste0(cache_prefixes(), "GITHUB_COM"))) {
+      evs <- c(evs, "GITHUB_PAT", "GITHUB_TOKEN")
     }
-    if (is.na(val) && ev == "GITHUB_PAT_GITHUB_COM") {
-      val <- Sys.getenv("GITHUB_TOKEN", NA_character_)
-    }
-    if (is.na(val) || val == "") {
-      return(NULL)
-    }
-    if (val == "FAIL" || grepl("^FAIL:", val)) {
-      class <- strsplit(val, ":", fixed = TRUE)[[1]][2]
-      if (is.na(class)) {
-        class <- "gitcreds_no_credentials"
+    evs
+  }
+
+  honors_fail_sentinel <- function(ev) {
+    ev %in%
+      c("GITHUB_PAT", "GITHUB_TOKEN") ||
+      startsWith(ev, canonical_cache_prefix())
+  }
+
+  gitcreds_get_cache <- function(evs) {
+    for (ev in cache_envvar_chain(evs)) {
+      val <- Sys.getenv(ev, NA_character_)
+      if (is.na(val) || val == "") {
+        next
       }
-      throw(new_error(class))
+      if (val == "FAIL" || grepl("^FAIL:", val)) {
+        if (!honors_fail_sentinel(ev)) {
+          next
+        }
+        class <- strsplit(val, ":", fixed = TRUE)[[1]][2]
+        if (is.na(class)) {
+          class <- "gitcreds_no_credentials"
+        }
+        throw(new_error(class))
+      }
+      return(parse_cache_value(val, ev))
     }
 
+    NULL
+  }
+
+  #' Turn the value of a cache environment variable into a credential
+  #'
+  #' @param val Value of the environment variable, not empty and not a
+  #' `FAIL` sentinel.
+  #' @param ev Name of the environment variable, for the warning.
+  #' @noRd
+  #' @return A `gitcreds` object, or `NULL` if `val` cannot be parsed.
+
+  parse_cache_value <- function(val, ev) {
     unesc <- function(x) {
       gsub("\\\\(.)", "\\1", x)
     }
@@ -291,8 +368,18 @@ gitcreds <- local({
     invisible(NULL)
   }
 
-  gitcreds_delete_cache <- function(ev) {
-    Sys.unsetenv(ev)
+  #' Remove a URL's cached credential
+  #'
+  #' Every accepted name has to go, not just the canonical one. Leaving a
+  #' non-canonical name set means the read chain finds it on the next call, so
+  #' `gitcreds_set()` would look like it had ignored a rotated token.
+  #'
+  #' @param evs Names from `gitcreds_cache_envvars()`.
+  #' @noRd
+  #' @return Nothing.
+
+  gitcreds_delete_cache <- function(evs) {
+    Sys.unsetenv(evs)
   }
 
   # ------------------------------------------------------------------------

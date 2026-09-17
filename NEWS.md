@@ -1,5 +1,10 @@
 # gitcreds (development version)
 
+* Cached credentials can now also be supplied in a `GITCREDS_PAT_*`
+  environment variable, alongside the `GITHUB_PAT_*` name that gitcreds still
+  writes and returns from `gitcreds_cache_envvar()`. Removing a credential
+  clears both names (#56).
+
 # gitcreds 0.1.2
 
 * No user visible changes.

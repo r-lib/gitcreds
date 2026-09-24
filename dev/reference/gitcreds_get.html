@@ -199,7 +199,10 @@ environment variable you need to set for a URL:</p><ol><li><p>You can set this e
 <li><p>If you also need a user name, then use the <code>user:password</code> form, i.e.
 separate them with a colon. (If your user name or passwrd has <code>:</code>
 characters, then you need to escape them with a preceding backslash.)</p></li>
-</ol></div>
+</ol><p>These names used to start with <code>GITHUB_PAT_</code>, which was misleading for a
+host that is not GitHub. The old names still work, with a warning once per
+session. Set <code>GITCREDS_LEGACY_WARN=false</code> to silence it while you migrate.</p>
+</div>
 
 <div class="section">
 <h3 id="proxies">Proxies<a class="anchor" aria-label="anchor" href="#proxies"></a></h3>

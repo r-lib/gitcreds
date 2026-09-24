@@ -63,6 +63,12 @@ and paths as well. See details below.</p></dd>
     <p>Character vector of environment variables.</p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The name starts with <code>GITCREDS_PAT_</code>. It used to start with <code>GITHUB_PAT_</code>,
+which was misleading for a host that is not GitHub. <code><a href="gitcreds_get.html">gitcreds_get()</a></code> still
+reads the old name, and warns once per session when it uses one.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="gitcreds_get.html">gitcreds_get()</a></code>.</p></div>
     </div>
@@ -70,13 +76,13 @@ and paths as well. See details below.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">gitcreds_cache_envvar</span><span class="op">(</span><span class="st">"https://github.com"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "GITHUB_PAT_GITHUB_COM"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "GITCREDS_PAT_GITHUB_COM"</span>
 <span class="r-in"><span><span class="fu">gitcreds_cache_envvar</span><span class="op">(</span><span class="st">"https://api.github.com/path/to/endpoint"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "GITHUB_PAT_GITHUB_COM"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "GITCREDS_PAT_GITHUB_COM"</span>
 <span class="r-in"><span><span class="fu">gitcreds_cache_envvar</span><span class="op">(</span><span class="st">"https://jane@github.com"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "GITHUB_PAT_JANE_AT_GITHUB_COM"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "GITCREDS_PAT_JANE_AT_GITHUB_COM"</span>
 <span class="r-in"><span><span class="fu">gitcreds_cache_envvar</span><span class="op">(</span><span class="st">"https://another.site.github.com"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "GITHUB_PAT_ANOTHER_SITE_GITHUB_COM"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "GITCREDS_PAT_ANOTHER_SITE_GITHUB_COM"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

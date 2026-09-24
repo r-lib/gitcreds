@@ -131,7 +131,7 @@ function to see which environment variable you need to set for a url:
 gitcreds::gitcreds_cache_envvar("https://github.com")
 ```
 
-    ## [1] "GITHUB_PAT_GITHUB_COM"
+    ## [1] "GITCREDS_PAT_GITHUB_COM"
 
 It is easiest to use the withr package to temporarily change this
 environment variable in a test case:
@@ -140,7 +140,7 @@ environment variable in a test case:
 
 library(testthat)
 test_that("bad credentials from git", {
-  withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = "bad"))
+  withr::local_envvar(c(GITCREDS_PAT_GITHUB_COM = "bad"))
   # Test code that calls gitcreds_get(), potentially downstream.
   # gitcreds_get() will return `bad` as the password.
   # Illustration:
@@ -167,7 +167,7 @@ test_that("another GitHub user", {
     "username:user1:",
     "password:secret"
   )
-  withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = cred))
+  withr::local_envvar(c(GITCREDS_PAT_GITHUB_COM = cred))
   # Your test code comes here. This is just an illustration:
   print(gitcreds::gitcreds_get())
   expect_equal(gitcreds::gitcreds_get()$username, "user1")
@@ -188,7 +188,7 @@ environment variable to `"FAIL"`:
 
 library(testthat)
 test_that("no credentials from git", {
-  withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = "FAIL"))
+  withr::local_envvar(c(GITCREDS_PAT_GITHUB_COM = "FAIL"))
   # The test code that calls gitcreds_get() comes here.
   # It will fail with error "gitcreds_no_credentials"
   expect_error(
@@ -209,7 +209,7 @@ the list of possible error classes above. For example:
 library(testthat)
 test_that("no git installation", {
   withr::local_envvar(c(
-    GITHUB_PAT_GITHUB_COM = "FAIL:gitcreds_nogit_error"
+    GITCREDS_PAT_GITHUB_COM = "FAIL:gitcreds_nogit_error"
   ))
   # Test code that calls gitcreds_get() comes here.
   # Illustration:

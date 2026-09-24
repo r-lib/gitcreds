@@ -163,6 +163,11 @@ environment variable you need to set for a URL:
     `:` characters, then you need to escape them with a preceding
     backslash.)
 
+These names used to start with `GITHUB_PAT_`, which was misleading for a
+host that is not GitHub. The old names still work, with a warning once
+per session. Set `GITCREDS_LEGACY_WARN=false` to silence it while you
+migrate.
+
 ### Proxies
 
 git should pick up the proxy configuration from the `http_proxy`,

@@ -35,7 +35,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="gitcreds-development-version">gitcreds (development version)<a class="anchor" aria-label="anchor" href="#gitcreds-development-version"></a></h2>
-<ul><li><p>Cached credentials can now also be supplied in a <code>GITCREDS_PAT_*</code> environment variable, alongside the <code>GITHUB_PAT_*</code> name that gitcreds still writes and returns from <code><a href="../reference/gitcreds_cache_envvar.html">gitcreds_cache_envvar()</a></code>. Removing a credential clears both names (<a href="https://github.com/r-lib/gitcreds/issues/56" class="external-link">#56</a>).</p></li>
+<ul><li>
+<p>The cache environment variable is now named <code>GITCREDS_PAT_&lt;HOST&gt;</code> instead of <code>GITHUB_PAT_&lt;HOST&gt;</code>, which was misleading for hosts that are not GitHub (<a href="https://github.com/r-lib/gitcreds/issues/56" class="external-link">#56</a>, <a href="https://github.com/melissavanbussel" class="external-link">@melissavanbussel</a>). The old names are still read, with a warning once per session; set <code>GITCREDS_LEGACY_WARN=false</code> to silence it. <code>GITHUB_PAT</code> and <code>GITHUB_TOKEN</code> are unaffected.</p>
+<p>If you vendor <code>git-auth.R</code>, re-vendor it: an older copy computes the old name, so its cache no longer shares a slot with this one.</p>
+</li>
+<li><p>Cached credentials can now also be supplied in a <code>GITCREDS_PAT_*</code> environment variable, alongside the <code>GITHUB_PAT_*</code> name that gitcreds still writes and returns from <code><a href="../reference/gitcreds_cache_envvar.html">gitcreds_cache_envvar()</a></code>. Removing a credential clears both names (<a href="https://github.com/r-lib/gitcreds/issues/56" class="external-link">#56</a>).</p></li>
 <li><p>The <code>gitcreds_no_credentials</code> error now names the URL and the environment variable that would supply a credential for it, instead of only saying “Could not find any credentials” (<a href="https://github.com/r-lib/gitcreds/issues/56" class="external-link">#56</a>).</p></li>
 </ul></div>
     <div class="section level2">

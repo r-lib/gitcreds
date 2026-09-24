@@ -43,3 +43,25 @@ gc_test_that("gitcreds_get", os = c("windows", "macos"), {
     gitcreds$gitcreds_cache_envvars("https://github.com")
   ))
 })
+
+test_that("no_credentials_message() names the url and the env var", {
+  expect_snapshot(
+    cat(gitcreds$no_credentials_message("https://codeberg.org"))
+  )
+})
+
+test_that("no_credentials_message() drops the hint for an unparseable url", {
+  expect_snapshot(
+    cat(gitcreds$no_credentials_message("foo.bar"))
+  )
+})
+
+test_that("the no-credentials error carries the url and the env var", {
+  err <- tryCatch(
+    gitcreds_parse_output("protocol=dummy", "https://codeberg.org"),
+    gitcreds_no_credentials = function(e) e
+  )
+  expect_s3_class(err, "gitcreds_no_credentials")
+  expect_equal(err$url, "https://codeberg.org")
+  expect_snapshot(cat(conditionMessage(err)))
+})

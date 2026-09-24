@@ -35,7 +35,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="gitcreds-development-version">gitcreds (development version)<a class="anchor" aria-label="anchor" href="#gitcreds-development-version"></a></h2>
-<ul><li>The <code>gitcreds_no_credentials</code> error now names the URL and the environment variable that would supply a credential for it, instead of only saying “Could not find any credentials” (<a href="https://github.com/r-lib/gitcreds/issues/56" class="external-link">#56</a>).</li>
+<ul><li><p>Cached credentials can now also be supplied in a <code>GITCREDS_PAT_*</code> environment variable, alongside the <code>GITHUB_PAT_*</code> name that gitcreds still writes and returns from <code><a href="../reference/gitcreds_cache_envvar.html">gitcreds_cache_envvar()</a></code>. Removing a credential clears both names (<a href="https://github.com/r-lib/gitcreds/issues/56" class="external-link">#56</a>).</p></li>
+<li><p>The <code>gitcreds_no_credentials</code> error now names the URL and the environment variable that would supply a credential for it, instead of only saying “Could not find any credentials” (<a href="https://github.com/r-lib/gitcreds/issues/56" class="external-link">#56</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.2" id="gitcreds-012">gitcreds 0.1.2<a class="anchor" aria-label="anchor" href="#gitcreds-012"></a></h2><p class="text-muted">CRAN release: 2022-09-08</p>

@@ -101,6 +101,10 @@
 #'    separate them with a colon. (If your user name or passwrd has `:`
 #'    characters, then you need to escape them with a preceding backslash.)
 #'
+#' These names used to start with `GITHUB_PAT_`, which was misleading for a
+#' host that is not GitHub. The old names still work, with a warning once per
+#' session. Set `GITCREDS_LEGACY_WARN=false` to silence it while you migrate.
+#'
 #' ## Proxies
 #'
 #' git should pick up the proxy configuration from the `http_proxy`,
@@ -329,6 +333,10 @@ gitcreds_list_helpers <- NULL
 #' `gitcreds_get()` caches credentials in environment variables.
 #' `gitcreds_cache_envvar()` calculates the environment variaable name
 #' that is used as the cache, for a URL.
+#'
+#' The name starts with `GITCREDS_PAT_`. It used to start with `GITHUB_PAT_`,
+#' which was misleading for a host that is not GitHub. `gitcreds_get()` still
+#' reads the old name, and warns once per session when it uses one.
 #'
 #' @param url Character vector of URLs, they may contain user names
 #'   and paths as well. See details below.

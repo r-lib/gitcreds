@@ -257,7 +257,7 @@ gitcreds <- local({
   }
 
   canonical_cache_prefix <- function() {
-    "GITHUB_PAT_"
+    "GITCREDS_PAT_"
   }
 
   #' Names to consult, in order, when reading a cached credential
@@ -282,6 +282,55 @@ gitcreds <- local({
       startsWith(ev, canonical_cache_prefix())
   }
 
+  legacy_cache_prefixes <- function() {
+    setdiff(cache_prefixes(), canonical_cache_prefix())
+  }
+
+  is_legacy_cache_envvar <- function(ev) {
+    any(startsWith(ev, legacy_cache_prefixes()))
+  }
+
+  legacy_cache_warned <- FALSE
+
+  #' Warn, once per session, that a credential came from a legacy name
+  #'
+  #' Once per session rather than per call, because `gitcreds_get()` runs deep
+  #' inside install paths in gh, pkgdepends and usethis, where a warning per
+  #' call is noise. Silent when the canonical name is set, and silenced
+  #' entirely by `GITCREDS_LEGACY_WARN=false` for anyone who cannot yet change
+  #' the environment they run in.
+  #'
+  #' @param ev Legacy name that supplied the credential.
+  #' @noRd
+  #' @return Nothing.
+
+  warn_legacy_cache_envvar <- function(ev) {
+    if (legacy_cache_warned) {
+      return(invisible())
+    }
+    if (
+      tolower(Sys.getenv("GITCREDS_LEGACY_WARN", "true")) %in% c("false", "0")
+    ) {
+      return(invisible())
+    }
+
+    legacy_cache_warned <<- TRUE
+    hit <- legacy_cache_prefixes()[startsWith(ev, legacy_cache_prefixes())][1]
+    new <- paste0(
+      canonical_cache_prefix(),
+      substr(ev, nchar(hit) + 1L, nchar(ev))
+    )
+    warning(
+      "Using the credential in `",
+      ev,
+      "`, which gitcreds no longer sets. Rename it to `",
+      new,
+      "`. Set GITCREDS_LEGACY_WARN=false to silence this."
+    )
+
+    invisible()
+  }
+
   gitcreds_get_cache <- function(evs) {
     for (ev in cache_envvar_chain(evs)) {
       val <- Sys.getenv(ev, NA_character_)
@@ -297,6 +346,9 @@ gitcreds <- local({
           class <- "gitcreds_no_credentials"
         }
         throw(new_error(class))
+      }
+      if (is_legacy_cache_envvar(ev)) {
+        warn_legacy_cache_envvar(ev)
       }
       return(parse_cache_value(val, ev))
     }

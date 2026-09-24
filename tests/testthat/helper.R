@@ -207,3 +207,7 @@ skip_if_not_installed <- function(pkg) {
   }
   testthat::skip_if_not_installed(pkg)
 }
+
+reset_legacy_warning <- function() {
+  assign("legacy_cache_warned", FALSE, envir = gitcreds)
+}

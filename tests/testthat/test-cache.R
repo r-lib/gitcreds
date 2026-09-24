@@ -91,3 +91,95 @@ gc_test_that("gitcreds_set_cache", {
   expect_equal(cred$username, "x:y")
   expect_equal(cred$password, "a:b")
 })
+
+test_that("gitcreds_cache_envvars() lists both names, new one first", {
+  expect_equal(
+    gitcreds$gitcreds_cache_envvars("https://gitlab.com"),
+    c("GITCREDS_PAT_GITLAB_COM", "GITHUB_PAT_GITLAB_COM")
+  )
+})
+
+test_that("gitcreds_cache_envvar() still returns the legacy name", {
+  expect_equal(
+    gitcreds_cache_envvar("https://gitlab.com"),
+    "GITHUB_PAT_GITLAB_COM"
+  )
+})
+
+test_that("either name supplies a credential, new one wins", {
+  evs <- gitcreds$gitcreds_cache_envvars("https://gitlab.com")
+
+  withr::local_envvar(c(
+    GITCREDS_PAT_GITLAB_COM = NA_character_,
+    GITHUB_PAT_GITLAB_COM = "legacy-token"
+  ))
+  expect_equal(gitcreds$gitcreds_get_cache(evs)$password, "legacy-token")
+
+  withr::local_envvar(c(GITCREDS_PAT_GITLAB_COM = "new-token"))
+  expect_equal(gitcreds$gitcreds_get_cache(evs)$password, "new-token")
+})
+
+test_that("a FAIL sentinel is honored under the canonical name only", {
+  evs <- gitcreds$gitcreds_cache_envvars("https://gitlab.com")
+
+  withr::local_envvar(c(
+    GITCREDS_PAT_GITLAB_COM = NA_character_,
+    GITHUB_PAT_GITLAB_COM = "FAIL"
+  ))
+  expect_error(
+    gitcreds$gitcreds_get_cache(evs),
+    class = "gitcreds_no_credentials"
+  )
+
+  withr::local_envvar(c(
+    GITCREDS_PAT_GITLAB_COM = "FAIL",
+    GITHUB_PAT_GITLAB_COM = NA_character_
+  ))
+  expect_null(gitcreds$gitcreds_get_cache(evs))
+})
+
+test_that("a non-canonical FAIL does not hide a credential that is present", {
+  evs <- gitcreds$gitcreds_cache_envvars("https://gitlab.com")
+  withr::local_envvar(c(
+    GITCREDS_PAT_GITLAB_COM = "FAIL",
+    GITHUB_PAT_GITLAB_COM = "legacy-token"
+  ))
+  expect_equal(gitcreds$gitcreds_get_cache(evs)$password, "legacy-token")
+})
+
+test_that("gitcreds_delete_cache() clears every accepted name", {
+  withr::local_envvar(c(
+    GITCREDS_PAT_GITLAB_COM = "new-token",
+    GITHUB_PAT_GITLAB_COM = "legacy-token"
+  ))
+  gitcreds$gitcreds_delete_cache(
+    gitcreds$gitcreds_cache_envvars("https://gitlab.com")
+  )
+  expect_equal(Sys.getenv("GITCREDS_PAT_GITLAB_COM", "unset"), "unset")
+  expect_equal(Sys.getenv("GITHUB_PAT_GITLAB_COM", "unset"), "unset")
+})
+
+test_that("bare GITHUB_PAT applies to github.com, but loses to a prefix", {
+  evs <- gitcreds$gitcreds_cache_envvars("https://github.com")
+
+  withr::local_envvar(c(
+    GITCREDS_PAT_GITHUB_COM = NA_character_,
+    GITHUB_PAT_GITHUB_COM = NA_character_,
+    GITHUB_TOKEN = NA_character_,
+    GITHUB_PAT = "bare-token"
+  ))
+  expect_equal(gitcreds$gitcreds_get_cache(evs)$password, "bare-token")
+
+  withr::local_envvar(c(GITHUB_PAT_GITHUB_COM = "prefixed-token"))
+  expect_equal(gitcreds$gitcreds_get_cache(evs)$password, "prefixed-token")
+})
+
+test_that("bare names do not apply to other hosts", {
+  evs <- gitcreds$gitcreds_cache_envvars("https://gitlab.com")
+  withr::local_envvar(c(
+    GITCREDS_PAT_GITLAB_COM = NA_character_,
+    GITHUB_PAT_GITLAB_COM = NA_character_,
+    GITHUB_PAT = "bare-token"
+  ))
+  expect_null(gitcreds$gitcreds_get_cache(evs))
+})

@@ -58,7 +58,11 @@ gc_test_that_run <- function(desc, code) {
     on.exit(cleanup_macos(), add = TRUE)
   }
 
-  envnames <- grep("^GITHUB_PAT", names(Sys.getenv()), value = TRUE)
+  envnames <- grep(
+    "^(GITHUB_PAT|GITCREDS_PAT)",
+    names(Sys.getenv()),
+    value = TRUE
+  )
   envs <- structure(rep(NA_character_, length(envnames)), names = envnames)
   tmpconfig <- tempfile()
   on.exit(unlink(tmpconfig), add = TRUE)
